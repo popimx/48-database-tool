@@ -99,7 +99,7 @@ function getMemberLabel(member, selectedGroup) {
   if (member.role === "kenkyuusei") return "研究生";
 
   if (member.generation) {
-    return `${member.generation}期生`;
+    return member.generation;
   }
 
   return "正規メンバー";
