@@ -54,7 +54,6 @@ const memberCache = {};
 
 async function loadMembers(group) {
   const url = `data/members/${group}.json?t=${Date.now()}`;
-
   const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {
@@ -63,10 +62,8 @@ async function loadMembers(group) {
   }
 
   const data = await res.json();
-
-  console.log(`LOADED ${group}:`, data.length);
-
   memberCache[group] = data;
+
   return data;
 }
 
@@ -115,16 +112,59 @@ function isTeam8(m) {
 }
 
 /* =========================
-   ラベル（★修正版ここだけ）
+   ラベル
 ========================= */
 
 function getMemberLabel(member, selectedGroup, sortMode) {
 
   const isTeam8Member = isTeam8(member);
 
-  // =========================
-  // ★全グループ時（重要修正）
-  // =========================
+  const isSKEorHKT =
+    member.groupId === "ske48" ||
+    member.groupId === "hkt48";
+
+  const isSingleGroup = selectedGroup !== "all";
+
+  /* =========================
+     days
+  ========================= */
+  if (sortMode === "days") {
+    if (isTeam8Member) return "チーム8";
+    return `${member.generation}`;
+  }
+
+  /* =========================
+     SKE / HKT チーム表記モード
+  ========================= */
+  const useTeamLabel =
+    isSingleGroup &&
+    isSKEorHKT &&
+    (
+      sortMode === "default" ||
+      sortMode === "kana" ||
+      sortMode === "birthday" ||
+      sortMode === "nearestBirthday" ||
+      sortMode === "age"
+    );
+
+  if (useTeamLabel) {
+    if (isTeam8Member) return "チーム8";
+
+    if (member.generation?.includes("S")) return "チームS";
+    if (member.generation?.includes("KII") || member.generation?.includes("KⅡ")) return "チームKII";
+    if (member.generation?.includes("E")) return "チームE";
+
+    if (member.groupId === "hkt48") {
+      if (member.generation?.includes("H")) return "チームH";
+      if (member.generation?.includes("KIV") || member.generation?.includes("KⅣ")) return "チームKIV";
+    }
+
+    return "正規メンバー";
+  }
+
+  /* =========================
+     全グループ時
+  ========================= */
   if (selectedGroup === "all") {
     if (
       sortMode === "default" ||
@@ -137,17 +177,9 @@ function getMemberLabel(member, selectedGroup, sortMode) {
     }
   }
 
-  // =========================
-  // daysだけ特別ルール
-  // =========================
-  if (sortMode === "days") {
-    if (isTeam8Member) return "チーム8";
-    return `${member.generation}`;
-  }
-
-  // =========================
-  // 通常ラベル
-  // =========================
+  /* =========================
+     通常
+  ========================= */
 
   if (isTeam8Member) {
     if (selectedGroup === "all") return "AKB48";
@@ -231,7 +263,7 @@ async function updateMembers() {
 }
 
 /* =========================
-   ソート系（そのまま）
+   ソート
 ========================= */
 
 function akbRank(m) {
