@@ -49,7 +49,7 @@ function isGraduate(m) {
 }
 
 /* =========================
-   期表示
+   期表示（詳細ページ）
 ========================= */
 
 function formatGeneration(gen, mode = "list") {
@@ -99,32 +99,28 @@ async function loadAllMembers() {
 }
 
 /* =========================
-   ラベル
+   ラベル（★統一修正済み）
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
 
+  // 全体表示 → グループ名
   if (selectedGroup === "all") {
     return groupNameMap[member.groupId] || "";
   }
 
+  // 研究生（★全グループ統一）
+  if (member.role === "kenkyuusei") {
+    if (member.generation) {
+      return `${member.generation}期研究生`;
+    }
+    return "研究生";
+  }
+
+  // チーム制グループ
   if (member.groupId === "ske48" || member.groupId === "hkt48") {
-    if (member.role === "kenkyuusei") return "研究生";
     return member.team || "正規メンバー";
   }
-
-  if (member.groupId === "nmb48") {
-    if (member.role === "kenkyuusei") {
-      if (member.generation === "10期") return "10期";
-      if (member.generation === "11期") return "11期";
-      return "研究生";
-    }
-    return "正規メンバー";
-  }
-
-  if (member.role === "kenkyuusei") return "研究生";
-
-  if (member.generation) return member.generation;
 
   return "正規メンバー";
 }
@@ -161,6 +157,7 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
+  // デフォルト
   members = defaultSort(members, group);
 
   if (sort === "kana") {
@@ -175,7 +172,7 @@ async function updateMembers() {
 }
 
 /* =========================
-   defaultSort
+   defaultSort（NMB維持＋整理）
 ========================= */
 
 function defaultSort(members, selectedGroup) {
@@ -202,12 +199,15 @@ function defaultSort(members, selectedGroup) {
     if (aG && !bG) return 1;
     if (!aG && bG) return -1;
 
+    // NMBだけ特別順
     if (selectedGroup === "nmb48") {
 
       const rank = (m) => {
         if (m.role === "regular") return 1;
-        if (m.role === "kenkyuusei" && m.generation === "10期") return 2;
-        if (m.role === "kenkyuusei" && m.generation === "11期") return 3;
+        if (m.role === "kenkyuusei") {
+          if (m.generation === 10 || m.generation === "10期") return 2;
+          if (m.generation === 11 || m.generation === "11期") return 3;
+        }
         return 99;
       };
 
@@ -216,7 +216,8 @@ function defaultSort(members, selectedGroup) {
     }
 
     if (selectedGroup === "all") {
-      return (groupOrder[a.groupId] || 99) - (groupOrder[b.groupId] || 99)
+      return (groupOrder[a.groupId.toUpperCase()] || 99)
+        - (groupOrder[b.groupId.toUpperCase()] || 99)
         || a.kana.localeCompare(b.kana, "ja");
     }
 
@@ -245,7 +246,6 @@ function renderMembers(members, selectedGroup) {
     };
 
     const img = getImagePath(m);
-
     const label = getMemberLabel(m, selectedGroup);
     const badgeClass = getBadgeClass(m);
 
@@ -349,14 +349,9 @@ async function updateBirthdays() {
     members = members.filter(m => m.status === "member");
   }
 
-  // 🔥 デフォルト誕生日順
-  if (sort === "calendar") {
-    members.sort((a, b) =>
-      (a.birthday.slice(5)) > (b.birthday.slice(5)) ? 1 : -1
-    );
-  } else {
-    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
-  }
+  members.sort((a, b) =>
+    new Date(a.birthday) - new Date(b.birthday)
+  );
 
   renderBirthdayMembers(members);
 }
@@ -459,7 +454,6 @@ function renderDaysMembers(members) {
     };
 
     const img = getImagePath(m);
-
     const label = getMemberLabel(m, group);
     const badgeClass = getBadgeClass(m);
 
