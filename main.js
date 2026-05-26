@@ -184,7 +184,6 @@ async function updateMembers() {
 
   }
 
-  // 現役のみ
   if (status === "member") {
 
     members =
@@ -195,7 +194,6 @@ async function updateMembers() {
 
   }
 
-  // あいうえお順
   if (sort === "kana") {
 
     members.sort((a, b) => {
@@ -208,7 +206,6 @@ async function updateMembers() {
 
   }
 
-  // 年齢順
   else if (sort === "age") {
 
     members.sort((a, b) => {
@@ -221,7 +218,6 @@ async function updateMembers() {
 
   }
 
-  // 在籍日数順
   else if (sort === "days") {
 
     members.sort((a, b) => {
@@ -511,14 +507,38 @@ function renderMember(member) {
 
 async function initBirthdaysPage() {
 
+  const groupSelect =
+    document.getElementById(
+      "group-select"
+    );
+
+  const statusFilter =
+    document.getElementById(
+      "status-filter"
+    );
+
   const sortSelect =
     document.getElementById(
       "birthday-sort"
     );
 
-  if (!sortSelect) {
+  if (
+    !groupSelect ||
+    !statusFilter ||
+    !sortSelect
+  ) {
     return;
   }
+
+  groupSelect.addEventListener(
+    "change",
+    updateBirthdays
+  );
+
+  statusFilter.addEventListener(
+    "change",
+    updateBirthdays
+  );
 
   sortSelect.addEventListener(
     "change",
@@ -530,13 +550,61 @@ async function initBirthdaysPage() {
 
 async function updateBirthdays() {
 
+  const group =
+    document.getElementById(
+      "group-select"
+    ).value;
+
+  const status =
+    document.getElementById(
+      "status-filter"
+    ).value;
+
   const sortMode =
     document.getElementById(
       "birthday-sort"
     ).value;
 
-  let members =
-    await loadAllMembers();
+  let members = [];
+
+  if (group === "all") {
+
+    members =
+      await loadAllMembers();
+
+  } else {
+
+    try {
+
+      const response =
+        await fetch(
+          `data/members/${group}.json`
+        );
+
+      if (!response.ok) {
+        return;
+      }
+
+      members =
+        await response.json();
+
+    } catch (error) {
+
+      console.error(error);
+
+      return;
+    }
+
+  }
+
+  if (status === "member") {
+
+    members =
+      members.filter(
+        member =>
+          member.status === "member"
+      );
+  }
 
   if (sortMode === "calendar") {
 
@@ -634,7 +702,7 @@ function renderBirthdayMembers(
         "div"
       );
 
-    card.className =
+      card.className =
       "member-card";
 
     card.onclick = () => {
@@ -675,14 +743,27 @@ function renderBirthdayMembers(
 
 async function initDaysPage() {
 
-  const statusFilter =
+  const groupSelect =
     document.getElementById(
-      "days-status-filter"
+      "group-select"
     );
 
-  if (!statusFilter) {
+  const statusFilter =
+    document.getElementById(
+      "status-filter"
+    );
+
+  if (
+    !groupSelect ||
+    !statusFilter
+  ) {
     return;
   }
+
+  groupSelect.addEventListener(
+    "change",
+    updateDays
+  );
 
   statusFilter.addEventListener(
     "change",
@@ -694,13 +775,47 @@ async function initDaysPage() {
 
 async function updateDays() {
 
-  const status =
+  const group =
     document.getElementById(
-      "days-status-filter"
+      "group-select"
     ).value;
 
-  let members =
-    await loadAllMembers();
+  const status =
+    document.getElementById(
+      "status-filter"
+    ).value;
+
+  let members = [];
+
+  if (group === "all") {
+
+    members =
+      await loadAllMembers();
+
+  } else {
+
+    try {
+
+      const response =
+        await fetch(
+          `data/members/${group}.json`
+        );
+
+      if (!response.ok) {
+        return;
+      }
+
+      members =
+        await response.json();
+
+    } catch (error) {
+
+      console.error(error);
+
+      return;
+    }
+
+  }
 
   if (status === "member") {
 
