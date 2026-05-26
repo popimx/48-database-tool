@@ -104,12 +104,24 @@ function getImagePath(m) {
 }
 
 /* =========================
-   チーム8判定
+   チーム8
 ========================= */
 
 function isTeam8(m) {
   return m.groupId === "akb48" && m.generation === "チーム8";
 }
+
+/* =========================
+   チームマップ（roleベース）
+========================= */
+
+const TEAM_MAP = {
+  teamS: "チームS",
+  teamKII: "チームKII",
+  teamE: "チームE",
+  teamH: "チームH",
+  teamKIV: "チームKIV"
+};
 
 /* =========================
    ラベル
@@ -118,7 +130,6 @@ function isTeam8(m) {
 function getMemberLabel(member, selectedGroup, sortMode) {
 
   const isTeam8Member = isTeam8(member);
-
   const isSKEorHKT =
     member.groupId === "ske48" ||
     member.groupId === "hkt48";
@@ -134,7 +145,7 @@ function getMemberLabel(member, selectedGroup, sortMode) {
   }
 
   /* =========================
-     SKE / HKT チーム表記モード
+     SKE / HKT チーム表示
   ========================= */
   const useTeamLabel =
     isSingleGroup &&
@@ -150,14 +161,8 @@ function getMemberLabel(member, selectedGroup, sortMode) {
   if (useTeamLabel) {
     if (isTeam8Member) return "チーム8";
 
-    if (member.generation?.includes("S")) return "チームS";
-    if (member.generation?.includes("KII") || member.generation?.includes("KⅡ")) return "チームKII";
-    if (member.generation?.includes("E")) return "チームE";
-
-    if (member.groupId === "hkt48") {
-      if (member.generation?.includes("H")) return "チームH";
-      if (member.generation?.includes("KIV") || member.generation?.includes("KⅣ")) return "チームKIV";
-    }
+    const team = member.role;
+    if (TEAM_MAP[team]) return TEAM_MAP[team];
 
     return "正規メンバー";
   }
@@ -524,12 +529,19 @@ function getDaysLabel(m) {
 }
 
 /* =========================
-   UTILS
+   UTILS（★ここだけ変更）
 ========================= */
 
 function calcDays(joinDate) {
   if (!joinDate) return 0;
-  return Math.floor((new Date() - new Date(joinDate)) / 86400000) + 1;
+
+  const start = new Date(joinDate);
+  const today = new Date();
+
+  start.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  return Math.floor((today - start) / 86400000) + 1;
 }
 
 function calcAge(birthday) {
