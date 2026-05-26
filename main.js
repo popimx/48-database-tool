@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (path.includes("member.html")) initMemberPage();
   if (path.includes("birthdays.html")) initBirthdaysPage();
   if (path.includes("days.html")) initDaysPage();
+
+  // ★0:00更新スケジューラ起動
+  scheduleMidnightUpdate();
 });
 
 /* =========================
@@ -112,7 +115,7 @@ function isTeam8(m) {
 }
 
 /* =========================
-   チームマップ（roleベース）
+   チームマップ
 ========================= */
 
 const TEAM_MAP = {
@@ -136,17 +139,11 @@ function getMemberLabel(member, selectedGroup, sortMode) {
 
   const isSingleGroup = selectedGroup !== "all";
 
-  /* =========================
-     days
-  ========================= */
   if (sortMode === "days") {
     if (isTeam8Member) return "チーム8";
     return `${member.generation}`;
   }
 
-  /* =========================
-     SKE / HKT チーム表示
-  ========================= */
   const useTeamLabel =
     isSingleGroup &&
     isSKEorHKT &&
@@ -161,15 +158,11 @@ function getMemberLabel(member, selectedGroup, sortMode) {
   if (useTeamLabel) {
     if (isTeam8Member) return "チーム8";
 
-    const team = member.role;
-    if (TEAM_MAP[team]) return TEAM_MAP[team];
+    if (member.role) return member.role;
 
     return "正規メンバー";
   }
 
-  /* =========================
-     全グループ時
-  ========================= */
   if (selectedGroup === "all") {
     if (
       sortMode === "default" ||
@@ -182,10 +175,6 @@ function getMemberLabel(member, selectedGroup, sortMode) {
     }
   }
 
-  /* =========================
-     通常
-  ========================= */
-
   if (isTeam8Member) {
     if (selectedGroup === "all") return "AKB48";
     return "正規メンバー";
@@ -195,6 +184,8 @@ function getMemberLabel(member, selectedGroup, sortMode) {
     if (selectedGroup === "all") return groupNameMap[member.groupId];
     return `${member.generation}研究生`;
   }
+
+  if (member.role) return member.role;
 
   return "正規メンバー";
 }
@@ -442,6 +433,29 @@ async function initDaysPage() {
   updateDays();
 }
 
+/* =========================
+   0:00更新スケジューラ ★追加
+========================= */
+
+function scheduleMidnightUpdate() {
+  const now = new Date();
+  const next = new Date();
+
+  next.setHours(24, 0, 0, 0);
+
+  const ms = next - now;
+
+  setTimeout(() => {
+    updateMembers();
+    updateDays();
+    scheduleMidnightUpdate();
+  }, ms);
+}
+
+/* =========================
+   UPDATE DAYS
+========================= */
+
 async function updateDays() {
 
   const group = document.getElementById("group-select")?.value || "all";
@@ -529,7 +543,7 @@ function getDaysLabel(m) {
 }
 
 /* =========================
-   UTILS（★ここだけ変更）
+   UTILS
 ========================= */
 
 function calcDays(joinDate) {
