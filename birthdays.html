@@ -4,14 +4,29 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>誕生日一覧</title>
-  <link rel="stylesheet" href="style.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    誕生日一覧
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
+
 <body>
 
   <header>
-    <h1>誕生日一覧</h1>
+
+    <h1>
+      誕生日一覧
+    </h1>
 
     <a
       href="index.html"
@@ -19,9 +34,54 @@
     >
       ← トップへ戻る
     </a>
+
   </header>
 
   <div class="controls">
+
+    <select id="group-select">
+
+      <option value="all">
+        全グループ
+      </option>
+
+      <option value="akb48">
+        AKB48
+      </option>
+
+      <option value="ske48">
+        SKE48
+      </option>
+
+      <option value="nmb48">
+        NMB48
+      </option>
+
+      <option value="hkt48">
+        HKT48
+      </option>
+
+      <option value="ngt48">
+        NGT48
+      </option>
+
+      <option value="stu48">
+        STU48
+      </option>
+
+    </select>
+
+    <select id="status-filter">
+
+      <option value="member">
+        現役メンバーのみ
+      </option>
+
+      <option value="all">
+        卒業生を含む
+      </option>
+
+    </select>
 
     <select id="birthday-sort">
 
