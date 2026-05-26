@@ -396,7 +396,7 @@ function renderBirthdayMembers(members) {
     card.className = "member-card";
 
     const imagePath =
-      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
 
     const label = getMemberLabel(m, "all");
     const badgeClass = getBadgeClass(m);
