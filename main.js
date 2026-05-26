@@ -391,15 +391,23 @@ async function updateDays() {
   }
 
   members.sort((a, b) => {
-    const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
-    return diff !== 0 ? diff : (a.kana || "").localeCompare(b.kana || "", "ja");
+    const daysDiff = calcDays(b.joinDate) - calcDays(a.joinDate);
+    if (daysDiff !== 0) return daysDiff;
+
+    const groupDiff =
+      GROUP_ORDER.indexOf(a.groupId) -
+      GROUP_ORDER.indexOf(b.groupId);
+
+    if (groupDiff !== 0) return groupDiff;
+
+    return (a.kana || "").localeCompare(b.kana || "", "ja");
   });
 
   renderDaysMembers(members);
 }
 
 /* =========================
-   DAYS LABEL（確実に動く版）
+   DAYS LABEL（ドラフト対応完全版）
 ========================= */
 
 function getDaysLabel(m) {
@@ -407,11 +415,15 @@ function getDaysLabel(m) {
   if (!m) return "-";
   if (isTeam8(m)) return "チーム8";
 
-  const gen = String(m.generation || "").replace("期", "").trim();
+  let gen = String(m.generation || "").trim();
 
-  if (!gen) return "-";
+  const isDraft = gen.includes("ドラフト");
 
-  return `${gen}期生`;
+  if (m.role === "kenkyuusei") {
+    return isDraft ? `${gen}研究生` : `${gen.replace("期", "")}期研究生`;
+  }
+
+  return isDraft ? `${gen}生` : `${gen.replace("期", "")}期生`;
 }
 
 /* =========================
