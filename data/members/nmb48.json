@@ -1,61 +1,79 @@
 [
   {
     "id": "aobara_yuka",
+
+    "groupId": "nmb48",
+
     "name": "青原優花",
+
     "kana": "あおばら ゆか",
+
+    "nickname": "ゆかたん",
 
     "birthday": "2007-07-12",
 
     "joinDate": "2022-12-19",
 
-    "graduateDate": null,
-
     "generation": "9期生",
 
     "prefecture": "大阪府",
 
-    "group": "NMB48",
+    "status": "member",
 
-    "status": "member"
+    "image": "aobara_yuka",
+
+    "imageYear": 2025
   },
 
   {
     "id": "abe_wakana",
+
+    "groupId": "nmb48",
+
     "name": "安部若菜",
+
     "kana": "あべ わかな",
+
+    "nickname": "わかぽん",
 
     "birthday": "2001-07-18",
 
     "joinDate": "2018-01-21",
 
-    "graduateDate": null,
-
     "generation": "ドラフト3期生",
 
     "prefecture": "大阪府",
 
-    "group": "NMB48",
+    "status": "member",
 
-    "status": "member"
+    "image": "abe_wakana",
+
+    "imageYear": 2025
   },
 
   {
     "id": "ike_honoka",
+
+    "groupId": "nmb48",
+
     "name": "池帆乃香",
+
     "kana": "いけ ほのか",
+
+    "nickname": "ほの",
 
     "birthday": "2003-12-16",
 
     "joinDate": "2022-01-01",
 
-    "graduateDate": null,
-
     "generation": "8期生",
 
     "prefecture": "奈良県",
 
-    "group": "NMB48",
+    "status": "member",
 
-    "status": "member"
+    "image": "ike_honoka",
+
+    "imageYear": 2025
   }
 ]
