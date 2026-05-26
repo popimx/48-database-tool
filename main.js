@@ -84,7 +84,7 @@ async function loadAllMembers() {
 }
 
 /* =========================
-   ラベル（統一修正版）
+   ラベル
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
@@ -95,7 +95,6 @@ function getMemberLabel(member, selectedGroup) {
 
   if (member.role === "kenkyuusei") {
     if (!member.generation) return "研究生";
-
     const gen = String(member.generation).replace("期", "");
     return `${gen}期研究生`;
   }
@@ -108,7 +107,7 @@ function getMemberLabel(member, selectedGroup) {
 }
 
 /* =========================
-   members init
+   INIT
 ========================= */
 
 async function initMembersPage() {
@@ -121,7 +120,7 @@ async function initMembersPage() {
 }
 
 /* =========================
-   UPDATE
+   UPDATE MEMBERS
 ========================= */
 
 async function updateMembers() {
@@ -138,39 +137,50 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
-  members = defaultSort(members);
-
+  // ---- ソート ----
   if (sort === "kana") {
-    members.sort((a, b) => a.kana.localeCompare(b.kana, "ja"));
+    members.sort((a, b) => (a.kana || "").localeCompare(b.kana || "", "ja"));
   }
 
-  if (sort === "birthday") {
+  else if (sort === "birthday") {
+    members.sort((a, b) =>
+      a.birthday.slice(5).localeCompare(b.birthday.slice(5))
+    );
+  }
+
+  else if (sort === "nearestBirthday") {
+    members.sort((a, b) =>
+      getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
+    );
+  }
+
+  else if (sort === "age") {
     members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
   }
 
-  if (sort === "age") {
-    members.sort((a, b) => calcAge(b.birthday) - calcAge(a.birthday));
+  else if (sort === "days") {
+    members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
   }
 
-  if (sort === "days") {
-    members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
+  else {
+    members = defaultSort(members);
   }
 
   renderMembers(members, group, sort);
 }
 
 /* =========================
-   default
+   default sort
 ========================= */
 
 function defaultSort(members) {
   return [...members].sort((a, b) =>
-    a.kana.localeCompare(b.kana, "ja")
+    (a.kana || "").localeCompare(b.kana || "", "ja")
   );
 }
 
 /* =========================
-   render（★ここが重要修正）
+   render
 ========================= */
 
 function renderMembers(members, selectedGroup, sortMode) {
@@ -193,12 +203,13 @@ function renderMembers(members, selectedGroup, sortMode) {
 
     let sub = "";
 
-    // ★ここが今回の本体
-    if (sortMode === "birthday") {
+    if (sortMode === "birthday" || sortMode === "age") {
       sub = `${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)`;
     }
-    else if (sortMode === "age") {
-      sub = `${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)`;
+    else if (sortMode === "nearestBirthday") {
+      const diff = getNextBirthday(m.birthday) - new Date();
+      const days = Math.ceil(diff / 86400000);
+      sub = `あと ${days}日`;
     }
     else if (sortMode === "days") {
       sub = `在籍 ${calcDays(m.joinDate)}日`;
@@ -263,7 +274,8 @@ function getNextBirthday(date) {
   const today = new Date();
   const birth = new Date(date);
 
-  const next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+
   if (next < today) next.setFullYear(today.getFullYear() + 1);
 
   return next;
@@ -284,11 +296,15 @@ async function updateBirthdays() {
   }
 
   if (sort === "birthday") {
-    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
+    members.sort((a, b) =>
+      a.birthday.slice(5).localeCompare(b.birthday.slice(5))
+    );
   }
 
-  if (sort === "near") {
-    members.sort((a, b) => getNextBirthday(a.birthday) - getNextBirthday(b.birthday));
+  else if (sort === "near") {
+    members.sort((a, b) =>
+      getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
+    );
   }
 
   renderBirthdayMembers(members);
