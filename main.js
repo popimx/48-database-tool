@@ -53,12 +53,9 @@ const memberCache = {};
 ========================= */
 
 async function loadMembers(group) {
-
   const url = `data/members/${group}.json?t=${Date.now()}`;
 
-  const res = await fetch(url, {
-    cache: "no-store"
-  });
+  const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {
     console.error("LOAD FAILED:", group);
@@ -118,24 +115,31 @@ function isTeam8(m) {
 }
 
 /* =========================
-   ラベル
+   ラベル（★修正版）
 ========================= */
 
-function getMemberLabel(member, selectedGroup) {
+function getMemberLabel(member, selectedGroup, sortMode) {
 
-  const specialGroups = ["akb48", "nmb48", "ngt48", "stu48"];
-  const isNormalMember = member.role !== "kenkyuusei" && !isTeam8(member);
+  const isTeam8Member = isTeam8(member);
 
-  if (isTeam8(member)) {
-    if (selectedGroup === "akb48") return "正規メンバー";
-    if (selectedGroup === "all") return "AKB48";
-    return "チーム8";
+  /* =====================
+     在籍日数だけ特別ルール
+  ===================== */
+  if (sortMode === "days") {
+    if (isTeam8Member) return "チーム8";
+    return `${member.generation}生`;
   }
 
-  if (isNormalMember && specialGroups.includes(member.groupId)) {
-    return selectedGroup === "all"
-      ? groupNameMap[member.groupId]
-      : "正規メンバー";
+  /* =====================
+     その他ソート
+  ===================== */
+
+  const isNormalMember =
+    member.role !== "kenkyuusei" && !isTeam8Member;
+
+  if (isTeam8Member) {
+    if (selectedGroup === "all") return "AKB48";
+    return "正規メンバー";
   }
 
   if (member.role === "kenkyuusei") {
@@ -143,7 +147,7 @@ function getMemberLabel(member, selectedGroup) {
     return `${member.generation}研究生`;
   }
 
-  return `${member.generation}生`;
+  return "正規メンバー";
 }
 
 /* =========================
@@ -284,7 +288,7 @@ function renderMembers(members, selectedGroup, sortMode) {
   members.forEach(m => {
 
     const img = getImagePath(m);
-    const label = getMemberLabel(m, selectedGroup);
+    const label = getMemberLabel(m, selectedGroup, sortMode);
 
     let sub = "";
 
@@ -338,7 +342,7 @@ async function initMemberPage() {
   const members = await loadMembers(group);
   const member = members.find(m => m.id === id);
 
-  if (member) renderMember(m);
+  if (member) renderMember(member); // ★修正済み
 }
 
 function renderMember(m) {
@@ -463,7 +467,7 @@ function renderDaysMembers(members) {
 }
 
 /* =========================
-   DAYS LABEL（★ここだけ修正）
+   DAYS LABEL
 ========================= */
 
 function getDaysLabel(m) {
@@ -476,7 +480,6 @@ function getDaysLabel(m) {
 
   if (m.role === "kenkyuusei") return `${gen}研究生`;
 
-  // ★修正ポイント：加工しない（そのまま表示）
   return gen;
 }
 
