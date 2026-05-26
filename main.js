@@ -25,7 +25,7 @@ const groupNameMap = {
 };
 
 /* =========================
-   AKB並び順（重要）
+   AKB並び順
 ========================= */
 
 const AKB_ORDER = [
@@ -100,20 +100,28 @@ function getImagePath(m) {
 }
 
 /* =========================
-   ラベル（一覧）
+   チーム8判定
+========================= */
+
+function isTeam8(m) {
+  return m.groupId === "akb48" && m.generation === "チーム8";
+}
+
+/* =========================
+   ラベル（通常）
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
 
-  if (selectedGroup === "all") {
-    if (member.groupId === "akb48" && member.generation === "チーム8") {
-      return "チーム8";
-    }
+  // チーム8特殊ルール
+  if (isTeam8(member)) {
 
-    return groupNameMap[member.groupId] || "";
-  }
+    // AKB選択時は正規メンバー扱い
+    if (selectedGroup === "akb48") return "正規メンバー";
 
-  if (member.groupId === "akb48" && member.generation === "チーム8") {
+    // 全体表示はAKB扱い
+    if (selectedGroup === "all") return "AKB48";
+
     return "チーム8";
   }
 
@@ -126,7 +134,7 @@ function getMemberLabel(member, selectedGroup) {
 }
 
 /* =========================
-   INIT MEMBERS
+   INIT
 ========================= */
 
 async function initMembersPage() {
@@ -137,7 +145,7 @@ async function initMembersPage() {
 }
 
 /* =========================
-   MEMBERS UPDATE
+   UPDATE MEMBERS
 ========================= */
 
 async function updateMembers() {
@@ -153,8 +161,6 @@ async function updateMembers() {
   if (status === "member") {
     members = members.filter(m => m.status === "member");
   }
-
-  /* ========= ソート ========= */
 
   if (sort === "default") {
     members.sort(globalDefaultSort);
@@ -187,9 +193,10 @@ async function updateMembers() {
   else if (sort === "days") {
     members.sort((a, b) => {
       const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
-      return diff !== 0
-        ? diff
-        : (a.kana || "").localeCompare(b.kana || "", "ja");
+      if (diff !== 0) return diff;
+
+      // 同日在籍 → グループ順
+      return GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
     });
   }
 
@@ -197,7 +204,7 @@ async function updateMembers() {
 }
 
 /* =========================
-   AKB専用ランク
+   AKBランク
 ========================= */
 
 function akbRank(m) {
@@ -210,7 +217,7 @@ function akbRank(m) {
 }
 
 /* =========================
-   NMB専用ランク
+   NMBランク
 ========================= */
 
 function nmbRank(m) {
@@ -224,7 +231,7 @@ function nmbRank(m) {
 }
 
 /* =========================
-   全体デフォルトソート
+   全体ソート
 ========================= */
 
 function globalDefaultSort(a, b) {
@@ -236,19 +243,13 @@ function globalDefaultSort(a, b) {
   if (groupDiff !== 0) return groupDiff;
 
   if (a.groupId === "akb48" && b.groupId === "akb48") {
-
     const r = akbRank(a) - akbRank(b);
     if (r !== 0) return r;
-
-    return (a.kana || "").localeCompare(b.kana || "", "ja");
   }
 
   if (a.groupId === "nmb48" && b.groupId === "nmb48") {
-
     const r = nmbRank(a) - nmbRank(b);
     if (r !== 0) return r;
-
-    return (a.kana || "").localeCompare(b.kana || "", "ja");
   }
 
   const aKey = a.role === "kenkyuusei" ? 2 : 1;
@@ -334,7 +335,7 @@ async function initMemberPage() {
   const members = await loadMembers(group);
   const member = members.find(m => m.id === id);
 
-  if (member) renderMember(member);
+  if (member) renderMember(m);
 }
 
 function renderMember(m) {
@@ -383,6 +384,10 @@ function getNextBirthday(date) {
   return next;
 }
 
+/* =========================
+   BIRTHDAY PAGE
+========================= */
+
 async function initBirthdaysPage() {
   document.getElementById("group-select")?.addEventListener("change", updateBirthdays);
   document.getElementById("status-filter")?.addEventListener("change", updateBirthdays);
@@ -408,9 +413,7 @@ async function updateBirthdays() {
     members.sort((a, b) =>
       (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5))
     );
-  }
-
-  else {
+  } else {
     members.sort((a, b) =>
       getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
     );
@@ -482,15 +485,38 @@ async function updateDays() {
 
   members.sort((a, b) => {
     const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
-    return diff !== 0
-      ? diff
-      : (a.kana || "").localeCompare(b.kana || "", "ja");
+    if (diff !== 0) return diff;
+
+    // 同日在籍 → グループ順
+    return GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
   });
 
-  renderDaysMembers(members);
+  renderDaysMembers(members, group);
 }
 
-function renderDaysMembers(members) {
+/* =========================
+   DAYS LABEL
+========================= */
+
+function getDaysLabel(m, selectedGroup) {
+
+  if (isTeam8(m)) {
+    return selectedGroup === "akb48" ? "正規メンバー" : "チーム8";
+  }
+
+  if (m.role === "kenkyuusei") {
+    const gen = String(m.generation || "").replace("期", "");
+    return `${gen}期生`;
+  }
+
+  return `${String(m.generation || "").replace("期", "")}期生`;
+}
+
+/* =========================
+   DAYS RENDER
+========================= */
+
+function renderDaysMembers(members, selectedGroup) {
 
   const container = document.getElementById("days-list");
   if (!container) return;
@@ -518,7 +544,7 @@ function renderDaysMembers(members) {
       </div>
 
       <div class="member-kana">
-        在籍 ${calcDays(m.joinDate)}日
+        ${getDaysLabel(m, selectedGroup)} / 在籍 ${calcDays(m.joinDate)}日
       </div>
     `;
 
