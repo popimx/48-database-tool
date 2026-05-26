@@ -1,4 +1,4 @@
-[
+ [
   {
     "id": "aobara_yuka",
     "groupId": "nmb48",
@@ -13,7 +13,7 @@
     "image": "aobara_yuka",
     "imageYear": 2025
   },
-  
+
   {
     "id": "abe_wakana",
     "groupId": "nmb48",
@@ -28,7 +28,7 @@
     "image": "abe_wakana",
     "imageYear": 2025
   },
-  
+
   {
     "id": "ike_honoka",
     "groupId": "nmb48",
@@ -58,7 +58,7 @@
     "image": "ikeda_tenna",
     "imageYear": 2025
   },
-  
+
   {
     "id": "ishiyama_chihiro",
     "groupId": "nmb48",
@@ -73,7 +73,7 @@
     "image": "ishiyama_chihiro",
     "imageYear": 2025
   },
-  
+
   {
     "id": "izumi_ayano",
     "groupId": "nmb48",
@@ -88,7 +88,7 @@
     "image": "izumi_ayano",
     "imageYear": 2025
   },
-  
+
   {
     "id": "itagaki_koyori",
     "groupId": "nmb48",
@@ -103,7 +103,7 @@
     "image": "itagaki_koyori",
     "imageYear": 2025
   },
-  
+
   {
     "id": "uchida_aisha",
     "groupId": "nmb48",
@@ -118,7 +118,7 @@
     "image": "uchida_aisha",
     "imageYear": 2025
   },
-  
+
   {
     "id": "okagoshi_seira",
     "groupId": "nmb48",
@@ -133,7 +133,7 @@
     "image": "okagoshi_seira",
     "imageYear": 2025
   },
-  
+
   {
     "id": "kinugasa_ayami",
     "groupId": "nmb48",
@@ -148,7 +148,7 @@
     "image": "kinugasa_ayami",
     "imageYear": 2025
   },
-  
+
   {
     "id": "kine_iroha",
     "groupId": "nmb48",
@@ -163,7 +163,7 @@
     "image": "kine_iroha",
     "imageYear": 2025
   },
-  
+
   {
     "id": "kurosima_sakura",
     "groupId": "nmb48",
@@ -176,6 +176,156 @@
     "prefecture": "大阪府",
     "status": "member",
     "image": "kurosima_sakura",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "sakashita_mako",
+    "groupId": "nmb48",
+    "name": "坂下真心",
+    "kana": "さかした まこ",
+    "nickname": "まこち",
+    "birthday": "2005-08-02",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "sakashita_mako",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "sakata_misaki",
+    "groupId": "nmb48",
+    "name": "坂田心咲",
+    "kana": "さかた みさき",
+    "nickname": "さかたん",
+    "birthday": "2005-11-08",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "sakata_misaki",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "sakamoto_risa",
+    "groupId": "nmb48",
+    "name": "坂本理紗",
+    "kana": "さかもと りさ",
+    "nickname": "リサ",
+    "birthday": "2008-12-24",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "兵庫県",
+    "status": "member",
+    "image": "sakamoto_risa",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "sakurada_ayaka",
+    "groupId": "nmb48",
+    "name": "桜田彩叶",
+    "kana": "さくらだ あやか",
+    "nickname": "あやぴょん",
+    "birthday": "2002-03-25",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "岡山県",
+    "status": "member",
+    "image": "sakurada_ayaka",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "shiotsuki_keito",
+    "groupId": "nmb48",
+    "name": "塩月希依音",
+    "kana": "しおつき けいと",
+    "nickname": "けいと",
+    "birthday": "2005-12-15",
+    "joinDate": "2018-01-21",
+    "generation": "ドラフト3期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "shiotsuki_keito",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "shinzawa_nao",
+    "groupId": "nmb48",
+    "name": "新澤菜央",
+    "kana": "しんざわ なお",
+    "nickname": "しんしん",
+    "birthday": "1998-08-02",
+    "joinDate": "2018-07-28",
+    "generation": "6期生",
+    "prefecture": "兵庫県",
+    "status": "member",
+    "image": "shinzawa_nao",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "takahashi_kotone",
+    "groupId": "nmb48",
+    "name": "高橋ことね",
+    "kana": "たかはし ことね",
+    "nickname": "ことっち",
+    "birthday": "2003-04-20",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "takahashi_kotone",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "takeda_kyoka",
+    "groupId": "nmb48",
+    "name": "竹田京加",
+    "kana": "たけだ きょうか",
+    "nickname": "きょーか",
+    "birthday": "2012-09-13",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "takeda_kyoka",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "tatsumoto_yayoi",
+    "groupId": "nmb48",
+    "name": "龍本弥生",
+    "kana": "たつもと やよい",
+    "nickname": "やよい",
+    "birthday": "2005-03-02",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "兵庫県",
+    "status": "member",
+    "image": "tatsumoto_yayoi",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "tanaka_misora",
+    "groupId": "nmb48",
+    "name": "田中美空",
+    "kana": "たなか みそら",
+    "nickname": "みそら",
+    "birthday": "2004-08-24",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "京都府",
+    "status": "member",
+    "image": "tanaka_misora",
     "imageYear": 2025
   }
 ]
