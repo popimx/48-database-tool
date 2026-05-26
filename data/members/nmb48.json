@@ -1,4 +1,4 @@
- [
+[
   {
     "id": "aobara_yuka",
     "groupId": "nmb48",
@@ -10,10 +10,10 @@
     "generation": "9期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "aobara_yuka",
     "imageYear": 2025
   },
-
   {
     "id": "abe_wakana",
     "groupId": "nmb48",
@@ -25,10 +25,10 @@
     "generation": "ドラフト3期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "abe_wakana",
     "imageYear": 2025
   },
-
   {
     "id": "ike_honoka",
     "groupId": "nmb48",
@@ -40,10 +40,10 @@
     "generation": "8期生",
     "prefecture": "奈良県",
     "status": "member",
+    "role": "regular",
     "image": "ike_honoka",
     "imageYear": 2025
   },
-
   {
     "id": "ikeda_tenna",
     "groupId": "nmb48",
@@ -55,10 +55,10 @@
     "generation": "9期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "ikeda_tenna",
     "imageYear": 2025
   },
-
   {
     "id": "ishiyama_chihiro",
     "groupId": "nmb48",
@@ -70,10 +70,10 @@
     "generation": "10期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "ishiyama_chihiro",
     "imageYear": 2025
   },
-
   {
     "id": "izumi_ayano",
     "groupId": "nmb48",
@@ -85,10 +85,10 @@
     "generation": "ドラフト3期生",
     "prefecture": "京都府",
     "status": "member",
+    "role": "regular",
     "image": "izumi_ayano",
     "imageYear": 2025
   },
-
   {
     "id": "itagaki_koyori",
     "groupId": "nmb48",
@@ -100,10 +100,10 @@
     "generation": "9期生",
     "prefecture": "三重県",
     "status": "member",
+    "role": "regular",
     "image": "itagaki_koyori",
     "imageYear": 2025
   },
-
   {
     "id": "uchida_aisha",
     "groupId": "nmb48",
@@ -115,10 +115,10 @@
     "generation": "10期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "uchida_aisha",
     "imageYear": 2025
   },
-
   {
     "id": "okagoshi_seira",
     "groupId": "nmb48",
@@ -130,10 +130,10 @@
     "generation": "11期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "okagoshi_seira",
     "imageYear": 2025
   },
-
   {
     "id": "kinugasa_ayami",
     "groupId": "nmb48",
@@ -145,10 +145,10 @@
     "generation": "9期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "kinugasa_ayami",
     "imageYear": 2025
   },
-
   {
     "id": "kine_iroha",
     "groupId": "nmb48",
@@ -160,10 +160,10 @@
     "generation": "10期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "kine_iroha",
     "imageYear": 2025
   },
-
   {
     "id": "kurosima_sakura",
     "groupId": "nmb48",
@@ -175,10 +175,10 @@
     "generation": "8期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "kurosima_sakura",
     "imageYear": 2025
   },
-
   {
     "id": "sakashita_mako",
     "groupId": "nmb48",
@@ -190,10 +190,10 @@
     "generation": "8期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "sakashita_mako",
     "imageYear": 2025
   },
-
   {
     "id": "sakata_misaki",
     "groupId": "nmb48",
@@ -205,10 +205,10 @@
     "generation": "8期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "sakata_misaki",
     "imageYear": 2025
   },
-
   {
     "id": "sakamoto_risa",
     "groupId": "nmb48",
@@ -220,10 +220,10 @@
     "generation": "8期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "sakamoto_risa",
     "imageYear": 2025
   },
-
   {
     "id": "sakurada_ayaka",
     "groupId": "nmb48",
@@ -235,10 +235,10 @@
     "generation": "8期生",
     "prefecture": "岡山県",
     "status": "member",
+    "role": "regular",
     "image": "sakurada_ayaka",
     "imageYear": 2025
   },
-
   {
     "id": "shiotsuki_keito",
     "groupId": "nmb48",
@@ -250,10 +250,10 @@
     "generation": "ドラフト3期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "shiotsuki_keito",
     "imageYear": 2025
   },
-
   {
     "id": "shinzawa_nao",
     "groupId": "nmb48",
@@ -265,10 +265,10 @@
     "generation": "6期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "shinzawa_nao",
     "imageYear": 2025
   },
-
   {
     "id": "takahashi_kotone",
     "groupId": "nmb48",
@@ -280,10 +280,10 @@
     "generation": "10期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "takahashi_kotone",
     "imageYear": 2025
   },
-
   {
     "id": "takeda_kyoka",
     "groupId": "nmb48",
@@ -295,10 +295,10 @@
     "generation": "10期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "takeda_kyoka",
     "imageYear": 2025
   },
-
   {
     "id": "tatsumoto_yayoi",
     "groupId": "nmb48",
@@ -310,10 +310,10 @@
     "generation": "8期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "tatsumoto_yayoi",
     "imageYear": 2025
   },
-
   {
     "id": "tanaka_misora",
     "groupId": "nmb48",
@@ -325,11 +325,11 @@
     "generation": "9期生",
     "prefecture": "京都府",
     "status": "member",
+    "role": "regular",
     "image": "tanaka_misora",
     "imageYear": 2025
   },
-
-    {
+  {
     "id": "nakagawa_tomoka",
     "groupId": "nmb48",
     "name": "中川朋香",
@@ -340,10 +340,10 @@
     "generation": "10期生",
     "prefecture": "和歌山県",
     "status": "member",
+    "role": "regular",
     "image": "nakagawa_tomoka",
     "imageYear": 2025
   },
-
   {
     "id": "nishi_yuma",
     "groupId": "nmb48",
@@ -355,10 +355,10 @@
     "generation": "9期生",
     "prefecture": "千葉県",
     "status": "member",
+    "role": "regular",
     "image": "nishi_yuma",
     "imageYear": 2025
   },
-
   {
     "id": "nishijima_rio",
     "groupId": "nmb48",
@@ -370,10 +370,10 @@
     "generation": "9期生",
     "prefecture": "静岡県",
     "status": "member",
+    "role": "regular",
     "image": "nishijima_rio",
     "imageYear": 2025
   },
-
   {
     "id": "nishida_honoka",
     "groupId": "nmb48",
@@ -385,10 +385,10 @@
     "generation": "9期生",
     "prefecture": "奈良県",
     "status": "member",
+    "role": "regular",
     "image": "nishida_honoka",
     "imageYear": 2025
   },
-
   {
     "id": "haga_rei",
     "groupId": "nmb48",
@@ -400,10 +400,10 @@
     "generation": "9期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "haga_rei",
     "imageYear": 2025
   },
-
   {
     "id": "hirayama_mai",
     "groupId": "nmb48",
@@ -415,10 +415,10 @@
     "generation": "7期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "hirayama_mai",
     "imageYear": 2025
   },
-
   {
     "id": "fukuno_ami",
     "groupId": "nmb48",
@@ -430,10 +430,10 @@
     "generation": "8期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "fukuno_ami",
     "imageYear": 2025
   },
-
   {
     "id": "matsuoka_sakura",
     "groupId": "nmb48",
@@ -445,10 +445,10 @@
     "generation": "8期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "matsuoka_sakura",
     "imageYear": 2025
   },
-
   {
     "id": "matsumoto_mihina",
     "groupId": "nmb48",
@@ -460,10 +460,10 @@
     "generation": "8期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "matsumoto_mihina",
     "imageYear": 2025
   },
-
   {
     "id": "mikamo_kurumi",
     "groupId": "nmb48",
@@ -475,10 +475,10 @@
     "generation": "10期生",
     "prefecture": "東京都",
     "status": "member",
+    "role": "regular",
     "image": "mikamo_kurumi",
     "imageYear": 2025
   },
-
   {
     "id": "miyahara_kokone",
     "groupId": "nmb48",
@@ -490,10 +490,10 @@
     "generation": "10期生",
     "prefecture": "大阪府",
     "status": "member",
+    "role": "regular",
     "image": "miyahara_kokone",
     "imageYear": 2025
   },
-
   {
     "id": "miyamoto_ami",
     "groupId": "nmb48",
@@ -505,10 +505,10 @@
     "generation": "9期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "miyamoto_ami",
     "imageYear": 2025
   },
-
   {
     "id": "murai_yuri",
     "groupId": "nmb48",
@@ -520,10 +520,10 @@
     "generation": "10期生",
     "prefecture": "三重県",
     "status": "member",
+    "role": "regular",
     "image": "murai_yuri",
     "imageYear": 2025
   },
-
   {
     "id": "yoshimi_ayane",
     "groupId": "nmb48",
@@ -535,6 +535,7 @@
     "generation": "9期生",
     "prefecture": "兵庫県",
     "status": "member",
+    "role": "regular",
     "image": "yoshimi_ayane",
     "imageYear": 2025
   }
