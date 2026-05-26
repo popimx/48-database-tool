@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+ document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
 
   if (path.includes("members.html")) initMembersPage();
@@ -25,7 +25,7 @@ const groupNameMap = {
 };
 
 /* =========================
-   AKB並び順
+   AKB順
 ========================= */
 
 const AKB_ORDER = [
@@ -49,7 +49,7 @@ const AKB_ORDER = [
 const memberCache = {};
 
 /* =========================
-   データ
+   データ取得
 ========================= */
 
 async function loadMembers(group) {
@@ -108,23 +108,29 @@ function isTeam8(m) {
 }
 
 /* =========================
-   ラベル（通常）
+   ラベル（修正版）
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
 
-  // チーム8特殊ルール
+  const specialGroups = ["akb48", "nmb48", "ngt48", "stu48"];
+  const isNormalMember = member.role !== "kenkyuusei" && !isTeam8(member);
+
+  /* --- チーム8 --- */
   if (isTeam8(member)) {
-
-    // AKB選択時は正規メンバー扱い
     if (selectedGroup === "akb48") return "正規メンバー";
-
-    // 全体表示はAKB扱い
     if (selectedGroup === "all") return "AKB48";
-
     return "チーム8";
   }
 
+  /* --- 正規メンバー（AKB/NMB/NGT/STU） --- */
+  if (isNormalMember && specialGroups.includes(member.groupId)) {
+    return selectedGroup === "all"
+      ? groupNameMap[member.groupId]
+      : "正規メンバー";
+  }
+
+  /* --- 研究生 --- */
   if (member.role === "kenkyuusei") {
     const gen = String(member.generation || "").replace("期", "");
     return gen ? `${gen}期研究生` : "研究生";
@@ -162,6 +168,8 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
+  /* --- ソート --- */
+
   if (sort === "default") {
     members.sort(globalDefaultSort);
   }
@@ -195,7 +203,6 @@ async function updateMembers() {
       const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
       if (diff !== 0) return diff;
 
-      // 同日在籍 → グループ順
       return GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
     });
   }
@@ -209,7 +216,6 @@ async function updateMembers() {
 
 function akbRank(m) {
   const gen = String(m.generation || "");
-
   for (let i = 0; i < AKB_ORDER.length; i++) {
     if (gen.includes(AKB_ORDER[i])) return i;
   }
@@ -321,7 +327,7 @@ function renderMembers(members, selectedGroup, sortMode) {
 }
 
 /* =========================
-   MEMBER PAGE
+   MEMBER PAGE（修正済み）
 ========================= */
 
 async function initMemberPage() {
@@ -335,7 +341,7 @@ async function initMemberPage() {
   const members = await loadMembers(group);
   const member = members.find(m => m.id === id);
 
-  if (member) renderMember(m);
+  if (member) renderMember(member); // ← 修正ポイント
 }
 
 function renderMember(m) {
@@ -487,36 +493,13 @@ async function updateDays() {
     const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
     if (diff !== 0) return diff;
 
-    // 同日在籍 → グループ順
     return GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
   });
 
-  renderDaysMembers(members, group);
+  renderDaysMembers(members);
 }
 
-/* =========================
-   DAYS LABEL
-========================= */
-
-function getDaysLabel(m, selectedGroup) {
-
-  if (isTeam8(m)) {
-    return selectedGroup === "akb48" ? "正規メンバー" : "チーム8";
-  }
-
-  if (m.role === "kenkyuusei") {
-    const gen = String(m.generation || "").replace("期", "");
-    return `${gen}期生`;
-  }
-
-  return `${String(m.generation || "").replace("期", "")}期生`;
-}
-
-/* =========================
-   DAYS RENDER
-========================= */
-
-function renderDaysMembers(members, selectedGroup) {
+function renderDaysMembers(members) {
 
   const container = document.getElementById("days-list");
   if (!container) return;
@@ -544,7 +527,7 @@ function renderDaysMembers(members, selectedGroup) {
       </div>
 
       <div class="member-kana">
-        ${getDaysLabel(m, selectedGroup)} / 在籍 ${calcDays(m.joinDate)}日
+        在籍 ${calcDays(m.joinDate)}日
       </div>
     `;
 
