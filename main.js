@@ -96,9 +96,15 @@ async function initMembersPage() {
       "status-filter"
     );
 
+  const sortSelect =
+    document.getElementById(
+      "sort-select"
+    );
+
   if (
     !groupSelect ||
-    !statusFilter
+    !statusFilter ||
+    !sortSelect
   ) {
     return;
   }
@@ -109,6 +115,11 @@ async function initMembersPage() {
   );
 
   statusFilter.addEventListener(
+    "change",
+    updateMembers
+  );
+
+  sortSelect.addEventListener(
     "change",
     updateMembers
   );
@@ -126,6 +137,11 @@ async function updateMembers() {
   const status =
     document.getElementById(
       "status-filter"
+    ).value;
+
+  const sort =
+    document.getElementById(
+      "sort-select"
     ).value;
 
   let members = [];
@@ -168,6 +184,7 @@ async function updateMembers() {
 
   }
 
+  // 現役のみ
   if (status === "member") {
 
     members =
@@ -178,23 +195,48 @@ async function updateMembers() {
 
   }
 
-  members.sort((a, b) => {
+  // あいうえお順
+  if (sort === "kana") {
 
-    const joinA =
-      new Date(a.joinDate);
+    members.sort((a, b) => {
 
-    const joinB =
-      new Date(b.joinDate);
+      return a.kana.localeCompare(
+        b.kana,
+        "ja"
+      );
+    });
 
-    if (joinA - joinB !== 0) {
-      return joinA - joinB;
-    }
+  }
 
-    return a.kana.localeCompare(
-      b.kana,
-      "ja"
-    );
-  });
+  // 年齢順
+  else if (sort === "age") {
+
+    members.sort((a, b) => {
+
+      return (
+        new Date(a.birthday) -
+        new Date(b.birthday)
+      );
+    });
+
+  }
+
+  // 在籍日数順
+  else if (sort === "days") {
+
+    members.sort((a, b) => {
+
+      return (
+        calcDays(
+          b.joinDate
+        ) -
+        calcDays(
+          a.joinDate
+        )
+      );
+    });
+
+  }
 
   renderMembers(members);
 }
@@ -358,11 +400,7 @@ function formatDate(dateString) {
   const day =
     date.getDate();
 
-  return `
-    ${year}年
-    ${month}月
-    ${day}日
-  `;
+  return `${year}年${month}月${day}日`;
 }
 
 function renderMember(member) {
@@ -422,7 +460,6 @@ function renderMember(member) {
           ${formatDate(
             member.birthday
           )}
-
           (
             ${calcAge(
               member.birthday
@@ -528,7 +565,9 @@ async function updateBirthdays() {
       return aValue - bValue;
     });
 
-  } else {
+  }
+
+  else {
 
     members.sort((a, b) => {
 
@@ -622,7 +661,6 @@ function renderBirthdayMembers(
         ${formatDate(
           member.birthday
         )}
-
         (
           ${calcAge(
             member.birthday
@@ -637,8 +675,41 @@ function renderBirthdayMembers(
 
 async function initDaysPage() {
 
+  const statusFilter =
+    document.getElementById(
+      "days-status-filter"
+    );
+
+  if (!statusFilter) {
+    return;
+  }
+
+  statusFilter.addEventListener(
+    "change",
+    updateDays
+  );
+
+  updateDays();
+}
+
+async function updateDays() {
+
+  const status =
+    document.getElementById(
+      "days-status-filter"
+    ).value;
+
   let members =
     await loadAllMembers();
+
+  if (status === "member") {
+
+    members =
+      members.filter(
+        member =>
+          member.status === "member"
+      );
+  }
 
   members.sort((a, b) => {
 
