@@ -1,4 +1,29 @@
-// main.js
+const path =
+  location.pathname;
+
+if (
+  path.includes("members.html")
+) {
+  initMembersPage();
+}
+
+if (
+  path.includes("member.html")
+) {
+  initMemberPage();
+}
+
+if (
+  path.includes("birthdays.html")
+) {
+  initBirthdaysPage();
+}
+
+if (
+  path.includes("days.html")
+) {
+  initDaysPage();
+}
 
 const GROUPS = [
   "akb48",
@@ -11,351 +36,174 @@ const GROUPS = [
 
 async function loadAllMembers() {
 
-  const results = await Promise.all(
+  const results =
+    await Promise.all(
 
-    GROUPS.map(async group => {
+      GROUPS.map(
+        async group => {
 
-      const response =
-        await fetch(`data/members/${group}.json`);
+          const response =
+            await fetch(
+              `data/members/${group}.json`
+            );
 
-      return await response.json();
+          return await response.json();
 
-    })
-
-  );
+        }
+      )
+    );
 
   return results.flat();
-
-}
-
-function formatJapaneseDate(dateString) {
-
-  const date = new Date(dateString);
-
-  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
-
-}
-
-function calculateAge(birthday) {
-
-  const today = new Date();
-
-  const birth = new Date(birthday);
-
-  let age =
-    today.getFullYear() - birth.getFullYear();
-
-  const monthDiff =
-    today.getMonth() - birth.getMonth();
-
-  if (
-    monthDiff < 0 ||
-    (
-      monthDiff === 0 &&
-      today.getDate() < birth.getDate()
-    )
-  ) {
-    age--;
-  }
-
-  return age;
-
-}
-
-function calculateTenure(joinDate) {
-
-  const today = new Date();
-
-  const join = new Date(joinDate);
-
-  const diff =
-    today - join;
-
-  return Math.floor(
-    diff / (1000 * 60 * 60 * 24)
-  );
-
 }
 
 async function initMembersPage() {
 
-  const members = await loadAllMembers();
-
-  const list =
-    document.getElementById("members-list");
-
   const groupSelect =
-    document.getElementById("group-select");
+    document.getElementById(
+      "group-select"
+    );
 
   const statusFilter =
-    document.getElementById("status-filter");
-
-  function render() {
-
-    let filtered = [...members];
-
-    // グループ絞り込み
-    if (groupSelect.value !== "all") {
-
-      filtered = filtered.filter(
-        member =>
-          member.groupId === groupSelect.value
-      );
-
-    }
-
-    // 現役のみ
-    if (statusFilter.value === "member") {
-
-      filtered = filtered.filter(
-        member =>
-          member.status === "member"
-      );
-
-    }
-
-    // 加入日順 → kana順
-    filtered.sort((a, b) => {
-
-      const dateA =
-        new Date(a.joinDate);
-
-      const dateB =
-        new Date(b.joinDate);
-
-      if (dateA - dateB !== 0) {
-        return dateA - dateB;
-      }
-
-      return a.kana.localeCompare(
-        b.kana,
-        "ja"
-      );
-
-    });
-
-    list.innerHTML = filtered.map(member => {
-
-      const imageUrl =
-        `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
-
-      return `
-        <a class="member-card"
-           href="member.html?id=${member.id}&group=${member.groupId}">
-
-          <img
-            src="${imageUrl}"
-            alt="${member.name}">
-
-          <div class="member-info">
-            <div class="member-name">
-              ${member.name}
-            </div>
-
-            <div class="member-kana">
-              ${member.kana}
-            </div>
-          </div>
-
-        </a>
-      `;
-
-    }).join("");
-
-  }
+    document.getElementById(
+      "status-filter"
+    );
 
   groupSelect.addEventListener(
     "change",
-    render
+    updateMembers
   );
 
   statusFilter.addEventListener(
     "change",
-    render
+    updateMembers
   );
 
-  render();
-
+  updateMembers();
 }
 
-async function initBirthdaysPage() {
+async function updateMembers() {
 
-  const members =
-    await loadAllMembers();
+  const group =
+    document.getElementById(
+      "group-select"
+    ).value;
 
-  const list =
-    document.getElementById("birthday-list");
+  const status =
+    document.getElementById(
+      "status-filter"
+    ).value;
 
-  const sortSelect =
-    document.getElementById("birthday-sort");
+  let members = [];
 
-  function getUpcomingDiff(birthday) {
+  if (group === "all") {
 
-    const today =
-      new Date();
+    members =
+      await loadAllMembers();
 
-    const birth =
-      new Date(birthday);
+  } else {
 
-    const next =
-      new Date(
-        today.getFullYear(),
-        birth.getMonth(),
-        birth.getDate()
+    const response =
+      await fetch(
+        `data/members/${group}.json`
       );
 
-    if (next < today) {
-      next.setFullYear(
-        today.getFullYear() + 1
-      );
-    }
-
-    return next - today;
+    members =
+      await response.json();
 
   }
 
-  function render() {
+  // 現役のみ
+  if (status === "member") {
 
-    let sorted = [...members];
-
-    if (sortSelect.value === "calendar") {
-
-      sorted.sort((a, b) => {
-
-        const aDate =
-          new Date(a.birthday);
-
-        const bDate =
-          new Date(b.birthday);
-
-        const aMonthDay =
-          (aDate.getMonth() + 1) * 100 +
-          aDate.getDate();
-
-        const bMonthDay =
-          (bDate.getMonth() + 1) * 100 +
-          bDate.getDate();
-
-        return aMonthDay - bMonthDay;
-
-      });
-
-    } else {
-
-      sorted.sort((a, b) => {
-
-        return (
-          getUpcomingDiff(a.birthday) -
-          getUpcomingDiff(b.birthday)
-        );
-
-      });
-
-    }
-
-    list.innerHTML = sorted.map(member => {
-
-      const imageUrl =
-        `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
-
-      return `
-        <a class="member-card"
-           href="member.html?id=${member.id}&group=${member.groupId}">
-
-          <img
-            src="${imageUrl}"
-            alt="${member.name}">
-
-          <div class="member-info">
-
-            <div class="member-name">
-              ${member.name}
-            </div>
-
-            <div class="member-kana">
-              ${formatJapaneseDate(member.birthday)}
-              （${calculateAge(member.birthday)}歳）
-            </div>
-
-          </div>
-
-        </a>
-      `;
-
-    }).join("");
+    members =
+      members.filter(
+        member =>
+          member.status === "member"
+      );
 
   }
 
-  sortSelect.addEventListener(
-    "change",
-    render
-  );
-
-  render();
-
-}
-
-async function initDaysPage() {
-
-  const members =
-    await loadAllMembers();
-
-  const list =
-    document.getElementById("days-list");
-
+  // 加入日順 → kana順
   members.sort((a, b) => {
 
-    return (
-      calculateTenure(b.joinDate) -
-      calculateTenure(a.joinDate)
-    );
+    const joinA =
+      new Date(a.joinDate);
 
+    const joinB =
+      new Date(b.joinDate);
+
+    if (joinA - joinB !== 0) {
+      return joinA - joinB;
+    }
+
+    return a.kana.localeCompare(
+      b.kana,
+      "ja"
+    );
   });
 
-  list.innerHTML = members.map(member => {
+  renderMembers(members);
+}
 
-    const imageUrl =
+function renderMembers(members) {
+
+  const container =
+    document.getElementById(
+      "member-list"
+    );
+
+  container.innerHTML = "";
+
+  members.forEach(member => {
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      "member-card";
+
+    card.onclick = () => {
+
+      location.href =
+        `member.html?id=${member.id}&group=${member.groupId}`;
+    };
+
+    const imagePath =
       `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
 
-    return `
-      <a class="member-card"
-         href="member.html?id=${member.id}&group=${member.groupId}">
+    card.innerHTML = `
+      <img
+        class="member-image"
+        src="${imagePath}"
+      >
 
-        <img
-          src="${imageUrl}"
-          alt="${member.name}">
+      <div class="member-name">
+        ${member.name}
+      </div>
 
-        <div class="member-info">
-
-          <div class="member-name">
-            ${member.name}
-          </div>
-
-          <div class="member-kana">
-            在籍 ${calculateTenure(member.joinDate)}日
-          </div>
-
-        </div>
-
-      </a>
+      <div class="member-kana">
+        ${member.kana}
+      </div>
     `;
 
-  }).join("");
-
+    container.appendChild(card);
+  });
 }
 
 async function initMemberPage() {
 
   const params =
-    new URLSearchParams(location.search);
+    new URLSearchParams(
+      location.search
+    );
 
   const id =
     params.get("id");
 
   const group =
     params.get("group");
-
-  if (!id || !group) return;
 
   const response =
     await fetch(
@@ -370,86 +218,394 @@ async function initMemberPage() {
       m => m.id === id
     );
 
-  if (!member) return;
+  renderMember(member);
+}
 
-  const imageUrl =
-    `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
+function calcDays(joinDate) {
+
+  const start =
+    new Date(joinDate);
+
+  const today =
+    new Date();
+
+  return Math.floor(
+    (today - start) /
+    (1000 * 60 * 60 * 24)
+  );
+}
+
+function calcAge(birthday) {
+
+  const today =
+    new Date();
+
+  const birth =
+    new Date(birthday);
+
+  let age =
+    today.getFullYear() -
+    birth.getFullYear();
+
+  const month =
+    today.getMonth() -
+    birth.getMonth();
+
+  if (
+    month < 0 ||
+    (
+      month === 0 &&
+      today.getDate() <
+      birth.getDate()
+    )
+  ) {
+    age--;
+  }
+
+  return age;
+}
+
+function formatDate(dateString) {
+
+  const date =
+    new Date(dateString);
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    date.getMonth() + 1;
+
+  const day =
+    date.getDate();
+
+  return `
+    ${year}年
+    ${month}月
+    ${day}日
+  `;
+}
+
+function renderMember(member) {
 
   const container =
-    document.getElementById("member-detail");
+    document.getElementById(
+      "member-detail"
+    );
+
+  const imagePath =
+    `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
 
   container.innerHTML = `
-    <div class="member-detail">
 
-      <img
-        src="${imageUrl}"
-        alt="${member.name}">
+    <a
+      href="members.html"
+      class="back-button"
+    >
+      ← メンバーの一覧
+    </a>
 
-      <div class="member-detail-content">
+    <img
+      class="detail-image"
+      src="${imagePath}"
+    >
 
-        <h2>${member.name}</h2>
+    <div class="detail-name">
+      ${member.name}
+    </div>
 
-        <p>${member.kana}</p>
+    <div class="detail-kana">
+      ${member.kana}
+    </div>
 
-        <p>
-          ニックネーム：
-          ${member.nickname || "-"}
-        </p>
+    <div class="detail-info">
 
-        <p>
-          誕生日：
-          ${formatJapaneseDate(member.birthday)}
-          （${calculateAge(member.birthday)}歳）
-        </p>
+      <div>
+        <span class="label">
+          ニックネーム:
+        </span>
 
-        <p>
-          出身地：
-          ${member.prefecture}
-        </p>
+        ${member.nickname || "-"}
+      </div>
 
-        <p>
-          加入日：
-          ${formatJapaneseDate(member.joinDate)}
-        </p>
+      <div>
+        <span class="label">
+          生年月日:
+        </span>
 
-        <p>
-          在籍日数：
-          ${calculateTenure(member.joinDate)}日
-        </p>
+        ${formatDate(
+          member.birthday
+        )}
+        (
+          ${calcAge(
+            member.birthday
+          )}歳
+        )
+      </div>
 
-        <p>
-          ${member.generation}
-        </p>
+      <div>
+        <span class="label">
+          出身地:
+        </span>
 
+        ${member.prefecture}
+      </div>
+
+      <div>
+        <span class="label">
+          加入日:
+        </span>
+
+        ${formatDate(
+          member.joinDate
+        )}
+      </div>
+
+      <div>
+        <span class="label">
+          在籍日数:
+        </span>
+
+        ${calcDays(
+          member.joinDate
+        )}日
+      </div>
+
+      <div>
+        <span class="label">
+          期生:
+        </span>
+
+        ${member.generation}
       </div>
 
     </div>
   `;
-
 }
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+async function initBirthdaysPage() {
 
-    const path =
-      location.pathname;
+  const sortSelect =
+    document.getElementById(
+      "birthday-sort"
+    );
 
-    if (path.includes("members.html")) {
-      initMembersPage();
-    }
+  sortSelect.addEventListener(
+    "change",
+    updateBirthdays
+  );
 
-    if (path.includes("birthdays.html")) {
-      initBirthdaysPage();
-    }
+  updateBirthdays();
+}
 
-    if (path.includes("days.html")) {
-      initDaysPage();
-    }
+async function updateBirthdays() {
 
-    if (path.includes("member.html")) {
-      initMemberPage();
-    }
+  const sortMode =
+    document.getElementById(
+      "birthday-sort"
+    ).value;
 
+  let members =
+    await loadAllMembers();
+
+  if (sortMode === "calendar") {
+
+    members.sort((a, b) => {
+
+      const aDate =
+        new Date(a.birthday);
+
+      const bDate =
+        new Date(b.birthday);
+
+      const aValue =
+        (
+          (aDate.getMonth() + 1)
+          * 100
+        ) +
+        aDate.getDate();
+
+      const bValue =
+        (
+          (bDate.getMonth() + 1)
+          * 100
+        ) +
+        bDate.getDate();
+
+      return aValue - bValue;
+    });
+
+  } else {
+
+    members.sort((a, b) => {
+
+      return (
+        getBirthdayDiff(
+          a.birthday
+        ) -
+        getBirthdayDiff(
+          b.birthday
+        )
+      );
+    });
   }
-);
+
+  renderBirthdayMembers(
+    members
+  );
+}
+
+function getBirthdayDiff(birthday) {
+
+  const today =
+    new Date();
+
+  const birth =
+    new Date(birthday);
+
+  const next =
+    new Date(
+      today.getFullYear(),
+      birth.getMonth(),
+      birth.getDate()
+    );
+
+  if (next < today) {
+
+    next.setFullYear(
+      today.getFullYear() + 1
+    );
+  }
+
+  return next - today;
+}
+
+function renderBirthdayMembers(
+  members
+) {
+
+  const container =
+    document.getElementById(
+      "birthday-list"
+    );
+
+  container.innerHTML = "";
+
+  members.forEach(member => {
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      "member-card";
+
+    card.onclick = () => {
+
+      location.href =
+        `member.html?id=${member.id}&group=${member.groupId}`;
+    };
+
+    const imagePath =
+      `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
+
+    card.innerHTML = `
+      <img
+        class="member-image"
+        src="${imagePath}"
+      >
+
+      <div class="member-name">
+        ${member.name}
+      </div>
+
+      <div class="member-kana">
+        ${formatDate(
+          member.birthday
+        )}
+        (
+          ${calcAge(
+            member.birthday
+          )}歳
+        )
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+async function initDaysPage() {
+
+  let members =
+    await loadAllMembers();
+
+  members.sort((a, b) => {
+
+    return (
+      calcDays(
+        b.joinDate
+      ) -
+      calcDays(
+        a.joinDate
+      )
+    );
+  });
+
+  renderDaysMembers(
+    members
+  );
+}
+
+function renderDaysMembers(
+  members
+) {
+
+  const container =
+    document.getElementById(
+      "days-list"
+    );
+
+  container.innerHTML = "";
+
+  members.forEach(member => {
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      "member-card";
+
+    card.onclick = () => {
+
+      location.href =
+        `member.html?id=${member.id}&group=${member.groupId}`;
+    };
+
+    const imagePath =
+      `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
+
+    card.innerHTML = `
+      <img
+        class="member-image"
+        src="${imagePath}"
+      >
+
+      <div class="member-name">
+        ${member.name}
+      </div>
+
+      <div class="member-kana">
+        在籍
+        ${calcDays(
+          member.joinDate
+        )}日
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
