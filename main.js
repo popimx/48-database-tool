@@ -49,7 +49,7 @@ function isGraduate(m) {
 }
 
 /* =========================
-   ⭐ 期生表示（詳細のみ＋生）
+   期生表示（詳細のみ＋生）
 ========================= */
 
 function formatGeneration(gen, mode = "list") {
@@ -170,7 +170,7 @@ async function updateMembers() {
 }
 
 /* =========================
-   ⭐ デフォルトソート
+   defaultSort
 ========================= */
 
 function defaultSort(members, selectedGroup) {
@@ -339,11 +339,51 @@ function renderMember(m) {
 }
 
 /* =========================
-   birthdays（⭐ラベル追加済）
+   birthdays（完全版＋ラベル追加）
 ========================= */
 
-async function initBirthdaysPage() { /* 既存 */ }
-async function updateBirthdays() { /* 既存 */ }
+async function initBirthdaysPage() {
+  const groupSelect = document.getElementById("group-select");
+  const statusFilter = document.getElementById("status-filter");
+  const sortSelect = document.getElementById("birthday-sort");
+
+  if (!groupSelect || !statusFilter || !sortSelect) return;
+
+  groupSelect.addEventListener("change", updateBirthdays);
+  statusFilter.addEventListener("change", updateBirthdays);
+  sortSelect.addEventListener("change", updateBirthdays);
+
+  updateBirthdays();
+}
+
+async function updateBirthdays() {
+  const group = document.getElementById("group-select").value;
+  const status = document.getElementById("status-filter").value;
+  const sort = document.getElementById("birthday-sort").value;
+
+  let members = group === "all"
+    ? await loadAllMembers()
+    : await loadMembers(group);
+
+  if (status === "member") {
+    members = members.filter(m => m.status === "member");
+  }
+
+  if (sort === "calendar") {
+    members.sort((a, b) => {
+      const av = new Date(a.birthday);
+      const bv = new Date(b.birthday);
+      return (av.getMonth() + 1) * 100 + av.getDate()
+           - (bv.getMonth() + 1) * 100 - bv.getDate();
+    });
+  } else {
+    members.sort((a, b) =>
+      getBirthdayDiff(a.birthday) - getBirthdayDiff(b.birthday)
+    );
+  }
+
+  renderBirthdayMembers(members);
+}
 
 function renderBirthdayMembers(members) {
   const container = document.getElementById("birthday-list");
@@ -381,11 +421,39 @@ function renderBirthdayMembers(members) {
 }
 
 /* =========================
-   days（⭐ラベル追加済）
+   days（完全版＋ラベル追加）
 ========================= */
 
-async function initDaysPage() { /* 既存 */ }
-async function updateDays() { /* 既存 */ }
+async function initDaysPage() {
+  const groupSelect = document.getElementById("group-select");
+  const statusFilter = document.getElementById("status-filter");
+
+  if (!groupSelect || !statusFilter) return;
+
+  groupSelect.addEventListener("change", updateDays);
+  statusFilter.addEventListener("change", updateDays);
+
+  updateDays();
+}
+
+async function updateDays() {
+  const group = document.getElementById("group-select").value;
+  const status = document.getElementById("status-filter").value;
+
+  let members = group === "all"
+    ? await loadAllMembers()
+    : await loadMembers(group);
+
+  if (status === "member") {
+    members = members.filter(m => m.status === "member");
+  }
+
+  members.sort((a, b) =>
+    calcDays(b.joinDate) - calcDays(a.joinDate)
+  );
+
+  renderDaysMembers(members);
+}
 
 function renderDaysMembers(members) {
   const container = document.getElementById("days-list");
