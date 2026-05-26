@@ -1,501 +1,239 @@
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const path = location.pathname;
 
-    const path =
-      location.pathname;
+  if (path.includes("members.html")) initMembersPage();
+  if (path.includes("member.html")) initMemberPage();
+  if (path.includes("birthdays.html")) initBirthdaysPage();
+  if (path.includes("days.html")) initDaysPage();
+});
 
-    if (
-      path.includes("members.html")
-    ) {
-      initMembersPage();
-    }
+const GROUPS = ["akb48", "ske48", "nmb48", "hkt48", "ngt48", "stu48"];
 
-    if (
-      path.includes("member.html")
-    ) {
-      initMemberPage();
-    }
+const groupNameMap = {
+  akb48: "AKB48",
+  ske48: "SKE48",
+  nmb48: "NMB48",
+  hkt48: "HKT48",
+  ngt48: "NGT48",
+  stu48: "STU48"
+};
 
-    if (
-      path.includes("birthdays.html")
-    ) {
-      initBirthdaysPage();
-    }
+const memberCache = {};
 
-    if (
-      path.includes("days.html")
-    ) {
-      initDaysPage();
-    }
+async function loadMembers(group) {
+  if (memberCache[group]) return memberCache[group];
 
+  try {
+    const res = await fetch(`data/members/${group}.json`);
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    memberCache[group] = data;
+    return data;
+
+  } catch (e) {
+    console.error(`${group} load error`, e);
+    return [];
   }
-);
-
-const GROUPS = [
-  "akb48",
-  "ske48",
-  "nmb48",
-  "hkt48",
-  "ngt48",
-  "stu48"
-];
+}
 
 async function loadAllMembers() {
-
-  const results =
-    await Promise.all(
-
-      GROUPS.map(
-        async group => {
-
-          try {
-
-            const response =
-              await fetch(
-                `data/members/${group}.json`
-              );
-
-            if (!response.ok) {
-
-              console.error(
-                `${group}.json の読み込み失敗`
-              );
-
-              return [];
-            }
-
-            return await response.json();
-
-          } catch (error) {
-
-            console.error(
-              `${group}.json エラー`,
-              error
-            );
-
-            return [];
-          }
-
-        }
-      )
-    );
-
+  const results = await Promise.all(
+    GROUPS.map(g => loadMembers(g))
+  );
   return results.flat();
 }
 
-async function initMembersPage() {
+/* =========================
+   表示ラベル（超重要）
+========================= */
+function getMemberLabel(member, selectedGroup) {
 
-  const groupSelect =
-    document.getElementById(
-      "group-select"
-    );
-
-  const statusFilter =
-    document.getElementById(
-      "status-filter"
-    );
-
-  const sortSelect =
-    document.getElementById(
-      "sort-select"
-    );
-
-  if (
-    !groupSelect ||
-    !statusFilter ||
-    !sortSelect
-  ) {
-    return;
+  // ALL表示 → グループ名
+  if (selectedGroup === "all") {
+    return groupNameMap[member.groupId] || "";
   }
 
-  groupSelect.addEventListener(
-    "change",
-    updateMembers
-  );
+  // SKE（チーム制）
+  if (member.groupId === "ske48") {
+    return member.team || "研究生";
+  }
 
-  statusFilter.addEventListener(
-    "change",
-    updateMembers
-  );
+  // その他グループ
+  if (member.role === "regular") return "正規メンバー";
+  if (member.role === "kenkyuusei") return "研究生";
 
-  sortSelect.addEventListener(
-    "change",
-    updateMembers
-  );
+  return "メンバー";
+}
+
+/* =========================
+   members.html
+========================= */
+async function initMembersPage() {
+  const groupSelect = document.getElementById("group-select");
+  const statusFilter = document.getElementById("status-filter");
+  const sortSelect = document.getElementById("sort-select");
+
+  if (!groupSelect || !statusFilter || !sortSelect) return;
+
+  groupSelect.addEventListener("change", updateMembers);
+  statusFilter.addEventListener("change", updateMembers);
+  sortSelect.addEventListener("change", updateMembers);
 
   updateMembers();
 }
 
 async function updateMembers() {
-
-  const group =
-    document.getElementById(
-      "group-select"
-    ).value;
-
-  const status =
-    document.getElementById(
-      "status-filter"
-    ).value;
-
-  const sort =
-    document.getElementById(
-      "sort-select"
-    ).value;
+  const group = document.getElementById("group-select").value;
+  const status = document.getElementById("status-filter").value;
+  const sort = document.getElementById("sort-select").value;
 
   let members = [];
 
   if (group === "all") {
-
-    members =
-      await loadAllMembers();
-
+    members = await loadAllMembers();
   } else {
-
-    try {
-
-      const response =
-        await fetch(
-          `data/members/${group}.json`
-        );
-
-      if (!response.ok) {
-
-        console.error(
-          `${group}.json の読み込み失敗`
-        );
-
-        return;
-      }
-
-      members =
-        await response.json();
-
-    } catch (error) {
-
-      console.error(
-        `${group}.json エラー`,
-        error
-      );
-
-      return;
-    }
-
+    members = await loadMembers(group);
   }
 
+  // status filter
   if (status === "member") {
-
-    members =
-      members.filter(
-        member =>
-          member.status === "member"
-      );
-
+    members = members.filter(m => m.status === "member");
   }
 
+  // sort
   if (sort === "kana") {
-
-    members.sort((a, b) =>
-      a.kana.localeCompare(b.kana, "ja")
-    );
-
+    members.sort((a, b) => a.kana.localeCompare(b.kana, "ja"));
   }
 
   else if (sort === "age") {
-
-    members.sort((a, b) =>
-      new Date(a.birthday) - new Date(b.birthday)
-    );
-
+    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
   }
 
   else if (sort === "days") {
-
-    members.sort((a, b) =>
-      calcDays(b.joinDate) - calcDays(a.joinDate)
-    );
-
+    members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
   }
 
-  renderMembers(members);
+  renderMembers(members, group);
 }
 
-function renderMembers(members) {
-
-  const container =
-    document.getElementById(
-      "member-list"
-    );
-
-  if (!container) {
-    return;
-  }
+function renderMembers(members, selectedGroup) {
+  const container = document.getElementById("member-list");
+  if (!container) return;
 
   container.innerHTML = "";
 
-  members.forEach(member => {
-
-    const card =
-      document.createElement(
-        "div"
-      );
-
-    card.className =
-      "member-card";
+  members.forEach(m => {
+    const card = document.createElement("div");
+    card.className = "member-card";
 
     card.onclick = () => {
-
-      location.href =
-        `member.html?id=${member.id}&group=${member.groupId}`;
+      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
     };
 
     const imagePath =
-      `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
 
     card.innerHTML = `
-      <img
-        class="member-image"
-        src="${imagePath}"
-        alt="${member.name}"
-      >
-
-      <div class="member-name">
-        ${member.name}
-      </div>
-
-      <div class="member-kana">
-        ${member.kana}
-      </div>
+      <img class="member-image" src="${imagePath}" alt="${m.name}">
+      <div class="member-name">${m.name}</div>
+      <div class="member-kana">${m.kana}</div>
+      <div class="member-label">${getMemberLabel(m, selectedGroup)}</div>
     `;
 
     container.appendChild(card);
   });
 }
 
+/* =========================
+   member.html
+========================= */
 async function initMemberPage() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+  const group = params.get("group");
 
-  const params =
-    new URLSearchParams(
-      location.search
-    );
+  if (!id || !group) return;
 
-  const id =
-    params.get("id");
+  const members = await loadMembers(group);
+  const member = members.find(m => m.id === id);
 
-  const group =
-    params.get("group");
-
-  if (!id || !group) {
-    return;
-  }
-
-  try {
-
-    const response =
-      await fetch(
-        `data/members/${group}.json`
-      );
-
-    if (!response.ok) {
-      return;
-    }
-
-    const members =
-      await response.json();
-
-    const member =
-      members.find(
-        m => m.id === id
-      );
-
-    if (!member) {
-      return;
-    }
-
-    renderMember(member);
-
-  } catch (error) {
-
-    console.error(error);
-
-  }
+  if (member) renderMember(member);
 }
 
+/* =========================
+   共通ユーティリティ
+========================= */
 function calcDays(joinDate) {
+  const start = new Date(joinDate);
+  const today = new Date();
 
-  const start =
-    new Date(joinDate);
+  const diff = Math.floor(
+    (today - start) / (1000 * 60 * 60 * 24)
+  );
 
-  const today =
-    new Date();
-
-  const diff =
-    Math.floor(
-      (today - start) /
-      (1000 * 60 * 60 * 24)
-    );
-
-  // ★加入日を1日目としてカウント
   return diff + 1;
 }
 
 function calcAge(birthday) {
+  const today = new Date();
+  const birth = new Date(birthday);
 
-  const today =
-    new Date();
+  let age = today.getFullYear() - birth.getFullYear();
 
-  const birth =
-    new Date(birthday);
+  const m = today.getMonth() - birth.getMonth();
 
-  let age =
-    today.getFullYear() -
-    birth.getFullYear();
-
-  const month =
-    today.getMonth() -
-    birth.getMonth();
-
-  if (
-    month < 0 ||
-    (
-      month === 0 &&
-      today.getDate() <
-      birth.getDate()
-    )
-  ) {
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
     age--;
   }
 
   return age;
 }
 
-function formatDate(dateString) {
-
-  const date =
-    new Date(dateString);
-
-  const year =
-    date.getFullYear();
-
-  const month =
-    date.getMonth() + 1;
-
-  const day =
-    date.getDate();
-
-  return `${year}年${month}月${day}日`;
+function formatDate(date) {
+  const d = new Date(date);
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
-function renderMember(member) {
-
-  const container =
-    document.getElementById(
-      "member-detail"
-    );
-
-  if (!container) {
-    return;
-  }
+/* =========================
+   detail
+========================= */
+function renderMember(m) {
+  const el = document.getElementById("member-detail");
+  if (!el) return;
 
   const imagePath =
-    `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
+    `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
 
-  container.innerHTML = `
-
-    <a
-      href="members.html"
-      class="back-button"
-    >
-      ← メンバーの一覧
-    </a>
+  el.innerHTML = `
+    <a href="members.html" class="back-button">← 一覧</a>
 
     <div class="member-detail">
-
-      <img
-        class="detail-image"
-        src="${imagePath}"
-        alt="${member.name}"
-      >
-
-      <div class="detail-name">
-        ${member.name}
-      </div>
-
-      <div class="detail-kana">
-        ${member.kana}
-      </div>
+      <img class="detail-image" src="${imagePath}" alt="${m.name}">
+      <div class="detail-name">${m.name}</div>
+      <div class="detail-kana">${m.kana}</div>
 
       <div class="detail-info">
-
-        <div>
-          <span class="label">
-            ニックネーム:
-          </span>
-
-          ${member.nickname || "-"}
-        </div>
-
-        <div>
-          <span class="label">
-            生年月日:
-          </span>
-
-          ${formatDate(member.birthday)} (${calcAge(member.birthday)}歳)
-        </div>
-
-        <div>
-          <span class="label">
-            出身地:
-          </span>
-
-          ${member.prefecture}
-        </div>
-
-        <div>
-          <span class="label">
-            加入日:
-          </span>
-
-          ${formatDate(member.joinDate)}
-        </div>
-
-        <div>
-          <span class="label">
-            在籍日数:
-          </span>
-
-          ${calcDays(member.joinDate)}日
-        </div>
-
-        <div>
-          <span class="label">
-            期生:
-          </span>
-
-          ${member.generation}
-        </div>
-
+        <div>ニックネーム: ${m.nickname || "-"}</div>
+        <div>生年月日: ${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)</div>
+        <div>出身地: ${m.prefecture}</div>
+        <div>加入日: ${formatDate(m.joinDate)}</div>
+        <div>在籍日数: ${calcDays(m.joinDate)}日</div>
+        <div>期生: ${m.generation}</div>
       </div>
-
     </div>
   `;
 }
 
+/* =========================
+   birthdays
+========================= */
 async function initBirthdaysPage() {
+  const groupSelect = document.getElementById("group-select");
+  const statusFilter = document.getElementById("status-filter");
+  const sortSelect = document.getElementById("birthday-sort");
 
-  const groupSelect =
-    document.getElementById("group-select");
-
-  const statusFilter =
-    document.getElementById("status-filter");
-
-  const sortSelect =
-    document.getElementById("birthday-sort");
-
-  if (!groupSelect || !statusFilter || !sortSelect) {
-    return;
-  }
+  if (!groupSelect || !statusFilter || !sortSelect) return;
 
   groupSelect.addEventListener("change", updateBirthdays);
   statusFilter.addEventListener("change", updateBirthdays);
@@ -505,53 +243,26 @@ async function initBirthdaysPage() {
 }
 
 async function updateBirthdays() {
+  const group = document.getElementById("group-select").value;
+  const status = document.getElementById("status-filter").value;
+  const sort = document.getElementById("birthday-sort").value;
 
-  const group =
-    document.getElementById("group-select").value;
-
-  const status =
-    document.getElementById("status-filter").value;
-
-  const sortMode =
-    document.getElementById("birthday-sort").value;
-
-  let members = [];
-
-  if (group === "all") {
-    members = await loadAllMembers();
-  } else {
-    try {
-      const response =
-        await fetch(`data/members/${group}.json`);
-
-      if (!response.ok) return;
-
-      members = await response.json();
-    } catch (error) {
-      console.error(error);
-      return;
-    }
-  }
+  let members = group === "all"
+    ? await loadAllMembers()
+    : await loadMembers(group);
 
   if (status === "member") {
     members = members.filter(m => m.status === "member");
   }
 
-  if (sortMode === "calendar") {
-
+  if (sort === "calendar") {
     members.sort((a, b) => {
-
-      const aDate = new Date(a.birthday);
-      const bDate = new Date(b.birthday);
-
-      const aValue = (aDate.getMonth() + 1) * 100 + aDate.getDate();
-      const bValue = (bDate.getMonth() + 1) * 100 + bDate.getDate();
-
-      return aValue - bValue;
+      const av = new Date(a.birthday);
+      const bv = new Date(b.birthday);
+      return (av.getMonth() + 1) * 100 + av.getDate()
+           - (bv.getMonth() + 1) * 100 - bv.getDate();
     });
-
   } else {
-
     members.sort((a, b) =>
       getBirthdayDiff(a.birthday) - getBirthdayDiff(b.birthday)
     );
@@ -561,7 +272,6 @@ async function updateBirthdays() {
 }
 
 function getBirthdayDiff(birthday) {
-
   const today = new Date();
   const birth = new Date(birthday);
 
@@ -571,54 +281,44 @@ function getBirthdayDiff(birthday) {
     birth.getDate()
   );
 
-  if (next < today) {
-    next.setFullYear(today.getFullYear() + 1);
-  }
+  if (next < today) next.setFullYear(today.getFullYear() + 1);
 
   return next - today;
 }
 
 function renderBirthdayMembers(members) {
-
-  const container =
-    document.getElementById("birthday-list");
-
+  const container = document.getElementById("birthday-list");
   if (!container) return;
 
   container.innerHTML = "";
 
-  members.forEach(member => {
-
+  members.forEach(m => {
     const card = document.createElement("div");
     card.className = "member-card";
 
     card.onclick = () => {
-      location.href =
-        `member.html?id=${member.id}&group=${member.groupId}`;
+      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
     };
 
     const imagePath =
-      `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
 
     card.innerHTML = `
-      <img class="member-image" src="${imagePath}" alt="${member.name}">
-      <div class="member-name">${member.name}</div>
-      <div class="member-kana">
-        ${formatDate(member.birthday)} (${calcAge(member.birthday)}歳)
-      </div>
+      <img class="member-image" src="${imagePath}">
+      <div class="member-name">${m.name}</div>
+      <div class="member-kana">${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)</div>
     `;
 
     container.appendChild(card);
   });
 }
 
+/* =========================
+   days
+========================= */
 async function initDaysPage() {
-
-  const groupSelect =
-    document.getElementById("group-select");
-
-  const statusFilter =
-    document.getElementById("status-filter");
+  const groupSelect = document.getElementById("group-select");
+  const statusFilter = document.getElementById("status-filter");
 
   if (!groupSelect || !statusFilter) return;
 
@@ -629,30 +329,12 @@ async function initDaysPage() {
 }
 
 async function updateDays() {
+  const group = document.getElementById("group-select").value;
+  const status = document.getElementById("status-filter").value;
 
-  const group =
-    document.getElementById("group-select").value;
-
-  const status =
-    document.getElementById("status-filter").value;
-
-  let members = [];
-
-  if (group === "all") {
-    members = await loadAllMembers();
-  } else {
-    try {
-      const response =
-        await fetch(`data/members/${group}.json`);
-
-      if (!response.ok) return;
-
-      members = await response.json();
-    } catch (error) {
-      console.error(error);
-      return;
-    }
-  }
+  let members = group === "all"
+    ? await loadAllMembers()
+    : await loadMembers(group);
 
   if (status === "member") {
     members = members.filter(m => m.status === "member");
@@ -666,31 +348,26 @@ async function updateDays() {
 }
 
 function renderDaysMembers(members) {
-
-  const container =
-    document.getElementById("days-list");
-
+  const container = document.getElementById("days-list");
   if (!container) return;
 
   container.innerHTML = "";
 
-  members.forEach(member => {
-
+  members.forEach(m => {
     const card = document.createElement("div");
     card.className = "member-card";
 
     card.onclick = () => {
-      location.href =
-        `member.html?id=${member.id}&group=${member.groupId}`;
+      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
     };
 
     const imagePath =
-      `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
 
     card.innerHTML = `
-      <img class="member-image" src="${imagePath}" alt="${member.name}">
-      <div class="member-name">${member.name}</div>
-      <div class="member-kana">在籍 ${calcDays(member.joinDate)}日</div>
+      <img class="member-image" src="${imagePath}">
+      <div class="member-name">${m.name}</div>
+      <div class="member-kana">在籍 ${calcDays(m.joinDate)}日</div>
     `;
 
     container.appendChild(card);
