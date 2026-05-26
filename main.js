@@ -1,4 +1,4 @@
- const path =
+const path =
   location.pathname;
 
 if (
@@ -134,6 +134,57 @@ function calcDays(joinDate) {
   );
 }
 
+function calcAge(birthday) {
+
+  const today =
+    new Date();
+
+  const birth =
+    new Date(birthday);
+
+  let age =
+    today.getFullYear() -
+    birth.getFullYear();
+
+  const month =
+    today.getMonth() -
+    birth.getMonth();
+
+  if (
+    month < 0 ||
+    (
+      month === 0 &&
+      today.getDate() <
+      birth.getDate()
+    )
+  ) {
+    age--;
+  }
+
+  return age;
+}
+
+function formatDate(dateString) {
+
+  const date =
+    new Date(dateString);
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    date.getMonth() + 1;
+
+  const day =
+    date.getDate();
+
+  return `
+    ${year}年
+    ${month}月
+    ${day}日
+  `;
+}
+
 function renderMember(member) {
 
   const container =
@@ -150,7 +201,7 @@ function renderMember(member) {
       href="members.html"
       class="back-button"
     >
-      ← メンバー一覧へ戻る
+      ← メンバーの一覧
     </a>
 
     <img
@@ -181,7 +232,14 @@ function renderMember(member) {
           生年月日:
         </span>
 
-        ${member.birthday}
+        ${formatDate(
+          member.birthday
+        )}
+        (
+          ${calcAge(
+            member.birthday
+          )}歳
+        )
       </div>
 
       <div>
@@ -197,7 +255,9 @@ function renderMember(member) {
           加入日:
         </span>
 
-        ${member.joinDate}
+        ${formatDate(
+          member.joinDate
+        )}
       </div>
 
       <div>
