@@ -327,5 +327,215 @@
     "status": "member",
     "image": "tanaka_misora",
     "imageYear": 2025
+  },
+
+    {
+    "id": "nakagawa_tomoka",
+    "groupId": "nmb48",
+    "name": "中川朋香",
+    "kana": "なかがわ ともか",
+    "nickname": "ともちゃ",
+    "birthday": "2006-01-02",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "和歌山県",
+    "status": "member",
+    "image": "nakagawa_tomoka",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "nishi_yuma",
+    "groupId": "nmb48",
+    "name": "西由真",
+    "kana": "にし ゆま",
+    "nickname": "にしゆま",
+    "birthday": "2006-03-25",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "千葉県",
+    "status": "member",
+    "image": "nishi_yuma",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "nishijima_rio",
+    "groupId": "nmb48",
+    "name": "西島梨央",
+    "kana": "にしじま りお",
+    "nickname": "りおぴ",
+    "birthday": "2004-11-08",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "静岡県",
+    "status": "member",
+    "image": "nishijima_rio",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "nishida_honoka",
+    "groupId": "nmb48",
+    "name": "西田帆花",
+    "kana": "にしだ ほのか",
+    "nickname": "ほのぴー",
+    "birthday": "2005-03-10",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "奈良県",
+    "status": "member",
+    "image": "nishida_honoka",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "haga_rei",
+    "groupId": "nmb48",
+    "name": "芳賀礼",
+    "kana": "はが れい",
+    "nickname": "れいぽん",
+    "birthday": "2006-03-29",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "兵庫県",
+    "status": "member",
+    "image": "haga_rei",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "hirayama_mai",
+    "groupId": "nmb48",
+    "name": "平山真衣",
+    "kana": "ひらやま まい",
+    "nickname": "まいてぃー",
+    "birthday": "2002-11-16",
+    "joinDate": "2020-09-12",
+    "generation": "7期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "hirayama_mai",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "fukuno_ami",
+    "groupId": "nmb48",
+    "name": "福野杏実",
+    "kana": "ふくの あみ",
+    "nickname": "あみ",
+    "birthday": "2005-05-24",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "fukuno_ami",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "matsuoka_sakura",
+    "groupId": "nmb48",
+    "name": "松岡さくら",
+    "kana": "まつおか さくら",
+    "nickname": "さくら",
+    "birthday": "2003-06-24",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "matsuoka_sakura",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "matsumoto_mihina",
+    "groupId": "nmb48",
+    "name": "松本海日菜",
+    "kana": "まつもと みひな",
+    "nickname": "みっひー",
+    "birthday": "2008-05-22",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "matsumoto_mihina",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "mikamo_kurumi",
+    "groupId": "nmb48",
+    "name": "三鴨くるみ",
+    "kana": "みかも くるみ",
+    "nickname": "くるみ",
+    "birthday": "2001-10-31",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "東京都",
+    "status": "member",
+    "image": "mikamo_kurumi",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "miyahara_kokone",
+    "groupId": "nmb48",
+    "name": "宮原心音",
+    "kana": "みやはら このん",
+    "nickname": "こののん",
+    "birthday": "2010-04-19",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "miyahara_kokone",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "miyamoto_ami",
+    "groupId": "nmb48",
+    "name": "宮本杏海",
+    "kana": "みやもと あみ",
+    "nickname": "あみたん",
+    "birthday": "2010-07-01",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "兵庫県",
+    "status": "member",
+    "image": "miyamoto_ami",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "murai_yuri",
+    "groupId": "nmb48",
+    "name": "村井悠莉",
+    "kana": "むらい ゆうり",
+    "nickname": "ゆうりん",
+    "birthday": "2005-03-05",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "三重県",
+    "status": "member",
+    "image": "murai_yuri",
+    "imageYear": 2025
+  },
+
+  {
+    "id": "yoshimi_ayane",
+    "groupId": "nmb48",
+    "name": "吉見純音",
+    "kana": "よしみ あやね",
+    "nickname": "よしみん",
+    "birthday": "2007-10-18",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "兵庫県",
+    "status": "member",
+    "image": "yoshimi_ayane",
+    "imageYear": 2025
   }
 ]
