@@ -10,7 +10,7 @@
     "generation": "7期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "aikawa_honoka",
     "imageYear": 2025
   },
@@ -25,7 +25,7 @@
     "generation": "8期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "ishiguro_yuzuki",
     "imageYear": 2025
   },
@@ -40,7 +40,7 @@
     "generation": "12期",
     "prefecture": "長野県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "itoh_kokomi",
     "imageYear": 2025
   },
@@ -55,7 +55,7 @@
     "generation": "9期",
     "prefecture": "神奈川県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "iriuchijima_sayaka",
     "imageYear": 2025
   },
@@ -70,7 +70,7 @@
     "generation": "6期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "kumazaki_haruka",
     "imageYear": 2025
   },
@@ -85,7 +85,7 @@
     "generation": "8期",
     "prefecture": "神奈川県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "kurashima_ami",
     "imageYear": 2025
   },
@@ -100,7 +100,7 @@
     "generation": "13期",
     "prefecture": "佐賀県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "kuwahara_tsubaki",
     "imageYear": 2025
   },
@@ -115,7 +115,7 @@
     "generation": "8期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "sakamoto_marin",
     "imageYear": 2025
   },
@@ -130,7 +130,7 @@
     "generation": "11期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "sugimoto_riina",
     "imageYear": 2025
   },
@@ -145,7 +145,7 @@
     "generation": "9期",
     "prefecture": "岐阜県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "suzuki_kokona",
     "imageYear": 2025
   },
@@ -160,7 +160,7 @@
     "generation": "8期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "nomura_miyo",
     "imageYear": 2025
   },
@@ -175,7 +175,7 @@
     "generation": "11期",
     "prefecture": "福岡県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "hara_yune",
     "imageYear": 2025
   },
@@ -190,7 +190,7 @@
     "generation": "12期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "matsukawa_miyu",
     "imageYear": 2025
   },
@@ -205,7 +205,7 @@
     "generation": "12期",
     "prefecture": "長野県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "minamisawa_koko",
     "imageYear": 2025
   },
@@ -220,7 +220,7 @@
     "generation": "11期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamS",
+    "role": "チームS",
     "image": "yamamura_sakura",
     "imageYear": 2025
   },
@@ -235,7 +235,7 @@
     "generation": "9期",
     "prefecture": "神奈川県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "arano_himeka",
     "imageYear": 2025
   },
@@ -250,7 +250,7 @@
     "generation": "9期",
     "prefecture": "長崎県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "ikeda_kaede",
     "imageYear": 2025
   },
@@ -265,7 +265,7 @@
     "generation": "10期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "ito_miki",
     "imageYear": 2025
   },
@@ -280,7 +280,7 @@
     "generation": "8期",
     "prefecture": "熊本県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "inoue_ruka",
     "imageYear": 2025
   },
@@ -295,7 +295,7 @@
     "generation": "12期",
     "prefecture": "広島県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "okuno_kokoha",
     "imageYear": 2025
   },
@@ -310,7 +310,7 @@
     "generation": "6期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "kamata_natsuki",
     "imageYear": 2025
   },
@@ -325,7 +325,7 @@
     "generation": "8期",
     "prefecture": "大阪府",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "kitagawa_yoshino",
     "imageYear": 2025
   },
@@ -340,7 +340,7 @@
     "generation": "13期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "kumoi_sana",
     "imageYear": 2025
   },
@@ -355,7 +355,7 @@
     "generation": "12期",
     "prefecture": "岐阜県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "kuramoto_hana",
     "imageYear": 2025
   },
@@ -370,7 +370,7 @@
     "generation": "13期",
     "prefecture": "鳥取県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "kondo_mikoto",
     "imageYear": 2025
   },
@@ -385,7 +385,7 @@
     "generation": "8期",
     "prefecture": "愛知県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "sato_kaho",
     "imageYear": 2025
   },
@@ -400,7 +400,7 @@
     "generation": "11期",
     "prefecture": "兵庫県",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "shinohara_kyoka",
     "imageYear": 2025
   },
@@ -415,7 +415,7 @@
     "generation": "ドラフト1期",
     "prefecture": "大阪府",
     "status": "member",
-    "role": "teamKII",
+    "role": "チームKII",
     "image": "matsumoto_chikako",
     "imageYear": 2025
   }
