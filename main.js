@@ -115,37 +115,32 @@ function isTeam8(m) {
 }
 
 /* =========================
-   ラベル（★修正版）
+   ラベル（修正版）
 ========================= */
 
 function getMemberLabel(member, selectedGroup, sortMode) {
 
   const isTeam8Member = isTeam8(member);
 
-  /* =====================
-     在籍日数だけ特別ルール
-  ===================== */
+  // daysだけ特別
   if (sortMode === "days") {
     if (isTeam8Member) return "チーム8";
-    return `${member.generation}`;
+    return member.generation || "-";
   }
 
-  /* =====================
-     その他ソート
-  ===================== */
+  const isKenkyuusei = member.role === "kenkyuusei";
 
-  const isNormalMember =
-    member.role !== "kenkyuusei" && !isTeam8Member;
-
-  if (isTeam8Member) {
-    if (selectedGroup === "all") return "AKB48";
-    return "正規メンバー";
+  // ★ALL時はグループ名統一
+  if (selectedGroup === "all") {
+    if (isTeam8Member) return "AKB48";
+    if (isKenkyuusei) return groupNameMap[member.groupId];
+    return groupNameMap[member.groupId];
   }
 
-  if (member.role === "kenkyuusei") {
-    if (selectedGroup === "all") return groupNameMap[member.groupId];
-    return `${member.generation}研究生`;
-  }
+  // AKB内
+  if (isTeam8Member) return "チーム8";
+
+  if (isKenkyuusei) return `${member.generation}研究生`;
 
   return "正規メンバー";
 }
@@ -180,91 +175,27 @@ async function updateMembers() {
   }
 
   if (sort === "default") members.sort(globalDefaultSort);
-
   else if (sort === "kana")
-    members.sort((a, b) =>
-      (a.kana || "").localeCompare(b.kana || "", "ja")
-    );
-
+    members.sort((a, b) => (a.kana || "").localeCompare(b.kana || "", "ja"));
   else if (sort === "birthday")
-    members.sort((a, b) =>
-      (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5))
-    );
-
+    members.sort((a, b) => (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5)));
   else if (sort === "nearestBirthday")
-    members.sort((a, b) =>
-      getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
-    );
-
+    members.sort((a, b) => getNextBirthday(a.birthday) - getNextBirthday(b.birthday));
   else if (sort === "age")
-    members.sort((a, b) =>
-      new Date(a.birthday) - new Date(b.birthday)
-    );
-
+    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
   else if (sort === "days")
-    members.sort((a, b) => {
-      const daysDiff = calcDays(b.joinDate) - calcDays(a.joinDate);
-      if (daysDiff !== 0) return daysDiff;
-
-      const groupDiff =
-        GROUP_ORDER.indexOf(a.groupId) -
-        GROUP_ORDER.indexOf(b.groupId);
-
-      if (groupDiff !== 0) return groupDiff;
-
-      return (a.kana || "").localeCompare(b.kana || "", "ja");
-    });
+    members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
 
   renderMembers(members, group, sort);
 }
 
 /* =========================
-   AKBランク
-========================= */
-
-function akbRank(m) {
-  const gen = String(m.generation || "");
-  for (let i = 0; i < AKB_ORDER.length; i++) {
-    if (gen.includes(AKB_ORDER[i])) return i;
-  }
-  return 999;
-}
-
-/* =========================
-   NMBランク
-========================= */
-
-function nmbRank(m) {
-  if (m.role !== "kenkyuusei") return 1;
-
-  const gen = String(m.generation || "");
-  if (gen.includes("10")) return 2;
-  if (gen.includes("11")) return 3;
-
-  return 4;
-}
-
-/* =========================
-   全体ソート
+   ソート
 ========================= */
 
 function globalDefaultSort(a, b) {
-
-  const groupDiff =
-    GROUP_ORDER.indexOf(a.groupId) -
-    GROUP_ORDER.indexOf(b.groupId);
-
+  const groupDiff = GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
   if (groupDiff !== 0) return groupDiff;
-
-  if (a.groupId === "akb48" && b.groupId === "akb48") {
-    const r = akbRank(a) - akbRank(b);
-    if (r !== 0) return r;
-  }
-
-  if (a.groupId === "nmb48" && b.groupId === "nmb48") {
-    const r = nmbRank(a) - nmbRank(b);
-    if (r !== 0) return r;
-  }
 
   const aKey = a.role === "kenkyuusei" ? 2 : 1;
   const bKey = b.role === "kenkyuusei" ? 2 : 1;
@@ -329,7 +260,7 @@ function renderMembers(members, selectedGroup, sortMode) {
 }
 
 /* =========================
-   MEMBER PAGE
+   MEMBER PAGE（修正済み）
 ========================= */
 
 async function initMemberPage() {
@@ -342,7 +273,7 @@ async function initMemberPage() {
   const members = await loadMembers(group);
   const member = members.find(m => m.id === id);
 
-  if (member) renderMember(member); // ★修正済み
+  if (member) renderMember(member);
 }
 
 function renderMember(m) {
@@ -378,108 +309,25 @@ function renderMember(m) {
 }
 
 /* =========================
-   DAYS / BIRTHDAY
+   DAYS
 ========================= */
 
 function getNextBirthday(date) {
   const today = new Date();
   const birth = new Date(date);
-
   let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
   if (next < today) next.setFullYear(today.getFullYear() + 1);
-
   return next;
 }
 
-async function initDaysPage() {
-  document.getElementById("group-select")?.addEventListener("change", updateDays);
-  document.getElementById("status-filter")?.addEventListener("change", updateDays);
-  updateDays();
-}
-
-async function updateDays() {
-
-  const group = document.getElementById("group-select")?.value || "all";
-  const status = document.getElementById("status-filter")?.value || "all";
-
-  let members = group === "all"
-    ? await loadAllMembers()
-    : await loadMembers(group);
-
-  if (status === "member") {
-    members = members.filter(m => m.status === "member");
-  }
-
-  members.sort((a, b) => {
-    const daysDiff = calcDays(b.joinDate) - calcDays(a.joinDate);
-    if (daysDiff !== 0) return daysDiff;
-
-    const groupDiff =
-      GROUP_ORDER.indexOf(a.groupId) -
-      GROUP_ORDER.indexOf(b.groupId);
-
-    if (groupDiff !== 0) return groupDiff;
-
-    return (a.kana || "").localeCompare(b.kana || "", "ja");
-  });
-
-  renderDaysMembers(members);
-}
-
-/* =========================
-   DAYS RENDER
-========================= */
-
-function renderDaysMembers(members) {
-
-  const container = document.getElementById("days-list");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  members.forEach(m => {
-
-    const img = getImagePath(m);
-
-    const card = document.createElement("div");
-    card.className = "member-card";
-
-    card.onclick = () => {
-      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
-    };
-
-    card.innerHTML = `
-      <img class="member-image"
-        src="${img.png}"
-        onerror="this.onerror=null;this.src='${img.jpeg}'">
-
-      <div class="member-name-row">
-        <span class="member-name">${m.name}</span>
-      </div>
-
-      <div class="member-kana">
-        ${getDaysLabel(m)} / 在籍 ${calcDays(m.joinDate)}日
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-/* =========================
-   DAYS LABEL
-========================= */
-
 function getDaysLabel(m) {
   if (!m) return "-";
-
   if (isTeam8(m)) return "チーム8";
 
   const gen = (m.generation || "").trim();
   if (!gen) return "-";
 
   if (m.role === "kenkyuusei") return `${gen}研究生`;
-
   return gen;
 }
 
@@ -500,7 +348,6 @@ function calcAge(birthday) {
 
   let age = today.getFullYear() - birth.getFullYear();
   const m = today.getMonth() - birth.getMonth();
-
   if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
 
   return age;
@@ -523,8 +370,6 @@ function formatGenerationClean(m) {
   if (m.generation === "チーム8") return "チーム8";
 
   const gen = String(m.generation).replace("期", "");
-
   if (m.role === "kenkyuusei") return `${gen}期研究生`;
-
   return `${gen}期生`;
 }
