@@ -155,28 +155,28 @@ select {
 }
 
 .badge-ske {
-  background: #ffb74d;
+  background: #ff9800;
   color: #fff;
 }
 
 .badge-nmb {
-  background: #81d4fa;
-  color: #003c57;
+  background: #6d4c41;
+  color: #fff;
 }
 
 .badge-hkt {
-  background: #ce93d8;
+  background: #424242;
   color: #fff;
 }
 
 .badge-ngt {
-  background: #a5d6a7;
-  color: #1b5e20;
+  background: #e53935;
+  color: #fff;
 }
 
 .badge-stu {
-  background: #ffcc80;
-  color: #5d4037;
+  background: #4fc3f7;
+  color: #003c57;
 }
 
 /* 卒業生 */
