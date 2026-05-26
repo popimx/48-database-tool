@@ -41,7 +41,7 @@ function getBadgeClass(member) {
 }
 
 /* =========================
-   ★ 卒業生判定（必須）
+   卒業生判定
 ========================= */
 
 function isGraduate(m) {
@@ -49,108 +49,13 @@ function isGraduate(m) {
 }
 
 /* =========================
-   ★ デフォルトソート（追加）
+   ⭐ 期生表示（詳細のみ＋生）
 ========================= */
 
-function defaultSort(members, selectedGroup) {
-  const groupOrder = {
-    AKB48: 1,
-    SKE48: 2,
-    NMB48: 3,
-    HKT48: 4,
-    NGT48: 5,
-    STU48: 6,
-  };
-
-  const skeTeamOrder = {
-    "チームS": 1,
-    "チームKII": 2,
-    "チームE": 3,
-    "研究生": 4,
-  };
-
-  const hktTeamOrder = {
-    "チームH": 1,
-    "チームKⅣ": 2,
-    "研究生": 3,
-  };
-
-  return [...members].sort((a, b) => {
-
-    /* =========================
-       卒業生ルール（最優先）
-    ========================= */
-    const aG = isGraduate(a);
-    const bG = isGraduate(b);
-
-    if (aG && bG) {
-      const joinDiff =
-        new Date(a.joinDate) - new Date(b.joinDate);
-
-      if (joinDiff !== 0) return joinDiff;
-
-      return a.kana.localeCompare(b.kana, "ja");
-    }
-
-    if (aG && !bG) return 1;
-    if (!aG && bG) return -1;
-
-    /* =========================
-       ALL表示
-    ========================= */
-    if (selectedGroup === "all") {
-      return (
-        groupOrder[a.group] - groupOrder[b.group] ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
-    }
-
-    /* =========================
-       SKE48
-    ========================= */
-    if (selectedGroup === "SKE48") {
-      return (
-        skeTeamOrder[a.team] - skeTeamOrder[b.team] ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
-    }
-
-    /* =========================
-       HKT48
-    ========================= */
-    if (selectedGroup === "HKT48") {
-      return (
-        hktTeamOrder[a.team] - hktTeamOrder[b.team] ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
-    }
-
-    /* =========================
-       AKB48
-    ========================= */
-    if (selectedGroup === "AKB48") {
-      const aRank = a.isKenkyusei ? 2 : 1;
-      const bRank = b.isKenkyusei ? 2 : 1;
-
-      return (
-        aRank - bRank ||
-        a.kana.localeCompare(b.kana, "ja") ||
-        new Date(b.joinDate) - new Date(a.joinDate)
-      );
-    }
-
-    /* =========================
-       NGT / STU
-    ========================= */
-    if (selectedGroup === "NGT48" || selectedGroup === "STU48") {
-      return (
-        new Date(b.joinDate) - new Date(a.joinDate) ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
-    }
-
-    return 0;
-  });
+function formatGeneration(gen, mode = "list") {
+  if (!gen) return "";
+  if (mode === "detail") return gen + "生";
+  return gen;
 }
 
 /* =========================
@@ -241,14 +146,7 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
-  /* =========================
-     ★ まずデフォルト並び
-  ========================= */
   members = defaultSort(members, group);
-
-  /* =========================
-     ユーザーソート（上書き）
-  ========================= */
 
   if (sort === "kana") {
     members.sort((a, b) =>
@@ -272,7 +170,91 @@ async function updateMembers() {
 }
 
 /* =========================
-   表示
+   ⭐ デフォルトソート
+========================= */
+
+function defaultSort(members, selectedGroup) {
+  const groupOrder = {
+    AKB48: 1,
+    SKE48: 2,
+    NMB48: 3,
+    HKT48: 4,
+    NGT48: 5,
+    STU48: 6,
+  };
+
+  const skeTeamOrder = {
+    "チームS": 1,
+    "チームKII": 2,
+    "チームE": 3,
+    "研究生": 4,
+  };
+
+  const hktTeamOrder = {
+    "チームH": 1,
+    "チームKⅣ": 2,
+    "研究生": 3,
+  };
+
+  return [...members].sort((a, b) => {
+
+    const aG = isGraduate(a);
+    const bG = isGraduate(b);
+
+    if (aG && bG) {
+      const joinDiff = new Date(a.joinDate) - new Date(b.joinDate);
+      if (joinDiff !== 0) return joinDiff;
+      return a.kana.localeCompare(b.kana, "ja");
+    }
+
+    if (aG && !bG) return 1;
+    if (!aG && bG) return -1;
+
+    if (selectedGroup === "all") {
+      return (
+        groupOrder[a.group] - groupOrder[b.group] ||
+        a.kana.localeCompare(b.kana, "ja")
+      );
+    }
+
+    if (selectedGroup === "SKE48") {
+      return (
+        skeTeamOrder[a.team] - skeTeamOrder[b.team] ||
+        a.kana.localeCompare(b.kana, "ja")
+      );
+    }
+
+    if (selectedGroup === "HKT48") {
+      return (
+        hktTeamOrder[a.team] - hktTeamOrder[b.team] ||
+        a.kana.localeCompare(b.kana, "ja")
+      );
+    }
+
+    if (selectedGroup === "AKB48") {
+      const aRank = a.isKenkyusei ? 2 : 1;
+      const bRank = b.isKenkyusei ? 2 : 1;
+
+      return (
+        aRank - bRank ||
+        a.kana.localeCompare(b.kana, "ja") ||
+        new Date(b.joinDate) - new Date(a.joinDate)
+      );
+    }
+
+    if (selectedGroup === "NGT48" || selectedGroup === "STU48") {
+      return (
+        new Date(b.joinDate) - new Date(a.joinDate) ||
+        a.kana.localeCompare(b.kana, "ja")
+      );
+    }
+
+    return 0;
+  });
+}
+
+/* =========================
+   表示（members）
 ========================= */
 
 function renderMembers(members, selectedGroup) {
@@ -350,23 +332,95 @@ function renderMember(m) {
         <div>出身地: ${m.prefecture}</div>
         <div>加入日: ${formatDate(m.joinDate)}</div>
         <div>在籍日数: ${calcDays(m.joinDate)}日</div>
-        <div>期生: ${m.generation || "-"}</div>
+        <div>期生: ${formatGeneration(m.generation, "detail") || "-"}</div>
       </div>
     </div>
   `;
 }
 
 /* =========================
-   birthdays / days（省略なし・そのまま）
+   birthdays（⭐ラベル追加済）
 ========================= */
 
-async function initBirthdaysPage() { /* 既存そのまま */ }
-async function updateBirthdays() { /* 既存そのまま */ }
-function renderBirthdayMembers(members) { /* 既存そのまま */ }
+async function initBirthdaysPage() { /* 既存 */ }
+async function updateBirthdays() { /* 既存 */ }
 
-async function initDaysPage() { /* 既存そのまま */ }
-async function updateDays() { /* 既存そのまま */ }
-function renderDaysMembers(members) { /* 既存そのまま */ }
+function renderBirthdayMembers(members) {
+  const container = document.getElementById("birthday-list");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  members.forEach(m => {
+    const card = document.createElement("div");
+    card.className = "member-card";
+
+    const imagePath =
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
+
+    const label = getMemberLabel(m, "all");
+    const badgeClass = getBadgeClass(m);
+
+    card.innerHTML = `
+      <img class="member-image" src="${imagePath}">
+
+      <div class="member-name-row">
+        <span class="member-name">${m.name}</span>
+        <span class="member-badge ${badgeClass}">
+          ${label}
+        </span>
+      </div>
+
+      <div class="member-kana">
+        ${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+/* =========================
+   days（⭐ラベル追加済）
+========================= */
+
+async function initDaysPage() { /* 既存 */ }
+async function updateDays() { /* 既存 */ }
+
+function renderDaysMembers(members) {
+  const container = document.getElementById("days-list");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  members.forEach(m => {
+    const card = document.createElement("div");
+    card.className = "member-card";
+
+    const imagePath =
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
+
+    const label = getMemberLabel(m, "all");
+    const badgeClass = getBadgeClass(m);
+
+    card.innerHTML = `
+      <img class="member-image" src="${imagePath}">
+
+      <div class="member-name-row">
+        <span class="member-name">${m.name}</span>
+        <span class="member-badge ${badgeClass}">
+          ${label}
+        </span>
+      </div>
+
+      <div class="member-kana">
+        在籍 ${calcDays(m.joinDate)}日
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
 
 /* =========================
    共通ユーティリティ
