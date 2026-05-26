@@ -49,7 +49,7 @@ function isGraduate(m) {
 }
 
 /* =========================
-   期生表示（詳細のみ＋生）
+   期表示
 ========================= */
 
 function formatGeneration(gen, mode = "list") {
@@ -59,20 +59,20 @@ function formatGeneration(gen, mode = "list") {
 }
 
 /* =========================
-   画像パス（JPEG/PNG対応）
+   画像パス
 ========================= */
 
 function getImagePath(m) {
   const base = `images/members/${m.groupId}/${m.image}_${m.imageYear}`;
   return {
     png: `${base}.PNG`,
-    jpg: `${base}.JPG`,
-    jpeg: `${base}.JPEG`
+    jpeg: `${base}.JPEG`,
+    jpg: `${base}.JPG`
   };
 }
 
 /* =========================
-   データキャッシュ
+   データ読み込み
 ========================= */
 
 const memberCache = {};
@@ -87,22 +87,19 @@ async function loadMembers(group) {
     const data = await res.json();
     memberCache[group] = data;
     return data;
-
   } catch (e) {
-    console.error(`${group} load error`, e);
+    console.error(e);
     return [];
   }
 }
 
 async function loadAllMembers() {
-  const results = await Promise.all(
-    GROUPS.map(g => loadMembers(g))
-  );
+  const results = await Promise.all(GROUPS.map(g => loadMembers(g)));
   return results.flat();
 }
 
 /* =========================
-   ラベルロジック
+   ラベル
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
@@ -116,8 +113,13 @@ function getMemberLabel(member, selectedGroup) {
     return member.team || "正規メンバー";
   }
 
-  if (member.role === "kenkyuusei" && member.generation) {
-    return member.generation;
+  if (member.groupId === "nmb48") {
+    if (member.role === "kenkyuusei") {
+      if (member.generation === "10期") return "10期";
+      if (member.generation === "11期") return "11期";
+      return "研究生";
+    }
+    return "正規メンバー";
   }
 
   if (member.role === "kenkyuusei") return "研究生";
@@ -128,7 +130,7 @@ function getMemberLabel(member, selectedGroup) {
 }
 
 /* =========================
-   members.html
+   members
 ========================= */
 
 async function initMembersPage() {
@@ -146,6 +148,7 @@ async function initMembersPage() {
 }
 
 async function updateMembers() {
+
   const group = document.getElementById("group-select").value;
   const status = document.getElementById("status-filter").value;
   const sort = document.getElementById("sort-select").value;
@@ -172,7 +175,7 @@ async function updateMembers() {
 }
 
 /* =========================
-   NMB48対応 defaultSort
+   defaultSort
 ========================= */
 
 function defaultSort(members, selectedGroup) {
@@ -183,7 +186,7 @@ function defaultSort(members, selectedGroup) {
     NMB48: 3,
     HKT48: 4,
     NGT48: 5,
-    STU48: 6,
+    STU48: 6
   };
 
   return [...members].sort((a, b) => {
@@ -192,28 +195,28 @@ function defaultSort(members, selectedGroup) {
     const bG = isGraduate(b);
 
     if (aG && bG) {
-      const diff = new Date(a.joinDate) - new Date(b.joinDate);
-      return diff || a.kana.localeCompare(b.kana, "ja");
+      return new Date(a.joinDate) - new Date(b.joinDate)
+        || a.kana.localeCompare(b.kana, "ja");
     }
 
     if (aG && !bG) return 1;
     if (!aG && bG) return -1;
 
-    // NMB48専用ルール
     if (selectedGroup === "nmb48") {
 
       const rank = (m) => {
         if (m.role === "regular") return 1;
-        if (m.generation === "10期") return 2;
-        if (m.generation === "11期") return 3;
+        if (m.role === "kenkyuusei" && m.generation === "10期") return 2;
+        if (m.role === "kenkyuusei" && m.generation === "11期") return 3;
         return 99;
       };
 
-      return rank(a) - rank(b) || a.kana.localeCompare(b.kana, "ja");
+      return rank(a) - rank(b)
+        || a.kana.localeCompare(b.kana, "ja");
     }
 
     if (selectedGroup === "all") {
-      return groupOrder[a.groupId.toUpperCase()] - groupOrder[b.groupId.toUpperCase()]
+      return (groupOrder[a.groupId] || 99) - (groupOrder[b.groupId] || 99)
         || a.kana.localeCompare(b.kana, "ja");
     }
 
@@ -222,10 +225,11 @@ function defaultSort(members, selectedGroup) {
 }
 
 /* =========================
-   表示（members）
+   render members
 ========================= */
 
 function renderMembers(members, selectedGroup) {
+
   const container = document.getElementById("member-list");
   if (!container) return;
 
@@ -242,13 +246,12 @@ function renderMembers(members, selectedGroup) {
 
     const img = getImagePath(m);
 
-    const imagePath = img.png;
-
     const label = getMemberLabel(m, selectedGroup);
     const badgeClass = getBadgeClass(m);
 
     card.innerHTML = `
-      <img class="member-image" src="${imagePath}"
+      <img class="member-image"
+        src="${img.png}"
         onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="member-name-row">
@@ -266,10 +269,11 @@ function renderMembers(members, selectedGroup) {
 }
 
 /* =========================
-   member.html
+   member page
 ========================= */
 
 async function initMemberPage() {
+
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
   const group = params.get("group");
@@ -293,7 +297,8 @@ function renderMember(m) {
     <a href="members.html" class="back-button">← 一覧</a>
 
     <div class="member-detail">
-      <img class="detail-image" src="${img.png}"
+      <img class="detail-image"
+        src="${img.png}"
         onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="detail-name">${m.name}</div>
@@ -344,10 +349,13 @@ async function updateBirthdays() {
     members = members.filter(m => m.status === "member");
   }
 
-  if (sort !== "calendar") {
+  // 🔥 デフォルト誕生日順
+  if (sort === "calendar") {
     members.sort((a, b) =>
-      getBirthdayDiff(a.birthday) - getBirthdayDiff(b.birthday)
+      (a.birthday.slice(5)) > (b.birthday.slice(5)) ? 1 : -1
     );
+  } else {
+    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
   }
 
   renderBirthdayMembers(members);
@@ -360,6 +368,8 @@ function renderBirthdayMembers(members) {
 
   container.innerHTML = "";
 
+  const group = document.getElementById("group-select").value;
+
   members.forEach(m => {
 
     const card = document.createElement("div");
@@ -371,11 +381,12 @@ function renderBirthdayMembers(members) {
 
     const img = getImagePath(m);
 
-    const label = getMemberLabel(m, "all");
+    const label = getMemberLabel(m, group);
     const badgeClass = getBadgeClass(m);
 
     card.innerHTML = `
-      <img class="member-image" src="${img.png}"
+      <img class="member-image"
+        src="${img.png}"
         onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="member-name-row">
@@ -436,6 +447,8 @@ function renderDaysMembers(members) {
 
   container.innerHTML = "";
 
+  const group = document.getElementById("group-select").value;
+
   members.forEach(m => {
 
     const card = document.createElement("div");
@@ -447,11 +460,12 @@ function renderDaysMembers(members) {
 
     const img = getImagePath(m);
 
-    const label = getMemberLabel(m, "all");
+    const label = getMemberLabel(m, group);
     const badgeClass = getBadgeClass(m);
 
     card.innerHTML = `
-      <img class="member-image" src="${img.png}"
+      <img class="member-image"
+        src="${img.png}"
         onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="member-name-row">
