@@ -272,7 +272,7 @@ function renderMembers(members, selectedGroup) {
     };
 
     const imagePath =
-      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
 
     const label = getMemberLabel(m, selectedGroup);
     const badgeClass = getBadgeClass(m);
@@ -316,7 +316,7 @@ function renderMember(m) {
   if (!el) return;
 
   const imagePath =
-    `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
+    `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
 
   el.innerHTML = `
     <a href="members.html" class="back-button">← 一覧</a>
@@ -466,7 +466,7 @@ function renderDaysMembers(members) {
     card.className = "member-card";
 
     const imagePath =
-      `images/members/${m.groupId}/${m.image}_${m.imageYear}.PNG`;
+      `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
 
     const label = getMemberLabel(m, "all");
     const badgeClass = getBadgeClass(m);
