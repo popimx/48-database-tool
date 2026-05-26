@@ -131,11 +131,10 @@ function getMemberLabel(member, selectedGroup) {
   if (member.role === "kenkyuusei") {
     if (selectedGroup === "all") return groupNameMap[member.groupId];
 
-    const gen = String(member.generation || "").replace("期", "");
-    return gen ? `${gen}期研究生` : "研究生";
+    return `${member.generation}研究生`;
   }
 
-  return "正規メンバー";
+  return `${member.generation}生`;
 }
 
 /* =========================
@@ -187,8 +186,16 @@ async function updateMembers() {
 
   else if (sort === "days")
     members.sort((a, b) => {
-      const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
-      return diff !== 0 ? diff : (a.kana || "").localeCompare(b.kana || "", "ja");
+      const daysDiff = calcDays(b.joinDate) - calcDays(a.joinDate);
+      if (daysDiff !== 0) return daysDiff;
+
+      const groupDiff =
+        GROUP_ORDER.indexOf(a.groupId) -
+        GROUP_ORDER.indexOf(b.groupId);
+
+      if (groupDiff !== 0) return groupDiff;
+
+      return (a.kana || "").localeCompare(b.kana || "", "ja");
     });
 
   renderMembers(members, group, sort);
@@ -391,6 +398,7 @@ async function updateDays() {
   }
 
   members.sort((a, b) => {
+
     const daysDiff = calcDays(b.joinDate) - calcDays(a.joinDate);
     if (daysDiff !== 0) return daysDiff;
 
@@ -407,7 +415,7 @@ async function updateDays() {
 }
 
 /* =========================
-   DAYS LABEL（ドラフト対応完全版）
+   DAYS LABEL（JSON完全一致版）
 ========================= */
 
 function getDaysLabel(m) {
@@ -415,15 +423,15 @@ function getDaysLabel(m) {
   if (!m) return "-";
   if (isTeam8(m)) return "チーム8";
 
-  let gen = String(m.generation || "").trim();
+  const gen = String(m.generation || "").trim();
 
-  const isDraft = gen.includes("ドラフト");
+  if (!gen) return "-";
 
   if (m.role === "kenkyuusei") {
-    return isDraft ? `${gen}研究生` : `${gen.replace("期", "")}期研究生`;
+    return `${gen}研究生`;
   }
 
-  return isDraft ? `${gen}生` : `${gen.replace("期", "")}期生`;
+  return `${gen}生`;
 }
 
 /* =========================
