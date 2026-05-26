@@ -59,6 +59,19 @@ function formatGeneration(gen, mode = "list") {
 }
 
 /* =========================
+   画像パス（JPEG/PNG対応）
+========================= */
+
+function getImagePath(m) {
+  const base = `images/members/${m.groupId}/${m.image}_${m.imageYear}`;
+  return {
+    png: `${base}.PNG`,
+    jpg: `${base}.JPG`,
+    jpeg: `${base}.JPEG`
+  };
+}
+
+/* =========================
    データキャッシュ
 ========================= */
 
@@ -98,19 +111,18 @@ function getMemberLabel(member, selectedGroup) {
     return groupNameMap[member.groupId] || "";
   }
 
-  const isSkeOrHkt =
-    member.groupId === "ske48" || member.groupId === "hkt48";
-
-  if (isSkeOrHkt) {
+  if (member.groupId === "ske48" || member.groupId === "hkt48") {
     if (member.role === "kenkyuusei") return "研究生";
     return member.team || "正規メンバー";
   }
 
-  if (member.role === "kenkyuusei") return "研究生";
-
-  if (member.generation) {
+  if (member.role === "kenkyuusei" && member.generation) {
     return member.generation;
   }
+
+  if (member.role === "kenkyuusei") return "研究生";
+
+  if (member.generation) return member.generation;
 
   return "正規メンバー";
 }
@@ -149,31 +161,22 @@ async function updateMembers() {
   members = defaultSort(members, group);
 
   if (sort === "kana") {
-    members.sort((a, b) =>
-      a.kana.localeCompare(b.kana, "ja")
-    );
-  }
-
-  else if (sort === "age") {
-    members.sort((a, b) =>
-      new Date(a.birthday) - new Date(b.birthday)
-    );
-  }
-
-  else if (sort === "days") {
-    members.sort((a, b) =>
-      calcDays(b.joinDate) - calcDays(a.joinDate)
-    );
+    members.sort((a, b) => a.kana.localeCompare(b.kana, "ja"));
+  } else if (sort === "age") {
+    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
+  } else if (sort === "days") {
+    members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
   }
 
   renderMembers(members, group);
 }
 
 /* =========================
-   defaultSort
+   NMB48対応 defaultSort
 ========================= */
 
 function defaultSort(members, selectedGroup) {
+
   const groupOrder = {
     AKB48: 1,
     SKE48: 2,
@@ -183,73 +186,38 @@ function defaultSort(members, selectedGroup) {
     STU48: 6,
   };
 
-  const skeTeamOrder = {
-    "チームS": 1,
-    "チームKII": 2,
-    "チームE": 3,
-    "研究生": 4,
-  };
-
-  const hktTeamOrder = {
-    "チームH": 1,
-    "チームKⅣ": 2,
-    "研究生": 3,
-  };
-
   return [...members].sort((a, b) => {
 
     const aG = isGraduate(a);
     const bG = isGraduate(b);
 
     if (aG && bG) {
-      const joinDiff = new Date(a.joinDate) - new Date(b.joinDate);
-      if (joinDiff !== 0) return joinDiff;
-      return a.kana.localeCompare(b.kana, "ja");
+      const diff = new Date(a.joinDate) - new Date(b.joinDate);
+      return diff || a.kana.localeCompare(b.kana, "ja");
     }
 
     if (aG && !bG) return 1;
     if (!aG && bG) return -1;
 
+    // NMB48専用ルール
+    if (selectedGroup === "nmb48") {
+
+      const rank = (m) => {
+        if (m.role === "regular") return 1;
+        if (m.generation === "10期") return 2;
+        if (m.generation === "11期") return 3;
+        return 99;
+      };
+
+      return rank(a) - rank(b) || a.kana.localeCompare(b.kana, "ja");
+    }
+
     if (selectedGroup === "all") {
-      return (
-        groupOrder[a.group] - groupOrder[b.group] ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
+      return groupOrder[a.groupId.toUpperCase()] - groupOrder[b.groupId.toUpperCase()]
+        || a.kana.localeCompare(b.kana, "ja");
     }
 
-    if (selectedGroup === "SKE48") {
-      return (
-        skeTeamOrder[a.team] - skeTeamOrder[b.team] ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
-    }
-
-    if (selectedGroup === "HKT48") {
-      return (
-        hktTeamOrder[a.team] - hktTeamOrder[b.team] ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
-    }
-
-    if (selectedGroup === "AKB48") {
-      const aRank = a.isKenkyusei ? 2 : 1;
-      const bRank = b.isKenkyusei ? 2 : 1;
-
-      return (
-        aRank - bRank ||
-        a.kana.localeCompare(b.kana, "ja") ||
-        new Date(b.joinDate) - new Date(a.joinDate)
-      );
-    }
-
-    if (selectedGroup === "NGT48" || selectedGroup === "STU48") {
-      return (
-        new Date(b.joinDate) - new Date(a.joinDate) ||
-        a.kana.localeCompare(b.kana, "ja")
-      );
-    }
-
-    return 0;
+    return a.kana.localeCompare(b.kana, "ja");
   });
 }
 
@@ -264,6 +232,7 @@ function renderMembers(members, selectedGroup) {
   container.innerHTML = "";
 
   members.forEach(m => {
+
     const card = document.createElement("div");
     card.className = "member-card";
 
@@ -271,14 +240,16 @@ function renderMembers(members, selectedGroup) {
       location.href = `member.html?id=${m.id}&group=${m.groupId}`;
     };
 
-    const imagePath =
-      `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
+    const img = getImagePath(m);
+
+    const imagePath = img.png;
 
     const label = getMemberLabel(m, selectedGroup);
     const badgeClass = getBadgeClass(m);
 
     card.innerHTML = `
-      <img class="member-image" src="${imagePath}" alt="${m.name}">
+      <img class="member-image" src="${imagePath}"
+        onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
@@ -312,17 +283,19 @@ async function initMemberPage() {
 }
 
 function renderMember(m) {
+
   const el = document.getElementById("member-detail");
   if (!el) return;
 
-  const imagePath =
-    `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
+  const img = getImagePath(m);
 
   el.innerHTML = `
     <a href="members.html" class="back-button">← 一覧</a>
 
     <div class="member-detail">
-      <img class="detail-image" src="${imagePath}" alt="${m.name}">
+      <img class="detail-image" src="${img.png}"
+        onerror="this.onerror=null;this.src='${img.jpeg}'">
+
       <div class="detail-name">${m.name}</div>
       <div class="detail-kana">${m.kana}</div>
 
@@ -339,10 +312,11 @@ function renderMember(m) {
 }
 
 /* =========================
-   birthdays（完全版＋ラベル追加）
+   birthdays
 ========================= */
 
 async function initBirthdaysPage() {
+
   const groupSelect = document.getElementById("group-select");
   const statusFilter = document.getElementById("status-filter");
   const sortSelect = document.getElementById("birthday-sort");
@@ -357,6 +331,7 @@ async function initBirthdaysPage() {
 }
 
 async function updateBirthdays() {
+
   const group = document.getElementById("group-select").value;
   const status = document.getElementById("status-filter").value;
   const sort = document.getElementById("birthday-sort").value;
@@ -369,14 +344,7 @@ async function updateBirthdays() {
     members = members.filter(m => m.status === "member");
   }
 
-  if (sort === "calendar") {
-    members.sort((a, b) => {
-      const av = new Date(a.birthday);
-      const bv = new Date(b.birthday);
-      return (av.getMonth() + 1) * 100 + av.getDate()
-           - (bv.getMonth() + 1) * 100 - bv.getDate();
-    });
-  } else {
+  if (sort !== "calendar") {
     members.sort((a, b) =>
       getBirthdayDiff(a.birthday) - getBirthdayDiff(b.birthday)
     );
@@ -386,23 +354,29 @@ async function updateBirthdays() {
 }
 
 function renderBirthdayMembers(members) {
+
   const container = document.getElementById("birthday-list");
   if (!container) return;
 
   container.innerHTML = "";
 
   members.forEach(m => {
+
     const card = document.createElement("div");
     card.className = "member-card";
 
-    const imagePath =
-      `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
+    card.onclick = () => {
+      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
+    };
+
+    const img = getImagePath(m);
 
     const label = getMemberLabel(m, "all");
     const badgeClass = getBadgeClass(m);
 
     card.innerHTML = `
-      <img class="member-image" src="${imagePath}">
+      <img class="member-image" src="${img.png}"
+        onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
@@ -421,10 +395,11 @@ function renderBirthdayMembers(members) {
 }
 
 /* =========================
-   days（完全版＋ラベル追加）
+   days
 ========================= */
 
 async function initDaysPage() {
+
   const groupSelect = document.getElementById("group-select");
   const statusFilter = document.getElementById("status-filter");
 
@@ -437,6 +412,7 @@ async function initDaysPage() {
 }
 
 async function updateDays() {
+
   const group = document.getElementById("group-select").value;
   const status = document.getElementById("status-filter").value;
 
@@ -448,31 +424,35 @@ async function updateDays() {
     members = members.filter(m => m.status === "member");
   }
 
-  members.sort((a, b) =>
-    calcDays(b.joinDate) - calcDays(a.joinDate)
-  );
+  members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
 
   renderDaysMembers(members);
 }
 
 function renderDaysMembers(members) {
+
   const container = document.getElementById("days-list");
   if (!container) return;
 
   container.innerHTML = "";
 
   members.forEach(m => {
+
     const card = document.createElement("div");
     card.className = "member-card";
 
-    const imagePath =
-      `images/members/${m.groupId}/${m.image}_${m.imageYear}.JPEG`;
+    card.onclick = () => {
+      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
+    };
+
+    const img = getImagePath(m);
 
     const label = getMemberLabel(m, "all");
     const badgeClass = getBadgeClass(m);
 
     card.innerHTML = `
-      <img class="member-image" src="${imagePath}">
+      <img class="member-image" src="${img.png}"
+        onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
