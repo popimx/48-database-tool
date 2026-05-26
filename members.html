@@ -49,7 +49,7 @@
 
     </select>
 
-    <!-- ★ソート（完全新版） -->
+    <!-- ソート -->
     <select id="sort-select">
 
       <option value="default" selected>
@@ -64,6 +64,10 @@
         誕生日順
       </option>
 
+      <option value="nearestBirthday">
+        本日の日付から近い誕生日順
+      </option>
+
       <option value="age">
         年齢順
       </option>
@@ -76,10 +80,7 @@
 
   </div>
 
-  <div
-    id="member-list"
-    class="member-list"
-  ></div>
+  <div id="member-list" class="member-list"></div>
 
   <script src="main.js"></script>
 
