@@ -49,12 +49,11 @@ const AKB_ORDER = [
 const memberCache = {};
 
 /* =========================
-   データ（★重要修正）
+   データ
 ========================= */
 
 async function loadMembers(group) {
 
-  // キャッシュ無効化したいときはここコメントアウトOK
   const url = `data/members/${group}.json?t=${Date.now()}`;
 
   const res = await fetch(url, {
@@ -339,7 +338,7 @@ async function initMemberPage() {
   const members = await loadMembers(group);
   const member = members.find(m => m.id === id);
 
-  if (member) renderMember(member);
+  if (member) renderMember(m);
 }
 
 function renderMember(m) {
@@ -375,7 +374,7 @@ function renderMember(m) {
 }
 
 /* =========================
-   BIRTHDAY / DAYS
+   DAYS / BIRTHDAY
 ========================= */
 
 function getNextBirthday(date) {
@@ -464,18 +463,21 @@ function renderDaysMembers(members) {
 }
 
 /* =========================
-   DAYS LABEL
+   DAYS LABEL（★ここだけ修正）
 ========================= */
 
 function getDaysLabel(m) {
   if (!m) return "-";
+
   if (isTeam8(m)) return "チーム8";
 
-  const gen = String(m.generation || "").trim();
+  const gen = (m.generation || "").trim();
   if (!gen) return "-";
 
   if (m.role === "kenkyuusei") return `${gen}研究生`;
-  return `${gen}生`;
+
+  // ★修正ポイント：加工しない（そのまま表示）
+  return gen;
 }
 
 /* =========================
