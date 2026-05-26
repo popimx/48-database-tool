@@ -29,7 +29,7 @@ const groupNameMap = {
 const memberCache = {};
 
 /* =========================
-   データ読み込み
+   データ
 ========================= */
 
 async function loadMembers(group) {
@@ -49,7 +49,7 @@ async function loadAllMembers() {
 }
 
 /* =========================
-   バッジ
+   バッジ（復活）
 ========================= */
 
 function getBadgeClass(member) {
@@ -67,12 +67,11 @@ function getBadgeClass(member) {
 }
 
 /* =========================
-   画像（安全fallback）
+   画像
 ========================= */
 
 function getImagePath(m) {
   const base = `images/members/${m.groupId}/${m.image}_${m.imageYear}`;
-
   return {
     png: `${base}.PNG`,
     jpeg: `${base}.JPEG`,
@@ -109,7 +108,7 @@ async function initMembersPage() {
 }
 
 /* =========================
-   MEMBERS UPDATE
+   MEMBERS
 ========================= */
 
 async function updateMembers() {
@@ -126,10 +125,10 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
-  /* ===== ソート ===== */
+  /* ========= ソート ========= */
 
-  if (group === "nmb48" && sort === "default") {
-    members = nmbDefaultSort(members);
+  if (sort === "default") {
+    members.sort(globalDefaultSort);
   }
 
   else if (sort === "kana") {
@@ -165,38 +164,33 @@ async function updateMembers() {
     });
   }
 
-  else {
-    members.sort((a, b) =>
-      (a.kana || "").localeCompare(b.kana || "", "ja")
-    );
-  }
-
   renderMembers(members, group, sort);
 }
 
 /* =========================
-   NMB default sort
+   🔥 全体デフォルト（NMB含む統一ルール）
 ========================= */
 
-function nmbDefaultSort(members) {
+function globalDefaultSort(a, b) {
 
   const rank = (m) => {
+    if (m.groupId === "nmb48") {
+      if (m.role !== "kenkyuusei") return 1;
+
+      const gen = String(m.generation || "");
+      if (gen.includes("10")) return 2;
+      if (gen.includes("11")) return 3;
+      return 4;
+    }
+
     if (m.role !== "kenkyuusei") return 1;
-
-    const gen = String(m.generation || "");
-
-    if (gen.includes("10")) return 2;
-    if (gen.includes("11")) return 3;
-
-    return 4;
+    return 2;
   };
 
-  return [...members].sort((a, b) => {
-    const r = rank(a) - rank(b);
-    return r !== 0
-      ? r
-      : (a.kana || "").localeCompare(b.kana || "", "ja");
-  });
+  const diff = rank(a) - rank(b);
+  if (diff !== 0) return diff;
+
+  return (a.kana || "").localeCompare(b.kana || "", "ja");
 }
 
 /* =========================
@@ -249,7 +243,9 @@ function renderMembers(members, selectedGroup, sortMode) {
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
-        <span class="member-badge">${label}</span>
+        <span class="member-badge ${getBadgeClass(m)}">
+          ${label}
+        </span>
       </div>
 
       <div class="member-kana">${sub}</div>
@@ -350,9 +346,7 @@ async function updateBirthdays() {
     members.sort((a, b) =>
       (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5))
     );
-  }
-
-  else {
+  } else {
     members.sort((a, b) =>
       getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
     );
