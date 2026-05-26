@@ -23,6 +23,32 @@ const groupNameMap = {
 };
 
 /* =========================
+   キャッシュ
+========================= */
+
+const memberCache = {};
+
+/* =========================
+   データ読み込み
+========================= */
+
+async function loadMembers(group) {
+  if (memberCache[group]) return memberCache[group];
+
+  const res = await fetch(`data/members/${group}.json`);
+  if (!res.ok) return [];
+
+  const data = await res.json();
+  memberCache[group] = data;
+  return data;
+}
+
+async function loadAllMembers() {
+  const all = await Promise.all(GROUPS.map(loadMembers));
+  return all.flat();
+}
+
+/* =========================
    バッジ
 ========================= */
 
@@ -41,11 +67,12 @@ function getBadgeClass(member) {
 }
 
 /* =========================
-   画像
+   画像（安全fallback）
 ========================= */
 
 function getImagePath(m) {
   const base = `images/members/${m.groupId}/${m.image}_${m.imageYear}`;
+
   return {
     png: `${base}.PNG`,
     jpeg: `${base}.JPEG`,
@@ -54,45 +81,17 @@ function getImagePath(m) {
 }
 
 /* =========================
-   データ
-========================= */
-
-const memberCache = {};
-
-async function loadMembers(group) {
-  if (memberCache[group]) return memberCache[group];
-
-  const res = await fetch(`data/members/${group}.json`);
-  if (!res.ok) return [];
-
-  const data = await res.json();
-  memberCache[group] = data;
-  return data;
-}
-
-async function loadAllMembers() {
-  const results = await Promise.all(GROUPS.map(loadMembers));
-  return results.flat();
-}
-
-/* =========================
    ラベル
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
-
   if (selectedGroup === "all") {
     return groupNameMap[member.groupId] || "";
   }
 
   if (member.role === "kenkyuusei") {
-    if (!member.generation) return "研究生";
-    const gen = String(member.generation).replace("期", "");
-    return `${gen}期研究生`;
-  }
-
-  if (member.groupId === "ske48" || member.groupId === "hkt48") {
-    return member.team || "正規メンバー";
+    const gen = String(member.generation || "").replace("期", "");
+    return gen ? `${gen}期研究生` : "研究生";
   }
 
   return "正規メンバー";
@@ -103,23 +102,21 @@ function getMemberLabel(member, selectedGroup) {
 ========================= */
 
 async function initMembersPage() {
-
-  document.getElementById("group-select").addEventListener("change", updateMembers);
-  document.getElementById("status-filter").addEventListener("change", updateMembers);
-  document.getElementById("sort-select").addEventListener("change", updateMembers);
-
+  document.getElementById("group-select")?.addEventListener("change", updateMembers);
+  document.getElementById("status-filter")?.addEventListener("change", updateMembers);
+  document.getElementById("sort-select")?.addEventListener("change", updateMembers);
   updateMembers();
 }
 
 /* =========================
-   UPDATE MEMBERS
+   MEMBERS UPDATE
 ========================= */
 
 async function updateMembers() {
 
-  const group = document.getElementById("group-select").value;
-  const status = document.getElementById("status-filter").value;
-  const sort = document.getElementById("sort-select").value;
+  const group = document.getElementById("group-select")?.value || "all";
+  const status = document.getElementById("status-filter")?.value || "all";
+  const sort = document.getElementById("sort-select")?.value || "default";
 
   let members = group === "all"
     ? await loadAllMembers()
@@ -129,7 +126,7 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
-  // ===== ソート =====
+  /* ===== ソート ===== */
 
   if (group === "nmb48" && sort === "default") {
     members = nmbDefaultSort(members);
@@ -143,7 +140,7 @@ async function updateMembers() {
 
   else if (sort === "birthday") {
     members.sort((a, b) =>
-      a.birthday.slice(5).localeCompare(b.birthday.slice(5))
+      (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5))
     );
   }
 
@@ -160,20 +157,25 @@ async function updateMembers() {
   }
 
   else if (sort === "days") {
-    members.sort((a, b) =>
-      calcDays(b.joinDate) - calcDays(a.joinDate)
-    );
+    members.sort((a, b) => {
+      const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
+      return diff !== 0
+        ? diff
+        : (a.kana || "").localeCompare(b.kana || "", "ja");
+    });
   }
 
-  else if (sort !== "default") {
-    members = defaultSort(members);
+  else {
+    members.sort((a, b) =>
+      (a.kana || "").localeCompare(b.kana || "", "ja")
+    );
   }
 
   renderMembers(members, group, sort);
 }
 
 /* =========================
-   NMB専用デフォルト順
+   NMB default sort
 ========================= */
 
 function nmbDefaultSort(members) {
@@ -191,42 +193,27 @@ function nmbDefaultSort(members) {
 
   return [...members].sort((a, b) => {
     const r = rank(a) - rank(b);
-    if (r !== 0) return r;
-    return (a.kana || "").localeCompare(b.kana || "", "ja");
+    return r !== 0
+      ? r
+      : (a.kana || "").localeCompare(b.kana || "", "ja");
   });
 }
 
 /* =========================
-   default sort
-========================= */
-
-function defaultSort(members) {
-  return [...members].sort((a, b) =>
-    (a.kana || "").localeCompare(b.kana || "", "ja")
-  );
-}
-
-/* =========================
-   render members
+   RENDER MEMBERS
 ========================= */
 
 function renderMembers(members, selectedGroup, sortMode) {
 
   const container = document.getElementById("member-list");
+  if (!container) return;
+
   container.innerHTML = "";
 
   members.forEach(m => {
 
-    const card = document.createElement("div");
-    card.className = "member-card";
-
-    card.onclick = () => {
-      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
-    };
-
     const img = getImagePath(m);
     const label = getMemberLabel(m, selectedGroup);
-    const badgeClass = getBadgeClass(m);
 
     let sub = "";
 
@@ -245,8 +232,15 @@ function renderMembers(members, selectedGroup, sortMode) {
     }
 
     else {
-      sub = m.kana;
+      sub = m.kana || "";
     }
+
+    const card = document.createElement("div");
+    card.className = "member-card";
+
+    card.onclick = () => {
+      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
+    };
 
     card.innerHTML = `
       <img class="member-image"
@@ -255,9 +249,7 @@ function renderMembers(members, selectedGroup, sortMode) {
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
-        <span class="member-badge ${badgeClass}">
-          ${label}
-        </span>
+        <span class="member-badge">${label}</span>
       </div>
 
       <div class="member-kana">${sub}</div>
@@ -268,7 +260,7 @@ function renderMembers(members, selectedGroup, sortMode) {
 }
 
 /* =========================
-   member page
+   MEMBER PAGE
 ========================= */
 
 async function initMemberPage() {
@@ -282,17 +274,15 @@ async function initMemberPage() {
   const members = await loadMembers(group);
   const member = members.find(m => m.id === id);
 
-  if (member) renderMember(member, group);
+  if (member) renderMember(member);
 }
 
-function renderMember(m, group) {
+function renderMember(m) {
 
   const el = document.getElementById("member-detail");
   if (!el) return;
 
   const img = getImagePath(m);
-  const label = getMemberLabel(m, group);
-  const badgeClass = getBadgeClass(m);
 
   el.innerHTML = `
     <a href="members.html" class="back-button">← 一覧</a>
@@ -304,11 +294,6 @@ function renderMember(m, group) {
         onerror="this.onerror=null;this.src='${img.jpeg}'">
 
       <div class="detail-name">${m.name}</div>
-
-      <div class="member-badge ${badgeClass}">
-        ${label}
-      </div>
-
       <div class="detail-kana">${m.kana || ""}</div>
 
       <div class="detail-info">
@@ -317,7 +302,7 @@ function renderMember(m, group) {
         <div>出身地: ${m.prefecture || "-"}</div>
         <div>加入日: ${formatDate(m.joinDate)}</div>
         <div>在籍日数: ${calcDays(m.joinDate)}日</div>
-        <div>期生: ${formatGeneration(m)}</div>
+        <div>期生: ${formatGenerationClean(m)}</div>
       </div>
 
     </div>
@@ -325,23 +310,23 @@ function renderMember(m, group) {
 }
 
 /* =========================
-   birthdays
+   BIRTHDAYS
 ========================= */
 
 async function initBirthdaysPage() {
-
-  document.getElementById("group-select").addEventListener("change", updateBirthdays);
-  document.getElementById("status-filter").addEventListener("change", updateBirthdays);
-  document.getElementById("birthday-sort").addEventListener("change", updateBirthdays);
-
+  document.getElementById("group-select")?.addEventListener("change", updateBirthdays);
+  document.getElementById("status-filter")?.addEventListener("change", updateBirthdays);
+  document.getElementById("birthday-sort")?.addEventListener("change", updateBirthdays);
   updateBirthdays();
 }
 
 function getNextBirthday(date) {
+
   const today = new Date();
   const birth = new Date(date);
 
   let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+
   if (next < today) next.setFullYear(today.getFullYear() + 1);
 
   return next;
@@ -349,9 +334,9 @@ function getNextBirthday(date) {
 
 async function updateBirthdays() {
 
-  const group = document.getElementById("group-select").value;
-  const status = document.getElementById("status-filter").value;
-  const sort = document.getElementById("birthday-sort").value;
+  const group = document.getElementById("group-select")?.value || "all";
+  const status = document.getElementById("status-filter")?.value || "all";
+  const sort = document.getElementById("birthday-sort")?.value || "near";
 
   let members = group === "all"
     ? await loadAllMembers()
@@ -363,11 +348,11 @@ async function updateBirthdays() {
 
   if (sort === "birthday") {
     members.sort((a, b) =>
-      a.birthday.slice(5).localeCompare(b.birthday.slice(5))
+      (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5))
     );
   }
 
-  else if (sort === "near") {
+  else {
     members.sort((a, b) =>
       getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
     );
@@ -379,16 +364,13 @@ async function updateBirthdays() {
 function renderBirthdayMembers(members) {
 
   const container = document.getElementById("birthday-list");
-  container.innerHTML = "";
+  if (!container) return;
 
-  const group = document.getElementById("group-select").value;
+  container.innerHTML = "";
 
   members.forEach(m => {
 
     const img = getImagePath(m);
-    const label = getMemberLabel(m, group);
-    const badgeClass = getBadgeClass(m);
-
     const diff = getNextBirthday(m.birthday) - new Date();
     const days = Math.ceil(diff / 86400000);
 
@@ -406,9 +388,6 @@ function renderBirthdayMembers(members) {
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
-        <span class="member-badge ${badgeClass}">
-          ${label}
-        </span>
       </div>
 
       <div class="member-kana">
@@ -421,21 +400,19 @@ function renderBirthdayMembers(members) {
 }
 
 /* =========================
-   days
+   DAYS
 ========================= */
 
 async function initDaysPage() {
-
-  document.getElementById("group-select").addEventListener("change", updateDays);
-  document.getElementById("status-filter").addEventListener("change", updateDays);
-
+  document.getElementById("group-select")?.addEventListener("change", updateDays);
+  document.getElementById("status-filter")?.addEventListener("change", updateDays);
   updateDays();
 }
 
 async function updateDays() {
 
-  const group = document.getElementById("group-select").value;
-  const status = document.getElementById("status-filter").value;
+  const group = document.getElementById("group-select")?.value || "all";
+  const status = document.getElementById("status-filter")?.value || "all";
 
   let members = group === "all"
     ? await loadAllMembers()
@@ -445,9 +422,12 @@ async function updateDays() {
     members = members.filter(m => m.status === "member");
   }
 
-  members.sort((a, b) =>
-    calcDays(b.joinDate) - calcDays(a.joinDate)
-  );
+  members.sort((a, b) => {
+    const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
+    return diff !== 0
+      ? diff
+      : (a.kana || "").localeCompare(b.kana || "", "ja");
+  });
 
   renderDaysMembers(members);
 }
@@ -455,15 +435,13 @@ async function updateDays() {
 function renderDaysMembers(members) {
 
   const container = document.getElementById("days-list");
-  container.innerHTML = "";
+  if (!container) return;
 
-  const group = document.getElementById("group-select").value;
+  container.innerHTML = "";
 
   members.forEach(m => {
 
     const img = getImagePath(m);
-    const label = getMemberLabel(m, group);
-    const badgeClass = getBadgeClass(m);
 
     const card = document.createElement("div");
     card.className = "member-card";
@@ -479,9 +457,6 @@ function renderDaysMembers(members) {
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
-        <span class="member-badge ${badgeClass}">
-          ${label}
-        </span>
       </div>
 
       <div class="member-kana">
@@ -494,16 +469,19 @@ function renderDaysMembers(members) {
 }
 
 /* =========================
-   utils
+   UTILS
 ========================= */
 
 function calcDays(joinDate) {
+  if (!joinDate) return 0;
   const start = new Date(joinDate);
   const today = new Date();
   return Math.floor((today - start) / 86400000) + 1;
 }
 
 function calcAge(birthday) {
+  if (!birthday) return "-";
+
   const today = new Date();
   const birth = new Date(birthday);
 
@@ -516,20 +494,25 @@ function calcAge(birthday) {
 }
 
 function formatDate(date) {
+  if (!date) return "-";
   const d = new Date(date);
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
 function formatMonthDay(date) {
+  if (!date) return "-";
   const d = new Date(date);
   return `${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
-function formatGeneration(m) {
+function formatGenerationClean(m) {
+  if (!m?.generation) return "-";
+
+  const gen = String(m.generation).replace("期", "");
+
   if (m.role === "kenkyuusei") {
-    const g = String(m.generation || "").replace("期", "");
-    return `${g}期研究生`;
+    return `${gen}期研究生`;
   }
 
-  return m.generation ? `${m.generation}期生` : "-";
+  return `${gen}生`;
 }
