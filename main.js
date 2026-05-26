@@ -127,7 +127,7 @@ function getMemberLabel(member, selectedGroup, sortMode) {
   ===================== */
   if (sortMode === "days") {
     if (isTeam8Member) return "チーム8";
-    return `${member.generation}生`;
+    return `${member.generation}`;
   }
 
   /* =====================
