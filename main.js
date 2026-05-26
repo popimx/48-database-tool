@@ -1,29 +1,36 @@
-const path =
-  location.pathname;
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-if (
-  path.includes("members.html")
-) {
-  initMembersPage();
-}
+    const path =
+      location.pathname;
 
-if (
-  path.includes("member.html")
-) {
-  initMemberPage();
-}
+    if (
+      path.includes("members.html")
+    ) {
+      initMembersPage();
+    }
 
-if (
-  path.includes("birthdays.html")
-) {
-  initBirthdaysPage();
-}
+    if (
+      path.includes("member.html")
+    ) {
+      initMemberPage();
+    }
 
-if (
-  path.includes("days.html")
-) {
-  initDaysPage();
-}
+    if (
+      path.includes("birthdays.html")
+    ) {
+      initBirthdaysPage();
+    }
+
+    if (
+      path.includes("days.html")
+    ) {
+      initDaysPage();
+    }
+
+  }
+);
 
 const GROUPS = [
   "akb48",
@@ -42,12 +49,33 @@ async function loadAllMembers() {
       GROUPS.map(
         async group => {
 
-          const response =
-            await fetch(
-              `data/members/${group}.json`
+          try {
+
+            const response =
+              await fetch(
+                `data/members/${group}.json`
+              );
+
+            if (!response.ok) {
+
+              console.error(
+                `${group}.json の読み込み失敗`
+              );
+
+              return [];
+            }
+
+            return await response.json();
+
+          } catch (error) {
+
+            console.error(
+              `${group}.json エラー`,
+              error
             );
 
-          return await response.json();
+            return [];
+          }
 
         }
       )
@@ -67,6 +95,13 @@ async function initMembersPage() {
     document.getElementById(
       "status-filter"
     );
+
+  if (
+    !groupSelect ||
+    !statusFilter
+  ) {
+    return;
+  }
 
   groupSelect.addEventListener(
     "change",
@@ -102,17 +137,37 @@ async function updateMembers() {
 
   } else {
 
-    const response =
-      await fetch(
-        `data/members/${group}.json`
+    try {
+
+      const response =
+        await fetch(
+          `data/members/${group}.json`
+        );
+
+      if (!response.ok) {
+
+        console.error(
+          `${group}.json の読み込み失敗`
+        );
+
+        return;
+      }
+
+      members =
+        await response.json();
+
+    } catch (error) {
+
+      console.error(
+        `${group}.json エラー`,
+        error
       );
 
-    members =
-      await response.json();
+      return;
+    }
 
   }
 
-  // 現役のみ
   if (status === "member") {
 
     members =
@@ -123,7 +178,6 @@ async function updateMembers() {
 
   }
 
-  // 加入日順 → kana順
   members.sort((a, b) => {
 
     const joinA =
@@ -152,6 +206,10 @@ function renderMembers(members) {
       "member-list"
     );
 
+  if (!container) {
+    return;
+  }
+
   container.innerHTML = "";
 
   members.forEach(member => {
@@ -177,6 +235,7 @@ function renderMembers(members) {
       <img
         class="member-image"
         src="${imagePath}"
+        alt="${member.name}"
       >
 
       <div class="member-name">
@@ -205,20 +264,40 @@ async function initMemberPage() {
   const group =
     params.get("group");
 
-  const response =
-    await fetch(
-      `data/members/${group}.json`
-    );
+  if (!id || !group) {
+    return;
+  }
 
-  const members =
-    await response.json();
+  try {
 
-  const member =
-    members.find(
-      m => m.id === id
-    );
+    const response =
+      await fetch(
+        `data/members/${group}.json`
+      );
 
-  renderMember(member);
+    if (!response.ok) {
+      return;
+    }
+
+    const members =
+      await response.json();
+
+    const member =
+      members.find(
+        m => m.id === id
+      );
+
+    if (!member) {
+      return;
+    }
+
+    renderMember(member);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
 }
 
 function calcDays(joinDate) {
@@ -293,6 +372,10 @@ function renderMember(member) {
       "member-detail"
     );
 
+  if (!container) {
+    return;
+  }
+
   const imagePath =
     `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
 
@@ -305,78 +388,84 @@ function renderMember(member) {
       ← メンバーの一覧
     </a>
 
-    <img
-      class="detail-image"
-      src="${imagePath}"
-    >
+    <div class="member-detail">
 
-    <div class="detail-name">
-      ${member.name}
-    </div>
+      <img
+        class="detail-image"
+        src="${imagePath}"
+        alt="${member.name}"
+      >
 
-    <div class="detail-kana">
-      ${member.kana}
-    </div>
-
-    <div class="detail-info">
-
-      <div>
-        <span class="label">
-          ニックネーム:
-        </span>
-
-        ${member.nickname || "-"}
+      <div class="detail-name">
+        ${member.name}
       </div>
 
-      <div>
-        <span class="label">
-          生年月日:
-        </span>
+      <div class="detail-kana">
+        ${member.kana}
+      </div>
 
-        ${formatDate(
-          member.birthday
-        )}
-        (
-          ${calcAge(
+      <div class="detail-info">
+
+        <div>
+          <span class="label">
+            ニックネーム:
+          </span>
+
+          ${member.nickname || "-"}
+        </div>
+
+        <div>
+          <span class="label">
+            生年月日:
+          </span>
+
+          ${formatDate(
             member.birthday
-          )}歳
-        )
-      </div>
+          )}
 
-      <div>
-        <span class="label">
-          出身地:
-        </span>
+          (
+            ${calcAge(
+              member.birthday
+            )}歳
+          )
+        </div>
 
-        ${member.prefecture}
-      </div>
+        <div>
+          <span class="label">
+            出身地:
+          </span>
 
-      <div>
-        <span class="label">
-          加入日:
-        </span>
+          ${member.prefecture}
+        </div>
 
-        ${formatDate(
-          member.joinDate
-        )}
-      </div>
+        <div>
+          <span class="label">
+            加入日:
+          </span>
 
-      <div>
-        <span class="label">
-          在籍日数:
-        </span>
+          ${formatDate(
+            member.joinDate
+          )}
+        </div>
 
-        ${calcDays(
-          member.joinDate
-        )}日
-      </div>
+        <div>
+          <span class="label">
+            在籍日数:
+          </span>
 
-      <div>
-        <span class="label">
-          期生:
-        </span>
+          ${calcDays(
+            member.joinDate
+          )}日
+        </div>
 
-        ${member.generation}
+        <div>
+          <span class="label">
+            期生:
+          </span>
+
+          ${member.generation}
+        </div>
+
       </div>
 
     </div>
@@ -389,6 +478,10 @@ async function initBirthdaysPage() {
     document.getElementById(
       "birthday-sort"
     );
+
+  if (!sortSelect) {
+    return;
+  }
 
   sortSelect.addEventListener(
     "change",
@@ -489,6 +582,10 @@ function renderBirthdayMembers(
       "birthday-list"
     );
 
+  if (!container) {
+    return;
+  }
+
   container.innerHTML = "";
 
   members.forEach(member => {
@@ -514,6 +611,7 @@ function renderBirthdayMembers(
       <img
         class="member-image"
         src="${imagePath}"
+        alt="${member.name}"
       >
 
       <div class="member-name">
@@ -524,6 +622,7 @@ function renderBirthdayMembers(
         ${formatDate(
           member.birthday
         )}
+
         (
           ${calcAge(
             member.birthday
@@ -567,6 +666,10 @@ function renderDaysMembers(
       "days-list"
     );
 
+  if (!container) {
+    return;
+  }
+
   container.innerHTML = "";
 
   members.forEach(member => {
@@ -592,6 +695,7 @@ function renderDaysMembers(
       <img
         class="member-image"
         src="${imagePath}"
+        alt="${member.name}"
       >
 
       <div class="member-name">
