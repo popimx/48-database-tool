@@ -514,5 +514,5 @@ function formatGenerationClean(m) {
     return `${gen}期研究生`;
   }
 
-  return `${gen}生`;
+  return `${gen}期生`;
 }
