@@ -196,41 +196,25 @@ async function updateMembers() {
 
   if (sort === "kana") {
 
-    members.sort((a, b) => {
-
-      return a.kana.localeCompare(
-        b.kana,
-        "ja"
-      );
-    });
+    members.sort((a, b) =>
+      a.kana.localeCompare(b.kana, "ja")
+    );
 
   }
 
   else if (sort === "age") {
 
-    members.sort((a, b) => {
-
-      return (
-        new Date(a.birthday) -
-        new Date(b.birthday)
-      );
-    });
+    members.sort((a, b) =>
+      new Date(a.birthday) - new Date(b.birthday)
+    );
 
   }
 
   else if (sort === "days") {
 
-    members.sort((a, b) => {
-
-      return (
-        calcDays(
-          b.joinDate
-        ) -
-        calcDays(
-          a.joinDate
-        )
-      );
-    });
+    members.sort((a, b) =>
+      calcDays(b.joinDate) - calcDays(a.joinDate)
+    );
 
   }
 
@@ -346,10 +330,14 @@ function calcDays(joinDate) {
   const today =
     new Date();
 
-  return Math.floor(
-    (today - start) /
-    (1000 * 60 * 60 * 24)
-  );
+  const diff =
+    Math.floor(
+      (today - start) /
+      (1000 * 60 * 60 * 24)
+    );
+
+  // ★加入日を1日目としてカウント
+  return diff + 1;
 }
 
 function calcAge(birthday) {
@@ -453,14 +441,7 @@ function renderMember(member) {
             生年月日:
           </span>
 
-          ${formatDate(
-            member.birthday
-          )}
-          (
-            ${calcAge(
-              member.birthday
-            )}歳
-          )
+          ${formatDate(member.birthday)} (${calcAge(member.birthday)}歳)
         </div>
 
         <div>
@@ -476,9 +457,7 @@ function renderMember(member) {
             加入日:
           </span>
 
-          ${formatDate(
-            member.joinDate
-          )}
+          ${formatDate(member.joinDate)}
         </div>
 
         <div>
@@ -486,9 +465,7 @@ function renderMember(member) {
             在籍日数:
           </span>
 
-          ${calcDays(
-            member.joinDate
-          )}日
+          ${calcDays(member.joinDate)}日
         </div>
 
         <div>
@@ -508,42 +485,21 @@ function renderMember(member) {
 async function initBirthdaysPage() {
 
   const groupSelect =
-    document.getElementById(
-      "group-select"
-    );
+    document.getElementById("group-select");
 
   const statusFilter =
-    document.getElementById(
-      "status-filter"
-    );
+    document.getElementById("status-filter");
 
   const sortSelect =
-    document.getElementById(
-      "birthday-sort"
-    );
+    document.getElementById("birthday-sort");
 
-  if (
-    !groupSelect ||
-    !statusFilter ||
-    !sortSelect
-  ) {
+  if (!groupSelect || !statusFilter || !sortSelect) {
     return;
   }
 
-  groupSelect.addEventListener(
-    "change",
-    updateBirthdays
-  );
-
-  statusFilter.addEventListener(
-    "change",
-    updateBirthdays
-  );
-
-  sortSelect.addEventListener(
-    "change",
-    updateBirthdays
-  );
+  groupSelect.addEventListener("change", updateBirthdays);
+  statusFilter.addEventListener("change", updateBirthdays);
+  sortSelect.addEventListener("change", updateBirthdays);
 
   updateBirthdays();
 }
@@ -551,162 +507,92 @@ async function initBirthdaysPage() {
 async function updateBirthdays() {
 
   const group =
-    document.getElementById(
-      "group-select"
-    ).value;
+    document.getElementById("group-select").value;
 
   const status =
-    document.getElementById(
-      "status-filter"
-    ).value;
+    document.getElementById("status-filter").value;
 
   const sortMode =
-    document.getElementById(
-      "birthday-sort"
-    ).value;
+    document.getElementById("birthday-sort").value;
 
   let members = [];
 
   if (group === "all") {
-
-    members =
-      await loadAllMembers();
-
+    members = await loadAllMembers();
   } else {
-
     try {
-
       const response =
-        await fetch(
-          `data/members/${group}.json`
-        );
+        await fetch(`data/members/${group}.json`);
 
-      if (!response.ok) {
-        return;
-      }
+      if (!response.ok) return;
 
-      members =
-        await response.json();
-
+      members = await response.json();
     } catch (error) {
-
       console.error(error);
-
       return;
     }
-
   }
 
   if (status === "member") {
-
-    members =
-      members.filter(
-        member =>
-          member.status === "member"
-      );
+    members = members.filter(m => m.status === "member");
   }
 
   if (sortMode === "calendar") {
 
     members.sort((a, b) => {
 
-      const aDate =
-        new Date(a.birthday);
+      const aDate = new Date(a.birthday);
+      const bDate = new Date(b.birthday);
 
-      const bDate =
-        new Date(b.birthday);
-
-      const aValue =
-        (
-          (aDate.getMonth() + 1)
-          * 100
-        ) +
-        aDate.getDate();
-
-      const bValue =
-        (
-          (bDate.getMonth() + 1)
-          * 100
-        ) +
-        bDate.getDate();
+      const aValue = (aDate.getMonth() + 1) * 100 + aDate.getDate();
+      const bValue = (bDate.getMonth() + 1) * 100 + bDate.getDate();
 
       return aValue - bValue;
     });
 
+  } else {
+
+    members.sort((a, b) =>
+      getBirthdayDiff(a.birthday) - getBirthdayDiff(b.birthday)
+    );
   }
 
-  else {
-
-    members.sort((a, b) => {
-
-      return (
-        getBirthdayDiff(
-          a.birthday
-        ) -
-        getBirthdayDiff(
-          b.birthday
-        )
-      );
-    });
-  }
-
-  renderBirthdayMembers(
-    members
-  );
+  renderBirthdayMembers(members);
 }
 
 function getBirthdayDiff(birthday) {
 
-  const today =
-    new Date();
+  const today = new Date();
+  const birth = new Date(birthday);
 
-  const birth =
-    new Date(birthday);
-
-  const next =
-    new Date(
-      today.getFullYear(),
-      birth.getMonth(),
-      birth.getDate()
-    );
+  const next = new Date(
+    today.getFullYear(),
+    birth.getMonth(),
+    birth.getDate()
+  );
 
   if (next < today) {
-
-    next.setFullYear(
-      today.getFullYear() + 1
-    );
+    next.setFullYear(today.getFullYear() + 1);
   }
 
   return next - today;
 }
 
-function renderBirthdayMembers(
-  members
-) {
+function renderBirthdayMembers(members) {
 
   const container =
-    document.getElementById(
-      "birthday-list"
-    );
+    document.getElementById("birthday-list");
 
-  if (!container) {
-    return;
-  }
+  if (!container) return;
 
   container.innerHTML = "";
 
   members.forEach(member => {
 
-    const card =
-      document.createElement(
-        "div"
-      );
-
-      card.className =
-      "member-card";
+    const card = document.createElement("div");
+    card.className = "member-card";
 
     card.onclick = () => {
-
       location.href =
         `member.html?id=${member.id}&group=${member.groupId}`;
     };
@@ -715,25 +601,10 @@ function renderBirthdayMembers(
       `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
 
     card.innerHTML = `
-      <img
-        class="member-image"
-        src="${imagePath}"
-        alt="${member.name}"
-      >
-
-      <div class="member-name">
-        ${member.name}
-      </div>
-
+      <img class="member-image" src="${imagePath}" alt="${member.name}">
+      <div class="member-name">${member.name}</div>
       <div class="member-kana">
-        ${formatDate(
-          member.birthday
-        )}
-        (
-          ${calcAge(
-            member.birthday
-          )}歳
-        )
+        ${formatDate(member.birthday)} (${calcAge(member.birthday)}歳)
       </div>
     `;
 
@@ -744,31 +615,15 @@ function renderBirthdayMembers(
 async function initDaysPage() {
 
   const groupSelect =
-    document.getElementById(
-      "group-select"
-    );
+    document.getElementById("group-select");
 
   const statusFilter =
-    document.getElementById(
-      "status-filter"
-    );
+    document.getElementById("status-filter");
 
-  if (
-    !groupSelect ||
-    !statusFilter
-  ) {
-    return;
-  }
+  if (!groupSelect || !statusFilter) return;
 
-  groupSelect.addEventListener(
-    "change",
-    updateDays
-  );
-
-  statusFilter.addEventListener(
-    "change",
-    updateDays
-  );
+  groupSelect.addEventListener("change", updateDays);
+  statusFilter.addEventListener("change", updateDays);
 
   updateDays();
 }
@@ -776,100 +631,55 @@ async function initDaysPage() {
 async function updateDays() {
 
   const group =
-    document.getElementById(
-      "group-select"
-    ).value;
+    document.getElementById("group-select").value;
 
   const status =
-    document.getElementById(
-      "status-filter"
-    ).value;
+    document.getElementById("status-filter").value;
 
   let members = [];
 
   if (group === "all") {
-
-    members =
-      await loadAllMembers();
-
+    members = await loadAllMembers();
   } else {
-
     try {
-
       const response =
-        await fetch(
-          `data/members/${group}.json`
-        );
+        await fetch(`data/members/${group}.json`);
 
-      if (!response.ok) {
-        return;
-      }
+      if (!response.ok) return;
 
-      members =
-        await response.json();
-
+      members = await response.json();
     } catch (error) {
-
       console.error(error);
-
       return;
     }
-
   }
 
   if (status === "member") {
-
-    members =
-      members.filter(
-        member =>
-          member.status === "member"
-      );
+    members = members.filter(m => m.status === "member");
   }
 
-  members.sort((a, b) => {
-
-    return (
-      calcDays(
-        b.joinDate
-      ) -
-      calcDays(
-        a.joinDate
-      )
-    );
-  });
-
-  renderDaysMembers(
-    members
+  members.sort((a, b) =>
+    calcDays(b.joinDate) - calcDays(a.joinDate)
   );
+
+  renderDaysMembers(members);
 }
 
-function renderDaysMembers(
-  members
-) {
+function renderDaysMembers(members) {
 
   const container =
-    document.getElementById(
-      "days-list"
-    );
+    document.getElementById("days-list");
 
-  if (!container) {
-    return;
-  }
+  if (!container) return;
 
   container.innerHTML = "";
 
   members.forEach(member => {
 
-    const card =
-      document.createElement(
-        "div"
-      );
-
-    card.className =
-      "member-card";
+    const card = document.createElement("div");
+    card.className = "member-card";
 
     card.onclick = () => {
-
       location.href =
         `member.html?id=${member.id}&group=${member.groupId}`;
     };
@@ -878,22 +688,9 @@ function renderDaysMembers(
       `images/members/${member.groupId}/${member.image}_${member.imageYear}.PNG`;
 
     card.innerHTML = `
-      <img
-        class="member-image"
-        src="${imagePath}"
-        alt="${member.name}"
-      >
-
-      <div class="member-name">
-        ${member.name}
-      </div>
-
-      <div class="member-kana">
-        在籍
-        ${calcDays(
-          member.joinDate
-        )}日
-      </div>
+      <img class="member-image" src="${imagePath}" alt="${member.name}">
+      <div class="member-name">${member.name}</div>
+      <div class="member-kana">在籍 ${calcDays(member.joinDate)}日</div>
     `;
 
     container.appendChild(card);
