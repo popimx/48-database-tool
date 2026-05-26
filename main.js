@@ -23,7 +23,7 @@ const groupNameMap = {
 };
 
 /* =========================
-   カラー設定
+   カラー
 ========================= */
 
 function getBadgeClass(member) {
@@ -41,7 +41,7 @@ function getBadgeClass(member) {
 }
 
 /* =========================
-   卒業生判定
+   卒業判定
 ========================= */
 
 function isGraduate(m) {
@@ -49,7 +49,7 @@ function isGraduate(m) {
 }
 
 /* =========================
-   期表示（詳細ページ）
+   期表示（詳細用）
 ========================= */
 
 function formatGeneration(gen, mode = "list") {
@@ -59,7 +59,7 @@ function formatGeneration(gen, mode = "list") {
 }
 
 /* =========================
-   画像パス
+   画像
 ========================= */
 
 function getImagePath(m) {
@@ -72,7 +72,7 @@ function getImagePath(m) {
 }
 
 /* =========================
-   データ読み込み
+   データ取得
 ========================= */
 
 const memberCache = {};
@@ -99,25 +99,24 @@ async function loadAllMembers() {
 }
 
 /* =========================
-   ラベル（★統一修正済み）
+   ラベル（★修正版）
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
 
-  // 全体表示 → グループ名
   if (selectedGroup === "all") {
     return groupNameMap[member.groupId] || "";
   }
 
-  // 研究生（★全グループ統一）
+  // ★研究生統一（10期期バグ修正済み）
   if (member.role === "kenkyuusei") {
-    if (member.generation) {
-      return `${member.generation}期研究生`;
-    }
-    return "研究生";
+
+    if (!member.generation) return "研究生";
+
+    const gen = String(member.generation).replace("期", "");
+    return `${gen}期研究生`;
   }
 
-  // チーム制グループ
   if (member.groupId === "ske48" || member.groupId === "hkt48") {
     return member.team || "正規メンバー";
   }
@@ -157,7 +156,6 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
-  // デフォルト
   members = defaultSort(members, group);
 
   if (sort === "kana") {
@@ -172,7 +170,7 @@ async function updateMembers() {
 }
 
 /* =========================
-   defaultSort（NMB維持＋整理）
+   defaultSort
 ========================= */
 
 function defaultSort(members, selectedGroup) {
@@ -198,28 +196,6 @@ function defaultSort(members, selectedGroup) {
 
     if (aG && !bG) return 1;
     if (!aG && bG) return -1;
-
-    // NMBだけ特別順
-    if (selectedGroup === "nmb48") {
-
-      const rank = (m) => {
-        if (m.role === "regular") return 1;
-        if (m.role === "kenkyuusei") {
-          if (m.generation === 10 || m.generation === "10期") return 2;
-          if (m.generation === 11 || m.generation === "11期") return 3;
-        }
-        return 99;
-      };
-
-      return rank(a) - rank(b)
-        || a.kana.localeCompare(b.kana, "ja");
-    }
-
-    if (selectedGroup === "all") {
-      return (groupOrder[a.groupId.toUpperCase()] || 99)
-        - (groupOrder[b.groupId.toUpperCase()] || 99)
-        || a.kana.localeCompare(b.kana, "ja");
-    }
 
     return a.kana.localeCompare(b.kana, "ja");
   });
@@ -335,6 +311,21 @@ async function initBirthdaysPage() {
   updateBirthdays();
 }
 
+function getNextBirthday(date) {
+  const today = new Date();
+  const birth = new Date(date);
+
+  const next = new Date(
+    today.getFullYear(),
+    birth.getMonth(),
+    birth.getDate()
+  );
+
+  if (next < today) next.setFullYear(today.getFullYear() + 1);
+
+  return next;
+}
+
 async function updateBirthdays() {
 
   const group = document.getElementById("group-select").value;
@@ -349,12 +340,26 @@ async function updateBirthdays() {
     members = members.filter(m => m.status === "member");
   }
 
-  members.sort((a, b) =>
-    new Date(a.birthday) - new Date(b.birthday)
-  );
+  // ★誕生日順
+  if (sort === "birthday") {
+    members.sort((a, b) =>
+      new Date(a.birthday) - new Date(b.birthday)
+    );
+  }
+
+  // ★今日から近い順
+  else if (sort === "near") {
+    members.sort((a, b) =>
+      getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
+    );
+  }
 
   renderBirthdayMembers(members);
 }
+
+/* =========================
+   birthday render
+========================= */
 
 function renderBirthdayMembers(members) {
 
@@ -375,7 +380,6 @@ function renderBirthdayMembers(members) {
     };
 
     const img = getImagePath(m);
-
     const label = getMemberLabel(m, group);
     const badgeClass = getBadgeClass(m);
 
@@ -435,6 +439,10 @@ async function updateDays() {
   renderDaysMembers(members);
 }
 
+/* =========================
+   days render
+========================= */
+
 function renderDaysMembers(members) {
 
   const container = document.getElementById("days-list");
@@ -479,7 +487,7 @@ function renderDaysMembers(members) {
 }
 
 /* =========================
-   共通ユーティリティ
+   共通
 ========================= */
 
 function calcDays(joinDate) {
