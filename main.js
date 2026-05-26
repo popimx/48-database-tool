@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const GROUPS = ["akb48", "ske48", "nmb48", "hkt48", "ngt48", "stu48"];
 
+const GROUP_ORDER = ["akb48", "ske48", "nmb48", "hkt48", "ngt48", "stu48"];
+
 const groupNameMap = {
   akb48: "AKB48",
   ske48: "SKE48",
@@ -21,6 +23,24 @@ const groupNameMap = {
   ngt48: "NGT48",
   stu48: "STU48"
 };
+
+/* =========================
+   AKB並び順（重要）
+========================= */
+
+const AKB_ORDER = [
+  "13期",
+  "15期",
+  "チーム8",
+  "ドラフト2期",
+  "16期",
+  "ドラフト3期",
+  "17期",
+  "18期",
+  "19期",
+  "20期",
+  "21期"
+];
 
 /* =========================
    キャッシュ
@@ -49,7 +69,7 @@ async function loadAllMembers() {
 }
 
 /* =========================
-   バッジ（復活）
+   バッジ
 ========================= */
 
 function getBadgeClass(member) {
@@ -80,12 +100,21 @@ function getImagePath(m) {
 }
 
 /* =========================
-   ラベル
+   ラベル（一覧）
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
+
   if (selectedGroup === "all") {
+    if (member.groupId === "akb48" && member.generation === "チーム8") {
+      return "チーム8";
+    }
+
     return groupNameMap[member.groupId] || "";
+  }
+
+  if (member.groupId === "akb48" && member.generation === "チーム8") {
+    return "チーム8";
   }
 
   if (member.role === "kenkyuusei") {
@@ -108,7 +137,7 @@ async function initMembersPage() {
 }
 
 /* =========================
-   MEMBERS
+   MEMBERS UPDATE
 ========================= */
 
 async function updateMembers() {
@@ -168,27 +197,64 @@ async function updateMembers() {
 }
 
 /* =========================
-   🔥 全体デフォルト（NMB含む統一ルール）
+   AKB専用ランク
+========================= */
+
+function akbRank(m) {
+  const gen = String(m.generation || "");
+
+  for (let i = 0; i < AKB_ORDER.length; i++) {
+    if (gen.includes(AKB_ORDER[i])) return i;
+  }
+  return 999;
+}
+
+/* =========================
+   NMB専用ランク
+========================= */
+
+function nmbRank(m) {
+  if (m.role !== "kenkyuusei") return 1;
+
+  const gen = String(m.generation || "");
+  if (gen.includes("10")) return 2;
+  if (gen.includes("11")) return 3;
+
+  return 4;
+}
+
+/* =========================
+   全体デフォルトソート
 ========================= */
 
 function globalDefaultSort(a, b) {
 
-  const rank = (m) => {
-    if (m.groupId === "nmb48") {
-      if (m.role !== "kenkyuusei") return 1;
+  const groupDiff =
+    GROUP_ORDER.indexOf(a.groupId) -
+    GROUP_ORDER.indexOf(b.groupId);
 
-      const gen = String(m.generation || "");
-      if (gen.includes("10")) return 2;
-      if (gen.includes("11")) return 3;
-      return 4;
-    }
+  if (groupDiff !== 0) return groupDiff;
 
-    if (m.role !== "kenkyuusei") return 1;
-    return 2;
-  };
+  if (a.groupId === "akb48" && b.groupId === "akb48") {
 
-  const diff = rank(a) - rank(b);
-  if (diff !== 0) return diff;
+    const r = akbRank(a) - akbRank(b);
+    if (r !== 0) return r;
+
+    return (a.kana || "").localeCompare(b.kana || "", "ja");
+  }
+
+  if (a.groupId === "nmb48" && b.groupId === "nmb48") {
+
+    const r = nmbRank(a) - nmbRank(b);
+    if (r !== 0) return r;
+
+    return (a.kana || "").localeCompare(b.kana || "", "ja");
+  }
+
+  const aKey = a.role === "kenkyuusei" ? 2 : 1;
+  const bKey = b.role === "kenkyuusei" ? 2 : 1;
+
+  if (aKey !== bKey) return aKey - bKey;
 
   return (a.kana || "").localeCompare(b.kana || "", "ja");
 }
@@ -243,9 +309,7 @@ function renderMembers(members, selectedGroup, sortMode) {
 
       <div class="member-name-row">
         <span class="member-name">${m.name}</span>
-        <span class="member-badge ${getBadgeClass(m)}">
-          ${label}
-        </span>
+        <span class="member-badge ${getBadgeClass(m)}">${label}</span>
       </div>
 
       <div class="member-kana">${sub}</div>
@@ -306,26 +370,24 @@ function renderMember(m) {
 }
 
 /* =========================
-   BIRTHDAYS
+   BIRTHDAY
 ========================= */
+
+function getNextBirthday(date) {
+  const today = new Date();
+  const birth = new Date(date);
+
+  let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  if (next < today) next.setFullYear(today.getFullYear() + 1);
+
+  return next;
+}
 
 async function initBirthdaysPage() {
   document.getElementById("group-select")?.addEventListener("change", updateBirthdays);
   document.getElementById("status-filter")?.addEventListener("change", updateBirthdays);
   document.getElementById("birthday-sort")?.addEventListener("change", updateBirthdays);
   updateBirthdays();
-}
-
-function getNextBirthday(date) {
-
-  const today = new Date();
-  const birth = new Date(date);
-
-  let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
-
-  if (next < today) next.setFullYear(today.getFullYear() + 1);
-
-  return next;
 }
 
 async function updateBirthdays() {
@@ -346,7 +408,9 @@ async function updateBirthdays() {
     members.sort((a, b) =>
       (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5))
     );
-  } else {
+  }
+
+  else {
     members.sort((a, b) =>
       getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
     );
@@ -500,7 +564,10 @@ function formatMonthDay(date) {
 }
 
 function formatGenerationClean(m) {
+
   if (!m?.generation) return "-";
+
+  if (m.generation === "チーム8") return "チーム8";
 
   const gen = String(m.generation).replace("期", "");
 
