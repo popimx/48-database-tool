@@ -49,7 +49,7 @@ const AKB_ORDER = [
 const memberCache = {};
 
 /* =========================
-   データ取得
+   データ
 ========================= */
 
 async function loadMembers(group) {
@@ -108,7 +108,7 @@ function isTeam8(m) {
 }
 
 /* =========================
-   ラベル（完全修正版）
+   ラベル（一覧）
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
@@ -123,17 +123,16 @@ function getMemberLabel(member, selectedGroup) {
     return "チーム8";
   }
 
-  /* 正規メンバー */
+  /* 正規 */
   if (isNormalMember && specialGroups.includes(member.groupId)) {
     return selectedGroup === "all"
       ? groupNameMap[member.groupId]
       : "正規メンバー";
   }
 
-  /* 研究生（修正ポイント） */
+  /* 研究生 */
   if (member.role === "kenkyuusei") {
 
-    // ★全グループ表示時はグループ名
     if (selectedGroup === "all") {
       return groupNameMap[member.groupId];
     }
@@ -146,7 +145,7 @@ function getMemberLabel(member, selectedGroup) {
 }
 
 /* =========================
-   INIT
+   INIT MEMBERS
 ========================= */
 
 async function initMembersPage() {
@@ -209,7 +208,6 @@ async function updateMembers() {
       const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
       if (diff !== 0) return diff;
 
-      // ★同率：五十音順（研究生含む）
       return (a.kana || "").localeCompare(b.kana || "", "ja");
     });
   }
@@ -397,10 +395,6 @@ function getNextBirthday(date) {
   return next;
 }
 
-/* =========================
-   BIRTHDAY PAGE
-========================= */
-
 async function initBirthdaysPage() {
   document.getElementById("group-select")?.addEventListener("change", updateBirthdays);
   document.getElementById("status-filter")?.addEventListener("change", updateBirthdays);
@@ -500,25 +494,23 @@ async function updateDays() {
     const diff = calcDays(b.joinDate) - calcDays(a.joinDate);
     if (diff !== 0) return diff;
 
-    return GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
+    return (a.kana || "").localeCompare(b.kana || "", "ja");
   });
 
   renderDaysMembers(members);
 }
 
 /* =========================
-   DAYS LABEL
+   DAYS LABEL（完全修正版）
 ========================= */
 
-function getDaysLabel(m, selectedGroup) {
+function getDaysLabel(m) {
 
   if (isTeam8(m)) return "チーム8";
 
   const gen = String(m.generation || "").replace("期", "");
 
-  if (m.role === "kenkyuusei") {
-    return `${gen}期生`;
-  }
+  if (!gen) return "-";
 
   return `${gen}期生`;
 }
