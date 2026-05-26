@@ -127,6 +127,7 @@ function getMemberLabel(member, selectedGroup, sortMode) {
   // =========================
   if (selectedGroup === "all") {
     if (
+      sortMode === "default" ||
       sortMode === "kana" ||
       sortMode === "birthday" ||
       sortMode === "nearestBirthday" ||
