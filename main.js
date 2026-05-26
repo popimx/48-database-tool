@@ -41,14 +41,6 @@ function getBadgeClass(member) {
 }
 
 /* =========================
-   卒業
-========================= */
-
-function isGraduate(m) {
-  return m.status === "graduated";
-}
-
-/* =========================
    画像
 ========================= */
 
@@ -107,7 +99,7 @@ function getMemberLabel(member, selectedGroup) {
 }
 
 /* =========================
-   INIT
+   INIT MEMBERS
 ========================= */
 
 async function initMembersPage() {
@@ -137,9 +129,16 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
-  // ---- ソート ----
-  if (sort === "kana") {
-    members.sort((a, b) => (a.kana || "").localeCompare(b.kana || "", "ja"));
+  // ===== ソート =====
+
+  if (group === "nmb48" && sort === "default") {
+    members = nmbDefaultSort(members);
+  }
+
+  else if (sort === "kana") {
+    members.sort((a, b) =>
+      (a.kana || "").localeCompare(b.kana || "", "ja")
+    );
   }
 
   else if (sort === "birthday") {
@@ -155,18 +154,46 @@ async function updateMembers() {
   }
 
   else if (sort === "age") {
-    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
+    members.sort((a, b) =>
+      new Date(a.birthday) - new Date(b.birthday)
+    );
   }
 
   else if (sort === "days") {
-    members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
+    members.sort((a, b) =>
+      calcDays(b.joinDate) - calcDays(a.joinDate)
+    );
   }
 
-  else {
+  else if (sort !== "default") {
     members = defaultSort(members);
   }
 
   renderMembers(members, group, sort);
+}
+
+/* =========================
+   NMB専用デフォルト順
+========================= */
+
+function nmbDefaultSort(members) {
+
+  const rank = (m) => {
+    if (m.role !== "kenkyuusei") return 1;
+
+    const gen = String(m.generation || "");
+
+    if (gen.includes("10")) return 2;
+    if (gen.includes("11")) return 3;
+
+    return 4;
+  };
+
+  return [...members].sort((a, b) => {
+    const r = rank(a) - rank(b);
+    if (r !== 0) return r;
+    return (a.kana || "").localeCompare(b.kana || "", "ja");
+  });
 }
 
 /* =========================
@@ -180,7 +207,7 @@ function defaultSort(members) {
 }
 
 /* =========================
-   render
+   render members
 ========================= */
 
 function renderMembers(members, selectedGroup, sortMode) {
@@ -206,14 +233,17 @@ function renderMembers(members, selectedGroup, sortMode) {
     if (sortMode === "birthday" || sortMode === "age") {
       sub = `${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)`;
     }
+
     else if (sortMode === "nearestBirthday") {
       const diff = getNextBirthday(m.birthday) - new Date();
       const days = Math.ceil(diff / 86400000);
-      sub = `あと ${days}日`;
+      sub = `${formatMonthDay(m.birthday)} (あと${days}日)`;
     }
+
     else if (sortMode === "days") {
       sub = `在籍 ${calcDays(m.joinDate)}日`;
     }
+
     else {
       sub = m.kana;
     }
@@ -247,13 +277,50 @@ async function initMemberPage() {
   const id = params.get("id");
   const group = params.get("group");
 
+  if (!id || !group) return;
+
   const members = await loadMembers(group);
   const member = members.find(m => m.id === id);
 
-  if (!member) return;
+  if (member) renderMember(member, group);
+}
 
-  document.getElementById("member-detail").innerHTML = `
-    <div>${member.name}</div>
+function renderMember(m, group) {
+
+  const el = document.getElementById("member-detail");
+  if (!el) return;
+
+  const img = getImagePath(m);
+  const label = getMemberLabel(m, group);
+  const badgeClass = getBadgeClass(m);
+
+  el.innerHTML = `
+    <a href="members.html" class="back-button">← 一覧</a>
+
+    <div class="member-detail">
+
+      <img class="detail-image"
+        src="${img.png}"
+        onerror="this.onerror=null;this.src='${img.jpeg}'">
+
+      <div class="detail-name">${m.name}</div>
+
+      <div class="member-badge ${badgeClass}">
+        ${label}
+      </div>
+
+      <div class="detail-kana">${m.kana || ""}</div>
+
+      <div class="detail-info">
+        <div>ニックネーム: ${m.nickname || "-"}</div>
+        <div>生年月日: ${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)</div>
+        <div>出身地: ${m.prefecture || "-"}</div>
+        <div>加入日: ${formatDate(m.joinDate)}</div>
+        <div>在籍日数: ${calcDays(m.joinDate)}日</div>
+        <div>期生: ${formatGeneration(m)}</div>
+      </div>
+
+    </div>
   `;
 }
 
@@ -275,7 +342,6 @@ function getNextBirthday(date) {
   const birth = new Date(date);
 
   let next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
-
   if (next < today) next.setFullYear(today.getFullYear() + 1);
 
   return next;
@@ -323,6 +389,9 @@ function renderBirthdayMembers(members) {
     const label = getMemberLabel(m, group);
     const badgeClass = getBadgeClass(m);
 
+    const diff = getNextBirthday(m.birthday) - new Date();
+    const days = Math.ceil(diff / 86400000);
+
     const card = document.createElement("div");
     card.className = "member-card";
 
@@ -343,7 +412,7 @@ function renderBirthdayMembers(members) {
       </div>
 
       <div class="member-kana">
-        ${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)
+        ${formatMonthDay(m.birthday)} (あと${days}日)
       </div>
     `;
 
@@ -376,7 +445,9 @@ async function updateDays() {
     members = members.filter(m => m.status === "member");
   }
 
-  members.sort((a, b) => calcDays(b.joinDate) - calcDays(a.joinDate));
+  members.sort((a, b) =>
+    calcDays(b.joinDate) - calcDays(a.joinDate)
+  );
 
   renderDaysMembers(members);
 }
@@ -447,4 +518,18 @@ function calcAge(birthday) {
 function formatDate(date) {
   const d = new Date(date);
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
+function formatMonthDay(date) {
+  const d = new Date(date);
+  return `${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
+function formatGeneration(m) {
+  if (m.role === "kenkyuusei") {
+    const g = String(m.generation || "").replace("期", "");
+    return `${g}期研究生`;
+  }
+
+  return m.generation ? `${m.generation}期生` : "-";
 }
