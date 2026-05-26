@@ -49,16 +49,27 @@ const AKB_ORDER = [
 const memberCache = {};
 
 /* =========================
-   データ
+   データ（★重要修正）
 ========================= */
 
 async function loadMembers(group) {
-  if (memberCache[group]) return memberCache[group];
 
-  const res = await fetch(`data/members/${group}.json`);
-  if (!res.ok) return [];
+  // キャッシュ無効化したいときはここコメントアウトOK
+  const url = `data/members/${group}.json?t=${Date.now()}`;
+
+  const res = await fetch(url, {
+    cache: "no-store"
+  });
+
+  if (!res.ok) {
+    console.error("LOAD FAILED:", group);
+    return [];
+  }
 
   const data = await res.json();
+
+  console.log(`LOADED ${group}:`, data.length);
+
   memberCache[group] = data;
   return data;
 }
@@ -108,7 +119,7 @@ function isTeam8(m) {
 }
 
 /* =========================
-   ラベル（一覧）
+   ラベル
 ========================= */
 
 function getMemberLabel(member, selectedGroup) {
@@ -130,7 +141,6 @@ function getMemberLabel(member, selectedGroup) {
 
   if (member.role === "kenkyuusei") {
     if (selectedGroup === "all") return groupNameMap[member.groupId];
-
     return `${member.generation}研究生`;
   }
 
@@ -169,7 +179,9 @@ async function updateMembers() {
   if (sort === "default") members.sort(globalDefaultSort);
 
   else if (sort === "kana")
-    members.sort((a, b) => (a.kana || "").localeCompare(b.kana || "", "ja"));
+    members.sort((a, b) =>
+      (a.kana || "").localeCompare(b.kana || "", "ja")
+    );
 
   else if (sort === "birthday")
     members.sort((a, b) =>
@@ -182,7 +194,9 @@ async function updateMembers() {
     );
 
   else if (sort === "age")
-    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
+    members.sort((a, b) =>
+      new Date(a.birthday) - new Date(b.birthday)
+    );
 
   else if (sort === "days")
     members.sort((a, b) => {
@@ -258,7 +272,7 @@ function globalDefaultSort(a, b) {
 }
 
 /* =========================
-   RENDER MEMBERS
+   RENDER
 ========================= */
 
 function renderMembers(members, selectedGroup, sortMode) {
@@ -361,7 +375,7 @@ function renderMember(m) {
 }
 
 /* =========================
-   BIRTHDAY
+   BIRTHDAY / DAYS
 ========================= */
 
 function getNextBirthday(date) {
@@ -373,10 +387,6 @@ function getNextBirthday(date) {
 
   return next;
 }
-
-/* =========================
-   DAYS
-========================= */
 
 async function initDaysPage() {
   document.getElementById("group-select")?.addEventListener("change", updateDays);
@@ -398,7 +408,6 @@ async function updateDays() {
   }
 
   members.sort((a, b) => {
-
     const daysDiff = calcDays(b.joinDate) - calcDays(a.joinDate);
     if (daysDiff !== 0) return daysDiff;
 
@@ -412,26 +421,6 @@ async function updateDays() {
   });
 
   renderDaysMembers(members);
-}
-
-/* =========================
-   DAYS LABEL（JSON完全一致版）
-========================= */
-
-function getDaysLabel(m) {
-
-  if (!m) return "-";
-  if (isTeam8(m)) return "チーム8";
-
-  const gen = String(m.generation || "").trim();
-
-  if (!gen) return "-";
-
-  if (m.role === "kenkyuusei") {
-    return `${gen}研究生`;
-  }
-
-  return `${gen}生`;
 }
 
 /* =========================
@@ -475,6 +464,21 @@ function renderDaysMembers(members) {
 }
 
 /* =========================
+   DAYS LABEL
+========================= */
+
+function getDaysLabel(m) {
+  if (!m) return "-";
+  if (isTeam8(m)) return "チーム8";
+
+  const gen = String(m.generation || "").trim();
+  if (!gen) return "-";
+
+  if (m.role === "kenkyuusei") return `${gen}研究生`;
+  return `${gen}生`;
+}
+
+/* =========================
    UTILS
 ========================= */
 
@@ -510,7 +514,6 @@ function formatMonthDay(date) {
 }
 
 function formatGenerationClean(m) {
-
   if (!m?.generation) return "-";
   if (m.generation === "チーム8") return "チーム8";
 
