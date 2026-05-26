@@ -1,79 +1,181 @@
 [
   {
     "id": "aobara_yuka",
-
     "groupId": "nmb48",
-
     "name": "青原優花",
-
     "kana": "あおばら ゆか",
-
     "nickname": "ゆかたん",
-
     "birthday": "2007-07-12",
-
     "joinDate": "2022-12-19",
-
     "generation": "9期生",
-
     "prefecture": "大阪府",
-
     "status": "member",
-
     "image": "aobara_yuka",
-
     "imageYear": 2025
   },
-
+  
   {
     "id": "abe_wakana",
-
     "groupId": "nmb48",
-
     "name": "安部若菜",
-
     "kana": "あべ わかな",
-
     "nickname": "わかぽん",
-
     "birthday": "2001-07-18",
-
     "joinDate": "2018-01-21",
-
     "generation": "ドラフト3期生",
-
     "prefecture": "大阪府",
-
     "status": "member",
-
     "image": "abe_wakana",
-
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "ike_honoka",
+    "groupId": "nmb48",
+    "name": "池帆乃香",
+    "kana": "いけ ほのか",
+    "nickname": "ほの",
+    "birthday": "2003-12-16",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "奈良県",
+    "status": "member",
+    "image": "ike_honoka",
     "imageYear": 2025
   },
 
   {
-    "id": "ike_honoka",
-
+    "id": "ikeda_tenna",
     "groupId": "nmb48",
-
-    "name": "池帆乃香",
-
-    "kana": "いけ ほのか",
-
-    "nickname": "ほの",
-
-    "birthday": "2003-12-16",
-
-    "joinDate": "2022-01-01",
-
-    "generation": "8期生",
-
-    "prefecture": "奈良県",
-
+    "name": "池田典愛",
+    "kana": "いけだ てんな",
+    "nickname": "てんな",
+    "birthday": "2005-10-05",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "兵庫県",
     "status": "member",
-
-    "image": "ike_honoka",
-
+    "image": "ikeda_tenna",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "ishiyama_chihiro",
+    "groupId": "nmb48",
+    "name": "石山千尋",
+    "kana": "いしやま ちひろ",
+    "nickname": "ちひるん",
+    "birthday": "2008-05-24",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "兵庫県",
+    "status": "member",
+    "image": "ishiyama_chihiro",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "izumi_ayano",
+    "groupId": "nmb48",
+    "name": "泉綾乃",
+    "kana": "いずみ あやの",
+    "nickname": "あーのん",
+    "birthday": "2004-11-22",
+    "joinDate": "2018-01-21",
+    "generation": "ドラフト3期生",
+    "prefecture": "京都府",
+    "status": "member",
+    "image": "izumi_ayano",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "itagaki_koyori",
+    "groupId": "nmb48",
+    "name": "板垣心和",
+    "kana": "いたがき こより",
+    "nickname": "こよりん",
+    "birthday": "2005-05-23",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "三重県",
+    "status": "member",
+    "image": "itagaki_koyori",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "uchida_aisha",
+    "groupId": "nmb48",
+    "name": "内田愛彩",
+    "kana": "うちだ あいしゃ",
+    "nickname": "あいしゃん",
+    "birthday": "2004-06-12",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "uchida_aisha",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "okagoshi_seira",
+    "groupId": "nmb48",
+    "name": "岡腰星来",
+    "kana": "おかごし せいら",
+    "nickname": "せーちゃん",
+    "birthday": "2006-11-10",
+    "joinDate": "2025-11-08",
+    "generation": "11期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "okagoshi_seira",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "kinugasa_ayami",
+    "groupId": "nmb48",
+    "name": "衣笠彩実",
+    "kana": "きぬがさ あやみ",
+    "nickname": "あやみ",
+    "birthday": "2010-11-03",
+    "joinDate": "2022-12-19",
+    "generation": "9期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "kinugasa_ayami",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "kine_iroha",
+    "groupId": "nmb48",
+    "name": "木根彩呂花",
+    "kana": "きね いろは",
+    "nickname": "いろはん",
+    "birthday": "2010-10-25",
+    "joinDate": "2024-07-11",
+    "generation": "10期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "kine_iroha",
+    "imageYear": 2025
+  },
+  
+  {
+    "id": "kurosima_sakura",
+    "groupId": "nmb48",
+    "name": "黒島咲花",
+    "kana": "くろしま さくら",
+    "nickname": "さくちゃん",
+    "birthday": "2009-04-07",
+    "joinDate": "2022-01-01",
+    "generation": "8期生",
+    "prefecture": "大阪府",
+    "status": "member",
+    "image": "kurosima_sakura",
     "imageYear": 2025
   }
 ]
