@@ -641,7 +641,7 @@ function getActiveMembersByDate(
   );
 
   return result;
-},
+}
 /* =========================
    RENDER MEMBERS
 ========================= */
