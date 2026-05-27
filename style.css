@@ -57,9 +57,9 @@ select {
   display: block;
 
   background: white;
-  padding: 22px 20px;
+  padding: 22px 20px; /* ←元の値に統一 */
 
-  border-radius: 16px;
+  border-radius: 16px; /* ←元の値 */
 
   text-decoration: none;
   color: #222;
@@ -72,12 +72,12 @@ select {
   transition:
     transform 0.15s,
     box-shadow 0.15s,
-    background 0.15s;
+    background 0.15s; /* ←復元 */
 }
 
 .menu-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12); /* ←復元 */
 }
 
 /* =========================
@@ -205,6 +205,15 @@ select {
 }
 
 /* =========================
+   detail info（追加だけ復元）
+========================= */
+
+.detail-info {
+  display: grid;
+  gap: 12px;
+}
+
+/* =========================
    back button
 ========================= */
 
@@ -215,6 +224,10 @@ select {
   text-decoration: none;
   color: #222;
   font-weight: 700;
+}
+
+.back-button:hover {
+  opacity: 0.7;
 }
 
 /* =========================
@@ -356,6 +369,7 @@ select {
 
   .member-list {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .detail-name {
