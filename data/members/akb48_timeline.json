@@ -1494,5 +1494,288 @@
     "events": [
       { "text": "大家志津香 卒業", "value": 83, "delta": -1 }
     ]
+  },
+  {
+    "date": "2022-02-20",
+    "events": [
+      { "text": "加藤玲奈 卒業", "value": 82, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-02-27",
+    "events": [
+      { "text": "田北香世子 卒業", "value": 81, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-03-17",
+    "events": [
+      { "text": "入山杏奈 卒業", "value": 80, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-03-21",
+    "events": [
+      { "text": "古川夏凪 卒業", "value": 79, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-03-23",
+    "events": [
+      { "text": "蔵本美結 卒業", "value": 78, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-03-24",
+    "events": [
+      { "text": "奥本陽菜 卒業", "value": 77, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-03-25",
+    "events": [
+      { "text": "安田叶 卒業", "value": 76, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-03-28",
+    "events": [
+      { "text": "久保怜音 卒業", "value": 75, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-03-30",
+    "events": [
+      { "text": "西川怜 卒業", "value": 74, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-04-15",
+    "events": [
+      { "text": "宮崎美穂 卒業", "value": 73, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-05-04",
+    "events": [
+      { "text": "AKB48 17期生 加入", "value": 84, "delta": +11 }
+    ]
+  },
+  {
+    "date": "2022-07-31",
+    "events": [
+      { "text": "福留光帆 卒業", "value": 83, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-08-28",
+    "events": [
+      { "text": "長谷川新奈 活動辞退", "value": 82, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-12-24",
+    "events": [
+      { "text": "御供茉白 卒業", "value": 81, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2022-12-27",
+    "events": [
+      { "text": "稲垣香織 卒業", "value": 80, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-03-08",
+    "events": [
+      { "text": "武藤十夢 卒業", "value": 79, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-03-22",
+    "events": [
+      { "text": "永野恵 卒業", "value": 78, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-04-02",
+    "events": [
+      { "text": "岡田奈々 卒業", "value": 77, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-04-09",
+    "events": [
+      { "text": "AKB48 18期生 加入", "value": 85, "delta": +8 }
+    ]
+  },
+  {
+    "date": "2023-04-30",
+    "events": [
+      { "text": "平野ひかる 卒業", "value": 84, "delta": -1 },
+      { "text": "濵咲友菜 卒業", "value": 83, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-05-18",
+    "events": [
+      { "text": "藤園麗 卒業", "value": 82, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-05-22",
+    "events": [
+      { "text": "小林蘭 卒業", "value": 81, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-05-31",
+    "events": [
+      { "text": "服部有菜 卒業", "value": 80, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-07-30",
+    "events": [
+      { "text": "歌田初夏 卒業", "value": 79, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-07-31",
+    "events": [
+      { "text": "左伴彩佳 卒業", "value": 78, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-01",
+    "events": [
+      { "text": "清水麻璃亜 卒業", "value": 77, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-05",
+    "events": [
+      { "text": "坂口渚沙 卒業", "value": 76, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-07",
+    "events": [
+      { "text": "石綿星南 卒業", "value": 75, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-11",
+    "events": [
+      { "text": "川原美咲 卒業", "value": 74, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-17",
+    "events": [
+      { "text": "髙橋彩香 卒業", "value": 73, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-21",
+    "events": [
+      { "text": "大森美優 卒業", "value": 72, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-24",
+    "events": [
+      { "text": "吉川七瀬 卒業", "value": 71, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-28",
+    "events": [
+      { "text": "中西智代梨 卒業", "value": 70, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-29",
+    "events": [
+      { "text": "高岡薫 卒業", "value": 69, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-08-31",
+    "events": [
+      { "text": "市川愛美 卒業", "value": 68, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-09-05",
+    "events": [
+      { "text": "北澤早紀 卒業", "value": 67, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-09-08",
+    "events": [
+      { "text": "奥原妃奈子 卒業", "value": 66, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-09-10",
+    "events": [
+      { "text": "多田京加 卒業", "value": 65, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-09-14",
+    "events": [
+      { "text": "道枝咲 卒業", "value": 64, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-09-17",
+    "events": [
+      { "text": "佐藤妃星 卒業", "value": 63, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-10-01",
+    "events": [
+      { "text": "吉田華恋 卒業", "value": 62, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-10-14",
+    "events": [
+      { "text": "上見天乃 卒業", "value": 61, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-10-28",
+    "events": [
+      { "text": "山邊歩夢 卒業", "value": 60, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-10-30",
+    "events": [
+      { "text": "湯本亜美 卒業", "value": 59, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-10-31",
+    "events": [
+      { "text": "岡田梨奈 卒業", "value": 58, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-12-26",
+    "events": [
+      { "text": "山田杏華 卒業", "value": 57, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2023-12-29",
+    "events": [
+      { "text": "吉橋柚花 卒業", "value": 56, "delta": -1 }
+    ]
   }
 ]
