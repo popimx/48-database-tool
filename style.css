@@ -77,10 +77,7 @@ select {
 
 .menu-card:hover {
   transform: translateY(-2px);
-
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-
-  background: #fff;
 }
 
 /* =========================
@@ -121,7 +118,7 @@ select {
 }
 
 /* =========================
-   名前＋バッジ行
+   名前＋バッジ
 ========================= */
 
 .member-name-row {
@@ -137,12 +134,11 @@ select {
   font-size: 18px;
   font-weight: 700;
   line-height: 1.4;
-
   flex: 1;
 }
 
 /* =========================
-   バッジ共通
+   バッジ
 ========================= */
 
 .member-badge {
@@ -150,49 +146,18 @@ select {
   padding: 2px 8px;
 
   border-radius: 999px;
-
   font-weight: 700;
 
   white-space: nowrap;
-
   border: 1px solid rgba(0,0,0,0.08);
 }
 
-/* =========================
-   グループカラー
-========================= */
-
-.badge-akb {
-  background: #f48fb1;
-  color: #fff;
-}
-
-.badge-ske {
-  background: #ff9800;
-  color: #fff;
-}
-
-.badge-nmb {
-  background: #6d4c41;
-  color: #fff;
-}
-
-.badge-hkt {
-  background: #424242;
-  color: #fff;
-}
-
-.badge-ngt {
-  background: #e53935;
-  color: #fff;
-}
-
-.badge-stu {
-  background: #4fc3f7;
-  color: #003c57;
-}
-
-/* 卒業生 */
+.badge-akb { background: #f48fb1; color: #fff; }
+.badge-ske { background: #ff9800; color: #fff; }
+.badge-nmb { background: #6d4c41; color: #fff; }
+.badge-hkt { background: #424242; color: #fff; }
+.badge-ngt { background: #e53935; color: #fff; }
+.badge-stu { background: #4fc3f7; color: #003c57; }
 
 .badge-graduate {
   background: #b0bec5;
@@ -200,7 +165,7 @@ select {
 }
 
 /* =========================
-   kana / sub text
+   sub text
 ========================= */
 
 .member-kana {
@@ -210,7 +175,7 @@ select {
 }
 
 /* =========================
-   detail page
+   detail
 ========================= */
 
 .member-detail {
@@ -231,25 +196,12 @@ select {
 .detail-name {
   font-size: 32px;
   font-weight: 700;
-
   margin-bottom: 8px;
-  line-height: 1.3;
 }
 
 .detail-kana {
   color: #666;
   margin-bottom: 24px;
-  font-size: 16px;
-}
-
-.detail-info {
-  display: grid;
-  gap: 12px;
-  line-height: 1.7;
-}
-
-.label {
-  font-weight: 700;
 }
 
 /* =========================
@@ -262,20 +214,7 @@ select {
 
   text-decoration: none;
   color: #222;
-
   font-weight: 700;
-}
-
-.back-button:hover {
-  opacity: 0.7;
-}
-
-/* =========================
-   birthdays / days 共通
-========================= */
-
-.member-card .member-kana {
-  margin-top: 6px;
 }
 
 /* =========================
@@ -285,13 +224,11 @@ select {
 .timeline-summary {
   display: grid;
   gap: 12px;
-
   margin-bottom: 24px;
 }
 
-.timeline-summary-card {
+.timeline-summary-box {
   background: white;
-
   border-radius: 16px;
 
   padding: 18px;
@@ -299,17 +236,26 @@ select {
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
-.timeline-summary-label {
+.timeline-summary-title {
   font-size: 14px;
   color: #666;
-
   margin-bottom: 6px;
 }
 
-.timeline-summary-value {
+.timeline-summary-count {
   font-size: 30px;
   font-weight: 800;
 }
+
+.timeline-summary-date {
+  font-size: 14px;
+  color: #666;
+  margin-top: 6px;
+}
+
+/* =========================
+   timeline list
+========================= */
 
 .timeline-list {
   display: grid;
@@ -318,7 +264,6 @@ select {
 
 .timeline-card {
   background: white;
-
   border-radius: 16px;
 
   padding: 18px;
@@ -329,9 +274,7 @@ select {
 .timeline-date {
   font-size: 15px;
   font-weight: 700;
-
   color: #666;
-
   margin-bottom: 14px;
 }
 
@@ -343,23 +286,19 @@ select {
 .timeline-event {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   gap: 12px;
 
   padding-bottom: 12px;
-
   border-bottom: 1px solid #eee;
 }
 
 .timeline-event:last-child {
-  padding-bottom: 0;
   border-bottom: none;
+  padding-bottom: 0;
 }
 
 .timeline-event-text {
   flex: 1;
-
-  line-height: 1.6;
   font-weight: 600;
 }
 
@@ -368,60 +307,41 @@ select {
   white-space: nowrap;
 }
 
-.timeline-count {
-  font-size: 18px;
+.timeline-event-value {
   font-weight: 800;
+  font-size: 18px;
 }
 
-.timeline-delta {
+.timeline-event-delta {
+  display: block;
   font-size: 13px;
   font-weight: 700;
-
   margin-top: 2px;
 }
 
-.timeline-plus {
-  color: #e53935;
-}
-
-.timeline-minus {
-  color: #1e88e5;
-}
-
 /* =========================
-   generation count
+   generation
 ========================= */
 
 .generation-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
-
   margin-bottom: 24px;
 }
 
-.generation-card {
+.generation-count-row {
+  display: flex;
+  justify-content: space-between;
+
   background: white;
+  padding: 10px 12px;
 
-  border-radius: 14px;
+  border-radius: 12px;
 
-  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 
-  text-align: center;
-
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-}
-
-.generation-name {
-  font-size: 14px;
-  color: #666;
-
-  margin-bottom: 6px;
-}
-
-.generation-count {
-  font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 /* =========================
@@ -434,33 +354,20 @@ select {
     padding: 16px;
   }
 
-  .controls {
-    flex-direction: column;
-  }
-
   .member-list {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .member-name {
-    font-size: 16px;
   }
 
   .detail-name {
     font-size: 28px;
   }
 
-  .timeline-summary-value {
+  .timeline-summary-count {
     font-size: 26px;
   }
 
   .timeline-event {
     align-items: flex-start;
-  }
-
-  .timeline-count {
-    font-size: 16px;
   }
 
   .generation-grid {
