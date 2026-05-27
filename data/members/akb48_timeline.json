@@ -109,5 +109,243 @@
     "events": [
       { "text": "AKB48 6期生 加入", "value": 71, "delta": "+4" }
     ]
+  },
+  {
+    "date": "2008-07-31",
+    "events": [
+      { "text": "西澤沙羅 活動辞退", "value": 70, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2008-08-14",
+    "events": [
+      { "text": "菊地彩香 解雇", "value": 69, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2008-08-23",
+    "events": [
+      { "text": "中西優香 移籍", "value": 68, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2008-08-31",
+    "events": [
+      { "text": "片野友里恵 活動辞退", "value": 67, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2008-09-29",
+    "events": [
+      { "text": "井上奈瑠 卒業", "value": 66, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2008-11-23",
+    "events": [
+      { "text": "大江朝美 卒業", "value": 65, "delta": "-1" },
+      { "text": "駒谷仁美 卒業", "value": 64, "delta": "-1" },
+      { "text": "戸島花 卒業", "value": 63, "delta": "-1" },
+      { "text": "中西里菜 卒業", "value": 62, "delta": "-1" },
+      { "text": "成田梨紗 卒業", "value": 61, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-01-18",
+    "events": [
+      { "text": "AKB48 7期生 加入", "value": 71, "delta": "+10" },
+      { "text": "鈴木菜絵 活動終了", "value": 70, "delta": "-1" },
+      { "text": "藤本紗羅 活動終了", "value": 69, "delta": "-1" },
+      { "text": "村中聡美 活動終了", "value": 68, "delta": "-1" },
+      { "text": "有馬優茄 活動終了", "value": 67, "delta": "-1" },
+      { "text": "冨田麻友 活動終了", "value": 66, "delta": "-1" },
+      { "text": "畑山亜梨沙 活動終了", "value": 65, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-02-01",
+    "events": [
+      { "text": "野口玲菜 卒業", "value": 64, "delta": "-1" },
+      { "text": "松岡由紀 卒業", "value": 63, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-02-27",
+    "events": [
+      { "text": "川崎希 卒業", "value": 62, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-04-18",
+    "events": [
+      { "text": "早乙女美樹 卒業", "value": 61, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-04-26",
+    "events": [
+      { "text": "大島麻衣 卒業", "value": 60, "delta": "-1" },
+      { "text": "早野薫 卒業", "value": 59, "delta": "-1" },
+      { "text": "瓜屋茜 卒業", "value": 58, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-05-24",
+    "events": [
+      { "text": "成瀬理沙 卒業", "value": 57, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-05-26",
+    "events": [
+      { "text": "AKB48 8期生 加入", "value": 72, "delta": "+15" }
+    ]
+  },
+  {
+    "date": "2009-06-09",
+    "events": [
+      { "text": "上遠野瑞穂 活動辞退", "value": 71, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-07-14",
+    "events": [
+      { "text": "小松瑞希 活動辞退", "value": 70, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-07-18",
+    "events": [
+      { "text": "林彩乃 活動辞退", "value": 69, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-07-25",
+    "events": [
+      { "text": "西川七海 解雇", "value": 68, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-08-23",
+    "events": [
+      { "text": "佐伯美香 卒業", "value": 67, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-09-20",
+    "events": [
+      { "text": "鈴木紫帆里 活動辞退", "value": 66, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2009-11-14",
+    "events": [
+      { "text": "AKB48 9期生 加入", "value": 80, "delta": "+14" }
+    ]
+  },
+  {
+    "date": "2009-12-04",
+    "events": [
+      { "text": "浅居円 活動終了", "value": 79, "delta": "-1" },
+      { "text": "石井彩夏 活動終了", "value": 78, "delta": "-1" },
+      { "text": "石部郁 活動終了", "value": 77, "delta": "-1" },
+      { "text": "郭グレース 活動終了", "value": 76, "delta": "-1" },
+      { "text": "小水七海 活動終了", "value": 75, "delta": "-1" },
+      { "text": "坂本莉央 活動終了", "value": 74, "delta": "-1" },
+      { "text": "杉山未来 活動終了", "value": 73, "delta": "-1" },
+      { "text": "冨手麻妙 活動終了", "value": 72, "delta": "-1" },
+      { "text": "三木にこる 活動終了", "value": 71, "delta": "-1" },
+      { "text": "村中聡美 活動終了", "value": 70, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-01-06",
+    "events": [
+      { "text": "伊藤彩夏 活動辞退", "value": 69, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-02-01",
+    "events": [
+      { "text": "今井悠理枝 活動辞退", "value": 68, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-02-21",
+    "events": [
+      { "text": "大堀恵 移籍", "value": 67, "delta": "-1" },
+      { "text": "野呂佳代 移籍", "value": 66, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-04-16",
+    "events": [
+      { "text": "浦野一美 移籍", "value": 65, "delta": "-1" },
+      { "text": "小原春香 移籍", "value": 64, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-05-27",
+    "events": [
+      { "text": "佐藤由加理 移籍", "value": 63, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-06-20",
+    "events": [
+      { "text": "石黒貴己 活動終了", "value": 62, "delta": "-1" },
+      { "text": "絹本桃子 活動終了", "value": 61, "delta": "-1" },
+      { "text": "高松恵理 活動辞退", "value": 60, "delta": "-1" },
+      { "text": "藤本紗羅 活動終了", "value": 59, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-06-24",
+    "events": [
+      { "text": "AKB48 10期生 加入", "value": 69, "delta": "+10" }
+    ]
+  },
+  {
+    "date": "2010-07-06",
+    "events": [
+      { "text": "植木あさ香 活動辞退", "value": 68, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-09-27",
+    "events": [
+      { "text": "小野恵令奈 卒業", "value": 67, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-10-05",
+    "events": [
+      { "text": "佐野友里子 活動終了", "value": 66, "delta": "-1" },
+      { "text": "岩崎仁美 活動終了", "value": 65, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-10-10",
+    "events": [
+      { "text": "AKB48 11期生 加入", "value": 75, "delta": "+10" }
+    ]
+  },
+  {
+    "date": "2010-10-23",
+    "events": [
+      { "text": "豊田早姫 活動辞退", "value": 74, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-10-27",
+    "events": [
+      { "text": "岡﨑ちなみ 活動辞退", "value": 73, "delta": "-1" }
+    ]
+  },
+  {
+    "date": "2010-12-03",
+    "events": [
+      { "text": "川上麻里奈 活動辞退", "value": 72, "delta": "-1" }
+    ]
   }
 ]
