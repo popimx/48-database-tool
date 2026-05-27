@@ -1193,5 +1193,306 @@
     "events": [
       { "text": "大川莉央 卒業", "value": 118, "delta": -1 }
     ]
+  },
+  {
+    "date": "2019-01-07",
+    "events": [
+      { "text": "藤田奈那 卒業", "value": 117, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-02-02",
+    "events": [
+      { "text": "長久玲奈 卒業", "value": 116, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-04-07",
+    "events": [
+      { "text": "田屋美咲 卒業", "value": 115, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-05",
+    "events": [
+      { "text": "野田陽菜乃 卒業", "value": 114, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-06",
+    "events": [
+      { "text": "野澤玲奈 卒業", "value": 113, "delta": -1 },
+      { "text": "高橋朱里 卒業", "value": 112, "delta": -1 },
+      { "text": "竹内美宥 卒業", "value": 111, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-11",
+    "events": [
+      { "text": "播磨七海 活動辞退", "value": 110, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-12",
+    "events": [
+      { "text": "小嶋真子 卒業", "value": 109, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-18",
+    "events": [
+      { "text": "横道侑里 卒業", "value": 108, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-20",
+    "events": [
+      { "text": "人見古都音 卒業", "value": 107, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-30",
+    "events": [
+      { "text": "中野郁海 卒業", "value": 106, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-05-31",
+    "events": [
+      { "text": "谷川聖 卒業", "value": 105, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-06-08",
+    "events": [
+      { "text": "佐藤栞 卒業", "value": 104, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-06-22",
+    "events": [
+      { "text": "山田菜々美 卒業", "value": 103, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-06-28",
+    "events": [
+      { "text": "勝又彩央里 活動辞退", "value": 102, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-08-12",
+    "events": [
+      { "text": "伊藤きらら 卒業", "value": 101, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-08-13",
+    "events": [
+      { "text": "後藤萌咲 卒業", "value": 100, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-09-30",
+    "events": [
+      { "text": "佐藤七海 卒業", "value": 99, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-10-06",
+    "events": [
+      { "text": "福留光帆 加入", "value": 100, "delta": +1 },
+      { "text": "徳永羚海 加入", "value": 101, "delta": +1 },
+      { "text": "蒲地志奈 加入", "value": 102, "delta": +1 }
+    ]
+  },
+  {
+    "date": "2019-10-13",
+    "events": [
+      { "text": "布谷梨琉 加入", "value": 103, "delta": +1 },
+      { "text": "井上美優 加入", "value": 104, "delta": +1 },
+      { "text": "長谷川百々花 加入", "value": 105, "delta": +1 }
+    ]
+  },
+  {
+    "date": "2019-10-14",
+    "events": [
+      { "text": "塩原香凜 加入", "value": 106, "delta": +1 },
+      { "text": "鈴木優香 加入", "value": 107, "delta": +1 },
+      { "text": "松村美紅 加入", "value": 108, "delta": +1 },
+      { "text": "上見天乃 加入", "value": 109, "delta": +1 }
+    ]
+  },
+  {
+    "date": "2019-10-22",
+    "events": [
+      { "text": "寺田美咲 卒業", "value": 108, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-11-09",
+    "events": [
+      { "text": "尾上美月 加入", "value": 109, "delta": +1 }
+    ]
+  },
+  {
+    "date": "2019-11-27",
+    "events": [
+      { "text": "佐藤詩識 活動辞退", "value": 108, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-11-28",
+    "events": [
+      { "text": "樋渡結依 卒業", "value": 107, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-12-20",
+    "events": [
+      { "text": "太田奈緒 卒業", "value": 106, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2019-12-28",
+    "events": [
+      { "text": "坂川陽香 加入", "value": 107, "delta": +1 }
+    ]
+  },
+
+  {
+    "date": "2020-02-04",
+    "events": [
+      { "text": "矢作萌夏 卒業", "value": 106, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2020-06-28",
+    "events": [
+      { "text": "山本瑠香 卒業", "value": 105, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2020-08-31",
+    "events": [
+      { "text": "川本紗矢 卒業", "value": 104, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2020-09-24",
+    "events": [
+      { "text": "布谷梨琉 卒業", "value": 103, "delta": -1 },
+      { "text": "井上美優 卒業", "value": 102, "delta": -1 },
+      { "text": "塩原香凜 卒業", "value": 101, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2020-11-30",
+    "events": [
+      { "text": "末永祐月 活動辞退", "value": 100, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2020-12-11",
+    "events": [
+      { "text": "達家真姫宝 卒業", "value": 99, "delta": -1 }
+    ]
+  },
+
+  {
+    "date": "2021-02-28",
+    "events": [
+      { "text": "立仙愛理 卒業", "value": 98, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-03-26",
+    "events": [
+      { "text": "長谷川百々花 活動辞退", "value": 97, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-03-29",
+    "events": [
+      { "text": "佐藤朱 卒業", "value": 96, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-03-31",
+    "events": [
+      { "text": "前田彩佳 卒業", "value": 95, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-04-30",
+    "events": [
+      { "text": "松村美紅 卒業", "value": 94, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-05-27",
+    "events": [
+      { "text": "本田そら 卒業", "value": 93, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-05-29",
+    "events": [
+      { "text": "峯岸みなみ 卒業", "value": 92, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-06-30",
+    "events": [
+      { "text": "蒲地志奈 卒業", "value": 91, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-07-28",
+    "events": [
+      { "text": "宮里莉羅 卒業", "value": 90, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-07-31",
+    "events": [
+      { "text": "尾上美月 卒業", "value": 89, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-09-28",
+    "events": [
+      { "text": "鈴木優香 卒業", "value": 88, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-10-01",
+    "events": [
+      { "text": "本間麻衣 卒業", "value": 87, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-10-24",
+    "events": [
+      { "text": "春本ゆき 卒業", "value": 86, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-11-30",
+    "events": [
+      { "text": "横山結衣 卒業", "value": 85, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-12-09",
+    "events": [
+      { "text": "横山由依 卒業", "value": 84, "delta": -1 }
+    ]
+  },
+  {
+    "date": "2021-12-29",
+    "events": [
+      { "text": "大家志津香 卒業", "value": 83, "delta": -1 }
+    ]
   }
 ]
