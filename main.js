@@ -394,7 +394,7 @@ function globalDefaultSort(a, b) {
 }
 
 /* =========================
-   TIMELINE関連（共通ロジック）
+   TIMELINE関連
 ========================= */
 
 function isMemberActive(date, periods) {
