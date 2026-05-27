@@ -59,7 +59,7 @@ select {
   background: white;
   padding: 22px 20px; /* ←元の値に統一 */
 
-  border-radius: 16px; /* ←元の値 */
+  border-radius: 16px;
 
   text-decoration: none;
   color: #222;
@@ -72,12 +72,12 @@ select {
   transition:
     transform 0.15s,
     box-shadow 0.15s,
-    background 0.15s; /* ←復元 */
+    background 0.15s;
 }
 
 .menu-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12); /* ←復元 */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 /* =========================
@@ -134,7 +134,15 @@ select {
   font-size: 18px;
   font-weight: 700;
   line-height: 1.4;
+
   flex: 1;
+
+  /* ★これが今回の修正（2行化防止の本体） */
+  min-width: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* =========================
@@ -205,7 +213,7 @@ select {
 }
 
 /* =========================
-   detail info（追加だけ復元）
+   detail info
 ========================= */
 
 .detail-info {
