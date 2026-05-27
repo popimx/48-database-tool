@@ -57,9 +57,9 @@ select {
   display: block;
 
   background: white;
-  padding: 20px;
+  padding: 22px 20px;
 
-  border-radius: 14px;
+  border-radius: 16px;
 
   text-decoration: none;
   color: #222;
@@ -68,6 +68,19 @@ select {
   font-weight: 700;
 
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+
+.menu-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+
+  background: #fff;
 }
 
 /* =========================
@@ -108,7 +121,7 @@ select {
 }
 
 /* =========================
-   名前＋バッジ行（追加）
+   名前＋バッジ行
 ========================= */
 
 .member-name-row {
@@ -180,6 +193,7 @@ select {
 }
 
 /* 卒業生 */
+
 .badge-graduate {
   background: #b0bec5;
   color: #fff;
@@ -265,6 +279,152 @@ select {
 }
 
 /* =========================
+   timeline
+========================= */
+
+.timeline-summary {
+  display: grid;
+  gap: 12px;
+
+  margin-bottom: 24px;
+}
+
+.timeline-summary-card {
+  background: white;
+
+  border-radius: 16px;
+
+  padding: 18px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.timeline-summary-label {
+  font-size: 14px;
+  color: #666;
+
+  margin-bottom: 6px;
+}
+
+.timeline-summary-value {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.timeline-list {
+  display: grid;
+  gap: 16px;
+}
+
+.timeline-card {
+  background: white;
+
+  border-radius: 16px;
+
+  padding: 18px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.timeline-date {
+  font-size: 15px;
+  font-weight: 700;
+
+  color: #666;
+
+  margin-bottom: 14px;
+}
+
+.timeline-events {
+  display: grid;
+  gap: 12px;
+}
+
+.timeline-event {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid #eee;
+}
+
+.timeline-event:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.timeline-event-text {
+  flex: 1;
+
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.timeline-event-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.timeline-count {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.timeline-delta {
+  font-size: 13px;
+  font-weight: 700;
+
+  margin-top: 2px;
+}
+
+.timeline-plus {
+  color: #e53935;
+}
+
+.timeline-minus {
+  color: #1e88e5;
+}
+
+/* =========================
+   generation count
+========================= */
+
+.generation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+
+  margin-bottom: 24px;
+}
+
+.generation-card {
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 14px;
+
+  text-align: center;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.generation-name {
+  font-size: 14px;
+  color: #666;
+
+  margin-bottom: 6px;
+}
+
+.generation-count {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+/* =========================
    responsive
 ========================= */
 
@@ -289,5 +449,21 @@ select {
 
   .detail-name {
     font-size: 28px;
+  }
+
+  .timeline-summary-value {
+    font-size: 26px;
+  }
+
+  .timeline-event {
+    align-items: flex-start;
+  }
+
+  .timeline-count {
+    font-size: 16px;
+  }
+
+  .generation-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
