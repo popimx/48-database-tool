@@ -24,20 +24,10 @@ h1 {
    select / controls（統一）
 ========================= */
 
-.controls {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-  align-items: center;
-}
-
-/* selectはカードUIに寄せる */
-.controls select {
+select {
   display: block;
 
   width: 220px;
-  flex: 0 0 220px;
-
   height: 40px;
 
   padding: 8px 10px;
@@ -45,8 +35,8 @@ h1 {
 
   border-radius: 14px;
   border: 1px solid #ccc;
-  background: #fff;
 
+  background: #fff;
   box-sizing: border-box;
 
   appearance: none;
@@ -54,16 +44,23 @@ h1 {
   -moz-appearance: none;
 }
 
+/* controlsはレイアウトだけ */
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
 /* スマホ */
 @media (max-width: 600px) {
+  select {
+    width: 100%;
+  }
+
   .controls {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .controls select {
-    width: 100%;
-    flex: none;
   }
 }
 
