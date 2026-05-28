@@ -616,7 +616,7 @@ async function initTimelinePage() {
    TIMELINE SUMMARY
 ========================= */
 
-function renderTimelineSummary(timeline) {
+function renderTimelineSummary(timeline, group) {
   const el = document.getElementById("timeline-summary");
   if (!el) return;
 
@@ -625,23 +625,31 @@ function renderTimelineSummary(timeline) {
     return;
   }
 
-const latestCard = timeline[timeline.length - 1];
-const latestEvent = latestCard.events[latestCard.events.length - 1];
+  const latestCard = timeline[timeline.length - 1];
+  const latestEvent = latestCard.events[latestCard.events.length - 1];
 
-const now = new Date();
+  const now = new Date();
 
-const currentDate =
-  `${now.getFullYear()}年` +
-  `${now.getMonth() + 1}月` +
-  `${now.getDate()}日`;
+  const currentDate =
+    `${now.getFullYear()}年` +
+    `${now.getMonth() + 1}月` +
+    `${now.getDate()}日`;
 
-el.innerHTML = `
-  <div class="timeline-summary-box">
-    <div class="timeline-summary-title">AKB48 人数推移</div>
-    <div class="timeline-summary-count">${latestEvent.currentValue}人</div>
-    <div class="timeline-summary-date">${currentDate}現在</div>
-  </div>
-`;
+  el.innerHTML = `
+    <div class="timeline-summary-box">
+      <div class="timeline-summary-title">
+        ${groupNameMap[group]} 人数推移
+      </div>
+
+      <div class="timeline-summary-count">
+        ${latestEvent.currentValue}人
+      </div>
+
+      <div class="timeline-summary-date">
+        ${currentDate}現在
+      </div>
+    </div>
+  `;
 }
 
 
@@ -663,9 +671,9 @@ function renderYearTabs(timeline, group) {
 
   container.innerHTML = "";
 
-  // 「全体」タブ
+  // 「全て」タブ
   const allBtn = document.createElement("button");
-  allBtn.textContent = "全体";
+  allBtn.textContent = "全て";
   allBtn.className = "year-tab active";
 
   allBtn.onclick = () => {
