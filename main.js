@@ -1,4 +1,4 @@
-  import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
+ import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
@@ -578,85 +578,56 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouping（世代単位 + 正しいperiod保持）
+  // grouped安全生成（重複＋順序安定版）
   // =========================
+  const groupedMap = {};
 
- const groupedMap = new Map();
+  Object.entries(memberState || {}).forEach(([name, periods]) => {
+    if (!Array.isArray(periods)) return;
 
-Object.entries(memberState || {}).forEach(([name, periods]) => {
-  if (!Array.isArray(periods)) return;
+    periods.forEach(p => {
+      if (!p || !p.generation) return;
 
-  for (const p of periods) {
-    if (!p?.generation) continue;
+      const gen = p.generation;
 
-    const gen = p.generation;
+      if (!groupedMap[gen]) {
+        groupedMap[gen] = {
+          generation: gen,
+          members: []
+        };
+      }
 
-    if (!groupedMap.has(gen)) {
-      groupedMap.set(gen, {
-        generation: gen,
-        members: new Map()
-      });
-    }
+      // ★重複防止（③対策）
+      const exists = groupedMap[gen].members.includes(name);
+      if (exists) return;
 
-    const groupData = groupedMap.get(gen);
-
-    if (!groupData.members.has(name)) {
-      groupData.members.set(name, []);
-    }
-
-    groupData.members.get(name).push(p);
-  }
-});
- 
-  // =========================
-  // 世代順（固定順優先）
-  // =========================
-  const groupKey = group ? group.toUpperCase() : "AKB48";
-
-  const orderList =
-    GENERATION_ORDER_MAP?.[groupKey] ||
-    GENERATION_ORDER_MAP?.AKB48 ||
-    [];
-
-  const grouped = Array.from(groupedMap.entries())
-  .sort((a, b) => {
-    const orderA = orderList.indexOf(a[0]);
-    const orderB = orderList.indexOf(b[0]);
-
-    return (orderA === -1 ? 9999 : orderA)
-         - (orderB === -1 ? 9999 : orderB);
-  })
-  .map(([gen, data]) => {
-    const members = Array.from(data.members.entries())
-      .map(([name, periods]) => {
-        const genPeriods = periods.filter(p => p.generation === gen);
-
-        // 🔥ここが重要（NaN防止）
-        const start = Math.min(
-          ...genPeriods.map(p => new Date(p.start).getTime())
-        );
-
-        return { name, start };
-      })
-      .sort((a, b) => a.start - b.start)
-      .map(m => m.name);
-
-    return {
-      generation: gen,
-      members
-    };
+      groupedMap[gen].members.push(name);
+    });
   });
 
   // =========================
-  // ★重要：日付は「各cardData側」で使うのでここでは不要
+  // ★重要：GENERATION_ORDER_MAP適用前の並び安定化
   // =========================
+  const grouped = Object.values(groupedMap)
+    .sort((a, b) => {
+      const aOrder = GENERATION_ORDER_MAP?.[a.generation] ?? 9999;
+      const bOrder = GENERATION_ORDER_MAP?.[b.generation] ?? 9999;
+      return aOrder - bOrder;
+    })
+    .map(group => ({
+      ...group,
+      // ★表示順崩れ防止（五十音順固定）
+      members: group.members.slice().sort((a, b) =>
+        a.localeCompare(b, "ja")
+      )
+    }));
 
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
 
   renderTimelineCards(
     timeline,
-    memberState, // ← ★filteredは使わない（重要）
+    memberState,
     grouped
   );
 }
@@ -768,30 +739,27 @@ function setActiveTab(activeBtn) {
   activeBtn.classList.add("active");
 }
 
+/* =========================
+   TIMELINE CARDS
+========================= */
+
 function renderTimelineCards(timeline, memberState, grouped) {
   const container = document.getElementById("timeline-list");
   if (!container) return;
 
   container.innerHTML = "";
 
-  const isActive = (p, date) => {
-    const start = new Date(p.start);
-    const end = p.end ? new Date(p.end) : null;
-    return start <= date && (!end || end >= date);
-  };
-
   timeline.forEach(cardData => {
     const card = document.createElement("div");
     card.className = "timeline-card";
 
-    // =========================
-    // events
-    // =========================
     let eventsHtml = "";
 
     cardData.events.forEach(event => {
       const deltaText =
-        event.delta > 0 ? `+${event.delta}` : `${event.delta}`;
+        event.delta > 0
+          ? `+${event.delta}`
+          : `${event.delta}`;
 
       eventsHtml += `
         <div class="timeline-event">
@@ -812,69 +780,15 @@ function renderTimelineCards(timeline, memberState, grouped) {
       `;
     });
 
-    // =========================
-    // ★重要：世代ごとのメンバー生成
-    // =========================
-    const activeGenerations = [];
+    const activeGenerations =
+      getActiveMembersByDate(cardData.date, memberState, grouped);
 
-    grouped.forEach(genGroup => {
-  const eventDate = new Date(cardData.date);
-
-  const members = []; // ★必須（ここが抜けてた）
-
-  const sortedMembers = [...genGroup.members].sort((a, b) => {
-    const aPeriods = (memberState[a] || []).filter(
-      p => p.generation === genGroup.generation
-    );
-
-    const bPeriods = (memberState[b] || []).filter(
-      p => p.generation === genGroup.generation
-    );
-
-    const aStart = aPeriods.length
-      ? Math.min(...aPeriods.map(p => new Date(p.start).getTime()))
-      : Infinity;
-
-    const bStart = bPeriods.length
-      ? Math.min(...bPeriods.map(p => new Date(p.start).getTime()))
-      : Infinity;
-
-    return aStart - bStart;
-  });
-
-  sortedMembers.forEach(name => {
-    const periods = memberState?.[name];
-    if (!Array.isArray(periods)) return;
-
-    const isMatch = periods.some(p =>
-      p.generation === genGroup.generation &&
-      isActive(p, eventDate)
-    );
-
-    if (isMatch) {
-      members.push(name);
-    }
-  });
-
-  if (members.length > 0) {
-    activeGenerations.push({
-      generation: genGroup.generation,
-      members
-    });
-  }
-});
-
-    // =========================
-    // HTML生成
-    // =========================
     let membersHtml = "";
 
     activeGenerations.forEach(group => {
       membersHtml += `
         <div class="timeline-generation">
-          <div class="timeline-generation-title">
-            ${group.generation}
-          </div>
+          <div class="timeline-generation-title">${group.generation}</div>
 
           <div class="timeline-generation-members">
             ${group.members.join("・")}
