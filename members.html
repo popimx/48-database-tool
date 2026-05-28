@@ -2,12 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>
-    メンバーの一覧
-  </title>
+  <title>メンバーの一覧</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -15,22 +12,17 @@
 <body>
 
   <header>
-
-    <h1>
-      メンバーの一覧
-    </h1>
+    <h1>メンバーの一覧</h1>
 
     <a href="index.html" class="back-button">
       ← トップへ戻る
     </a>
-
   </header>
 
   <div class="controls">
 
     <!-- グループ -->
     <select id="group-select">
-
       <option value="all">全グループ</option>
       <option value="akb48">AKB48</option>
       <option value="ske48">SKE48</option>
@@ -38,51 +30,30 @@
       <option value="hkt48">HKT48</option>
       <option value="ngt48">NGT48</option>
       <option value="stu48">STU48</option>
-
     </select>
 
     <!-- ステータス -->
     <select id="status-filter">
-
       <option value="member">現役メンバーのみ</option>
       <option value="all">卒業生を含む</option>
-
     </select>
 
     <!-- ソート -->
     <select id="sort-select">
-
-      <option value="default" selected>
-        メンバーを並び替える
-      </option>
-
-      <option value="kana">
-        五十音順
-      </option>
-
-      <option value="birthday">
-        誕生日順
-      </option>
-
-      <option value="nearestBirthday">
-        本日の日付から近い誕生日順
-      </option>
-
-      <option value="age">
-        年齢順
-      </option>
-
-      <option value="days">
-        在籍日数順
-      </option>
-
+      <option value="default" selected>メンバーを並び替える</option>
+      <option value="kana">五十音順</option>
+      <option value="birthday">誕生日順</option>
+      <option value="nearestBirthday">本日の日付から近い誕生日順</option>
+      <option value="age">年齢順</option>
+      <option value="days">在籍日数順</option>
     </select>
 
   </div>
 
   <div id="member-list" class="member-list"></div>
 
-  <script src="main.js"></script>
+  <!-- ★ここが重要 -->
+  <script type="module" src="main.js"></script>
 
 </body>
 </html>
