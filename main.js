@@ -564,7 +564,7 @@ async function initDaysPage() {
   updateDays();
 }
 
- /* =========================
+/* =========================
    TIMELINE PAGE
 ========================= */
 
@@ -578,81 +578,66 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // generation 正規化（強化版）
+  // grouping（修正版：正規化しない）
   // =========================
-  const normalizeGen = (gen) => {
-    if (!gen) return "";
+  const groupedMap = new Map();
 
-    return String(gen)
-      .replace(/期生/g, "期")
-      .replace(/\s/g, "")
-      .replace(/　/g, "")
-      .trim();
-  };
-
-  const groupedMap = {};
-  const keySet = new Set();
-
-  // =========================
-  // grouping（修正版）
-  // =========================
   Object.entries(memberState || {}).forEach(([name, periods]) => {
     if (!Array.isArray(periods)) return;
 
     periods.forEach(p => {
       if (!p?.generation) return;
 
-      const gen = normalizeGen(p.generation);
+      const gen = p.generation; // ←絶対にそのまま使う
 
-      const key = `${gen}__${name}`;
-      if (keySet.has(key)) return;
-
-      keySet.add(key);
-
-      if (!groupedMap[gen]) {
-        groupedMap[gen] = {
+      if (!groupedMap.has(gen)) {
+        groupedMap.set(gen, {
           generation: gen,
           members: []
-        };
+        });
       }
 
-      groupedMap[gen].members.push(name);
+      const groupData = groupedMap.get(gen);
+
+      // 同一世代内だけ重複防止
+      if (!groupData.members.includes(name)) {
+        groupData.members.push(name);
+      }
     });
   });
 
- // =========================
-// 世代ソート（修正版）
-// =========================
+  // =========================
+  // 世代順リスト
+  // =========================
+  const orderList =
+    GENERATION_ORDER_MAP?.[group.toUpperCase?.()] ||
+    GENERATION_ORDER_MAP?.AKB48 ||
+    [];
 
-// groupに応じた正しい順序リストを取得
-const orderList =
-  GENERATION_ORDER_MAP?.[group.toUpperCase?.()] ||
-  GENERATION_ORDER_MAP?.AKB48 ||
-  [];
+  // =========================
+  // ソート（完全修正版）
+  // =========================
+  const grouped = Array.from(groupedMap.entries())
+    .sort((a, b) => {
+      const orderA = orderList.indexOf(a[0]);
+      const orderB = orderList.indexOf(b[0]);
 
-// Map → Array化してソート
-const grouped = Object.entries(groupedMap)
-  .sort((a, b) => {
-    const orderA = orderList.indexOf(a[0]);
-    const orderB = orderList.indexOf(b[0]);
+      return (orderA === -1 ? 9999 : orderA)
+           - (orderB === -1 ? 9999 : orderB);
+    })
+    .map(([gen, data]) => ({
+      generation: gen,
+      members: data.members
+    }));
 
-    return (orderA === -1 ? 9999 : orderA)
-         - (orderB === -1 ? 9999 : orderB);
-  })
-  .map(([gen, data]) => ({
-    generation: gen,
-    members: data.members
-  }));
+  renderTimelineSummary(timeline, group);
+  renderYearTabs(timeline, group, grouped);
 
-renderTimelineSummary(timeline, group);
-renderYearTabs(timeline, group, grouped);
-
-renderTimelineCards(
-  timeline,
-  memberState,
-  grouped
-);
-
+  renderTimelineCards(
+    timeline,
+    memberState,
+    grouped
+  );
 }
 
 /* =========================
