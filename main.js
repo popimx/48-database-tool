@@ -578,7 +578,7 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouped安全生成（重複排除対応）
+  // grouped安全生成（重複＋順序安定版）
   // =========================
   const groupedMap = {};
 
@@ -597,14 +597,30 @@ async function initTimelinePage() {
         };
       }
 
-      // ★ここが重要：重複防止
-      if (!groupedMap[gen].members.includes(name)) {
-        groupedMap[gen].members.push(name);
-      }
+      // ★重複防止（③対策）
+      const exists = groupedMap[gen].members.includes(name);
+      if (exists) return;
+
+      groupedMap[gen].members.push(name);
     });
   });
 
-  const grouped = Object.values(groupedMap);
+  // =========================
+  // ★重要：GENERATION_ORDER_MAP適用前の並び安定化
+  // =========================
+  const grouped = Object.values(groupedMap)
+    .sort((a, b) => {
+      const aOrder = GENERATION_ORDER_MAP?.[a.generation] ?? 9999;
+      const bOrder = GENERATION_ORDER_MAP?.[b.generation] ?? 9999;
+      return aOrder - bOrder;
+    })
+    .map(group => ({
+      ...group,
+      // ★表示順崩れ防止（五十音順固定）
+      members: group.members.slice().sort((a, b) =>
+        a.localeCompare(b, "ja")
+      )
+    }));
 
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
