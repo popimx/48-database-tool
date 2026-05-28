@@ -388,37 +388,27 @@ function globalDefaultSort(a, b) {
   return (a.kana || "").localeCompare(b.kana || "", "ja");
 }
 
- /* =========================
-   TIMELINE関連（修正版）
+/* =========================
+   TIMELINE関連
 ========================= */
 
 function isMemberActive(date, periods) {
-  if (!Array.isArray(periods)) return false;
+  return periods.some(p =>
+    p.start <= date && (!p.end || p.end > date)
+  );
+} 
 
-  return periods.some(p => {
-    if (!p?.start) return false;
-
-    return (
-      p.start <= date &&
-      (!p.end || p.end > date)
-    );
-  });
-}
-
-function getActiveMembersByDate(date, memberState, grouped) {
+ function getActiveMembersByDate(date, memberState, grouped) {
   const result = [];
 
-  if (!grouped || !memberState) return result;
-
   grouped.forEach(group => {
-    if (!group?.members) return;
-
     const active = group.members.filter(name => {
-      const periods = memberState?.[name];
-      return isMemberActive(date, periods);
+      const periods = memberState[name];
+
+      return periods && isMemberActive(date, periods);
     });
 
-    if (active.length > 0) {
+    if (active.length) {
       result.push({
         generation: group.generation,
         members: active
@@ -432,10 +422,8 @@ function getActiveMembersByDate(date, memberState, grouped) {
 function calculateTimelineCounts(timeline) {
   let current = 0;
 
-  if (!Array.isArray(timeline)) return [];
-
   return timeline.map(card => {
-    const events = (card.events || []).map(event => {
+    const events = card.events.map(event => {
       current += Number(event.delta || 0);
 
       return {
@@ -589,9 +577,6 @@ async function initTimelinePage() {
 
   const memberState = await loadMemberState(group);
 
-  // =========================
-  // grouped安全生成（完全修正版）
-  // =========================
   const groupedMap = {};
 
   Object.entries(memberState || {}).forEach(([name, periods]) => {
@@ -609,7 +594,6 @@ async function initTimelinePage() {
         };
       }
 
-      // ★完全正解：同一世代内のみ重複防止
       if (!groupedMap[gen].members.includes(name)) {
         groupedMap[gen].members.push(name);
       }
@@ -617,12 +601,9 @@ async function initTimelinePage() {
   });
 
   // =========================
-  // ★重要：JSON順をそのまま採用（ソート禁止）
+  // ★修正ポイントここ（重要）
   // =========================
-  const generationOrder = Object.keys(memberState || {});
-
-  const grouped = generationOrder
-    .filter(gen => groupedMap[gen])
+  const grouped = Object.keys(groupedMap)
     .map(gen => ({
       generation: gen,
       members: groupedMap[gen].members
