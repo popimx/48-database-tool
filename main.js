@@ -563,6 +563,7 @@ async function initDaysPage() {
   document.getElementById("status-filter")?.addEventListener("change", updateDays);
   updateDays();
 }
+
 /* =========================
    TIMELINE PAGE
 ========================= */
@@ -577,7 +578,7 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouping（世代単位 + 重複防止のみ）
+  // grouping（世代単位 + 正しいperiod保持）
   // =========================
   const groupedMap = new Map();
 
@@ -592,16 +593,17 @@ async function initTimelinePage() {
       if (!groupedMap.has(gen)) {
         groupedMap.set(gen, {
           generation: gen,
-          members: []
+          members: new Map() // ← ★名前だけじゃなくperiod保持
         });
       }
 
       const groupData = groupedMap.get(gen);
 
-      // 世代ごとに一意追加（ここはOK）
-      if (!groupData.members.includes(name)) {
-        groupData.members.push(name);
+      if (!groupData.members.has(name)) {
+        groupData.members.set(name, []);
       }
+
+      groupData.members.get(name).push(p);
     }
   });
 
@@ -623,62 +625,37 @@ async function initTimelinePage() {
       return (orderA === -1 ? 9999 : orderA)
            - (orderB === -1 ? 9999 : orderB);
     })
-    .map(([gen, data]) => ({
-      generation: gen,
-      members: data.members
-    }));
+    .map(([gen, data]) => {
+      // Map → 配列に変換（ここで初めて表示用にする）
+      const members = Array.from(data.members.entries())
+        .map(([name, periods]) => {
+          const genPeriods = periods.filter(p => p.generation === gen);
 
-  // =========================
-  // ★重要：ここで「表示対象日」を使う準備
-  // =========================
-  const selectedDateStr =
-    timeline?.selectedDate ||
-    timeline?.date ||
-    new Date().toISOString().slice(0, 10);
+          const start = Math.min(
+            ...genPeriods.map(p => new Date(p.start))
+          );
 
-  const selectedDate = new Date(selectedDateStr);
+          return { name, start };
+        })
+        .sort((a, b) => a.start - b.start)
+        .map(m => m.name);
 
-  // =========================
-  // 重要：active判定を必ず generation単位で行うようにする
-  // =========================
-  function isActiveInGeneration(periods, generation, date) {
-    return periods.some(p => {
-      if (p.generation !== generation) return false;
-
-      const start = new Date(p.start);
-      const end = p.end ? new Date(p.end) : null;
-
-      return start <= date && (!end || end >= date);
+      return {
+        generation: gen,
+        members
+      };
     });
-  }
 
   // =========================
-  // ★修正ポイント：timelineへ渡す前に「正しい状態を保証」
+  // ★重要：日付は「各cardData側」で使うのでここでは不要
   // =========================
-  const filteredMemberState = {};
 
-  for (const [name, periods] of Object.entries(memberState || {})) {
-    if (!Array.isArray(periods)) continue;
-
-    filteredMemberState[name] = periods.filter(p => {
-      if (!p?.generation) return false;
-
-      const start = new Date(p.start);
-      const end = p.end ? new Date(p.end) : null;
-
-      return start <= selectedDate && (!end || end >= selectedDate);
-    });
-  }
-
-  // =========================
-  // render
-  // =========================
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
 
   renderTimelineCards(
     timeline,
-    filteredMemberState, // ←ここ重要（修正済みデータを渡す）
+    memberState, // ← ★filteredは使わない（重要）
     grouped
   );
 }
