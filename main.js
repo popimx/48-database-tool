@@ -1,4 +1,4 @@
-import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
+ import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
@@ -658,18 +658,21 @@ function renderTimelineSummary(timeline, group) {
    YEAR TABS
 ========================= */
 
-function renderYearTabs(timeline, group, grouped) {
+function renderYearTabs(timeline, group) {
   const container = document.getElementById("year-tabs");
   if (!container) return;
 
+  // 年を抽出（重複削除）
   const years = [...new Set(
     timeline.map(t => t.date.slice(0, 4))
   )];
 
+  // 古い順 → 新しい順
   years.sort((a, b) => a - b);
 
   container.innerHTML = "";
 
+  // 「全て」タブ
   const allBtn = document.createElement("button");
   allBtn.textContent = "全て";
   allBtn.className = "year-tab active";
@@ -685,6 +688,7 @@ function renderYearTabs(timeline, group, grouped) {
 
   container.appendChild(allBtn);
 
+  // 年ごとのタブ
   years.forEach(year => {
     const btn = document.createElement("button");
     btn.textContent = year;
@@ -707,6 +711,7 @@ function renderYearTabs(timeline, group, grouped) {
     container.appendChild(btn);
   });
 }
+
 
 /* =========================
    TAB ACTIVE制御
