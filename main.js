@@ -578,7 +578,7 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouping（修正版：正規化しない）
+  // grouping（正規化なし・完全安定）
   // =========================
   const groupedMap = new Map();
 
@@ -588,7 +588,7 @@ async function initTimelinePage() {
     periods.forEach(p => {
       if (!p?.generation) return;
 
-      const gen = p.generation; // ←絶対にそのまま使う
+      const gen = p.generation; // ←絶対そのまま
 
       if (!groupedMap.has(gen)) {
         groupedMap.set(gen, {
@@ -599,7 +599,6 @@ async function initTimelinePage() {
 
       const groupData = groupedMap.get(gen);
 
-      // 同一世代内だけ重複防止
       if (!groupData.members.includes(name)) {
         groupData.members.push(name);
       }
@@ -607,15 +606,17 @@ async function initTimelinePage() {
   });
 
   // =========================
-  // 世代順リスト
+  // 世代順リスト（安全化）
   // =========================
+  const groupKey = group ? group.toUpperCase() : "AKB48";
+
   const orderList =
-    GENERATION_ORDER_MAP?.[group.toUpperCase?.()] ||
+    GENERATION_ORDER_MAP?.[groupKey] ||
     GENERATION_ORDER_MAP?.AKB48 ||
     [];
 
   // =========================
-  // ソート（完全修正版）
+  // ソート（安定版）
   // =========================
   const grouped = Array.from(groupedMap.entries())
     .sort((a, b) => {
