@@ -578,7 +578,7 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouped安全生成（完全防御版）
+  // grouped安全生成（重複排除対応）
   // =========================
   const groupedMap = {};
 
@@ -597,7 +597,10 @@ async function initTimelinePage() {
         };
       }
 
-      groupedMap[gen].members.push(name);
+      // ★ここが重要：重複防止
+      if (!groupedMap[gen].members.includes(name)) {
+        groupedMap[gen].members.push(name);
+      }
     });
   });
 
