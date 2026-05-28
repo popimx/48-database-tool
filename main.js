@@ -605,8 +605,6 @@ async function initTimelinePage() {
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group);
 
-  renderGenerationCount(grouped, memberState);
-
   renderTimelineCards(
     timeline,
     memberState,
@@ -716,39 +714,6 @@ function setActiveTab(activeBtn) {
   });
 
   activeBtn.classList.add("active");
-}
-
-
-/* =========================
-   GENERATION COUNT
-========================= */
-
- function renderGenerationCount(grouped, memberState) {
-  const el = document.getElementById("generation-count");
-  if (!el) return;
-  const today = new Date()
-    .toISOString()
-    .slice(0, 10);
-  let html = "";
-  grouped.forEach(group => {
-    let activeCount = 0;
-    group.members.forEach(name => {
-      const periods = memberState[name] || [];
-      const active = periods.some(p => {
-        if (p.start && today < p.start) return false;
-        if (p.end && today > p.end) return false;
-        return true;
-      });
-      if (active) activeCount++;
-    });
-    html += `
-      <div class="generation-count-row">
-        <span>${group.generation}</span>
-        <span>${activeCount}人</span>
-      </div>
-    `;
-  });
-  el.innerHTML = html;
 }
 
 /* =========================
