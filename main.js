@@ -1,4 +1,4 @@
- import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
+  import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
@@ -815,19 +815,21 @@ function renderTimelineCards(timeline, memberState, grouped) {
     // =========================
     // ★重要：世代ごとのメンバー生成
     // =========================
-   // =========================
-// ★重要：世代ごとのメンバー生成（修正版）
-// =========================
-const activeGenerations = [];
+    const activeGenerations = [];
 
-grouped.forEach(genGroup => {
+    grouped.forEach(genGroup => {
   const eventDate = new Date(cardData.date);
 
-  const members = [];
+  const members = []; // ★必須（ここが抜けてた）
 
   const sortedMembers = [...genGroup.members].sort((a, b) => {
-    const aPeriods = memberState[a] || [];
-    const bPeriods = memberState[b] || [];
+    const aPeriods = (memberState[a] || []).filter(
+      p => p.generation === genGroup.generation
+    );
+
+    const bPeriods = (memberState[b] || []).filter(
+      p => p.generation === genGroup.generation
+    );
 
     const aStart = aPeriods.length
       ? Math.min(...aPeriods.map(p => new Date(p.start).getTime()))
@@ -845,6 +847,7 @@ grouped.forEach(genGroup => {
     if (!Array.isArray(periods)) return;
 
     const isMatch = periods.some(p =>
+      p.generation === genGroup.generation &&
       isActive(p, eventDate)
     );
 
