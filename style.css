@@ -32,22 +32,35 @@ select {
   border: 1px solid #ccc;
 
   background: white;
+
+  width: 100%;          /* ←追加：横幅を統一 */
+  max-width: 220px;     /* ←追加：基準幅 */
+  box-sizing: border-box;
 }
 
 .controls {
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
+
+  align-items: center;  /* ←見た目揃える */
 }
 
 .controls select {
-  flex: 1;
+  flex: unset;          /* ←削除の代わり */
+  width: 220px;         /* ←統一幅 */
 }
 
-/* ★スマホは縦に戻す（これだけ残す） */
+/* ★スマホは縦に戻す */
 @media (max-width: 600px) {
   .controls {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls select {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
