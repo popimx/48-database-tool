@@ -68,7 +68,6 @@ const AKB_ORDER = [
 const memberCache = {};
 const timelineCache = {};
 const memberStateCache = {};
-const groupedCache = {};
 
 /* =========================
    データ取得
@@ -571,7 +570,6 @@ async function initDaysPage() {
 
 async function initTimelinePage() {
   const params = new URLSearchParams(location.search);
-
   const group = params.get("group") || "akb48";
 
   let timeline = await loadTimeline(group);
@@ -579,23 +577,31 @@ async function initTimelinePage() {
 
   const memberState = await loadMemberState(group);
 
-  // grouped.json完全廃止 → 動的生成に変更
-  const grouped = Object.entries(memberState).reduce((acc, [name, periods]) => {
+  // =========================
+  // grouped安全生成（完全防御版）
+  // =========================
+  const groupedMap = {};
+
+  Object.entries(memberState || {}).forEach(([name, periods]) => {
+    if (!Array.isArray(periods)) return;
+
     periods.forEach(p => {
+      if (!p || !p.generation) return;
+
       const gen = p.generation;
 
-      if (!acc[gen]) {
-        acc[gen] = {
+      if (!groupedMap[gen]) {
+        groupedMap[gen] = {
           generation: gen,
           members: []
         };
       }
 
-      acc[gen].members.push(name);
+      groupedMap[gen].members.push(name);
     });
+  });
 
-    return acc;
-  }, {});
+  const grouped = Object.values(groupedMap);
 
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group);
@@ -698,7 +704,7 @@ function renderYearTabs(timeline, group) {
       renderTimelineCards(
         filtered,
         memberStateCache[group],
-        groupedCache[group]
+        grouped
       );
     };
 
