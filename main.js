@@ -1,3 +1,5 @@
+import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
 
@@ -137,29 +139,6 @@ async function loadMemberState(group) {
 
   const data = await res.json();
   memberStateCache[group] = data;
-
-  return data;
-}
-
-/* =========================
-   GROUPED（グループ対応）
-========================= */
-
-async function loadGrouped(group) {
-  if (groupedCache[group]) return groupedCache[group];
-
-  const res = await fetch(
-    `data/members/${group}_grouped.json?t=${Date.now()}`,
-    { cache: "no-store" }
-  );
-
-  if (!res.ok) {
-    console.error("GROUPED LOAD FAILED:", group);
-    return {};
-  }
-
-  const data = await res.json();
-  groupedCache[group] = data;
 
   return data;
 }
@@ -596,11 +575,27 @@ async function initTimelinePage() {
   const group = params.get("group") || "akb48";
 
   let timeline = await loadTimeline(group);
-
   timeline = calculateTimelineCounts(timeline);
 
   const memberState = await loadMemberState(group);
-  const grouped = await loadGrouped(group);
+
+  // grouped.json完全廃止 → 動的生成に変更
+  const grouped = Object.entries(memberState).reduce((acc, [name, periods]) => {
+    periods.forEach(p => {
+      const gen = p.generation;
+
+      if (!acc[gen]) {
+        acc[gen] = {
+          generation: gen,
+          members: []
+        };
+      }
+
+      acc[gen].members.push(name);
+    });
+
+    return acc;
+  }, {});
 
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group);
