@@ -1,4 +1,4 @@
- import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
+import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
@@ -578,48 +578,57 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouped安全生成（重複＋順序安定版）
+  // grouping（正規化なし・完全安定）
   // =========================
-  const groupedMap = {};
+  const groupedMap = new Map();
 
   Object.entries(memberState || {}).forEach(([name, periods]) => {
     if (!Array.isArray(periods)) return;
 
     periods.forEach(p => {
-      if (!p || !p.generation) return;
+      if (!p?.generation) return;
 
-      const gen = p.generation;
+      const gen = p.generation; // ←絶対そのまま
 
-      if (!groupedMap[gen]) {
-        groupedMap[gen] = {
+      if (!groupedMap.has(gen)) {
+        groupedMap.set(gen, {
           generation: gen,
           members: []
-        };
+        });
       }
 
-      // ★重複防止（③対策）
-      const exists = groupedMap[gen].members.includes(name);
-      if (exists) return;
+      const groupData = groupedMap.get(gen);
 
-      groupedMap[gen].members.push(name);
+      if (!groupData.members.includes(name)) {
+        groupData.members.push(name);
+      }
     });
   });
 
   // =========================
-  // ★重要：GENERATION_ORDER_MAP適用前の並び安定化
+  // 世代順リスト（安全化）
   // =========================
-  const grouped = Object.values(groupedMap)
+  const groupKey = group ? group.toUpperCase() : "AKB48";
+
+  const orderList =
+    GENERATION_ORDER_MAP?.[groupKey] ||
+    GENERATION_ORDER_MAP?.AKB48 ||
+    [];
+
+  // =========================
+  // ソート（安定版）
+  // =========================
+  const grouped = Array.from(groupedMap.entries())
     .sort((a, b) => {
-      const aOrder = GENERATION_ORDER_MAP?.[a.generation] ?? 9999;
-      const bOrder = GENERATION_ORDER_MAP?.[b.generation] ?? 9999;
-      return aOrder - bOrder;
+      const orderA = orderList.indexOf(a[0]);
+      const orderB = orderList.indexOf(b[0]);
+
+      return (orderA === -1 ? 9999 : orderA)
+           - (orderB === -1 ? 9999 : orderB);
     })
-    .map(group => ({
-      ...group,
-      // ★表示順崩れ防止（五十音順固定）
-      members: group.members.slice().sort((a, b) =>
-        a.localeCompare(b, "ja")
-      )
+    .map(([gen, data]) => ({
+      generation: gen,
+      members: data.members
     }));
 
   renderTimelineSummary(timeline, group);
