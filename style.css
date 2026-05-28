@@ -245,6 +245,55 @@ select {
 /* =========================
    timeline
 ========================= */
+#year-tabs {
+
+  display: flex;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+
+  margin-bottom: 20px;
+
+}
+
+.year-tab {
+
+  background: #fff;
+
+  color: #111;
+
+  border: 1px solid #ddd;
+
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.15s;
+
+}
+
+.year-tab:hover {
+
+  background: #f5f5f5;
+
+}
+
+.year-tab.active {
+
+  background: #111;
+
+  color: #fff;
+
+  border-color: #111;
+
+}
 
 .timeline-summary-box {
   background: white;
