@@ -653,6 +653,8 @@ renderTimelineCards(
   grouped
 );
 
+}
+
 /* =========================
    TIMELINE SUMMARY
 ========================= */
