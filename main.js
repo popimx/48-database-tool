@@ -76,7 +76,6 @@ async function loadMembers(group) {
   if (memberCache[group]) return memberCache[group];
 
   const url = `data/members/${group}.json?t=${Date.now()}`;
-
   const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {
@@ -85,13 +84,24 @@ async function loadMembers(group) {
   }
 
   const data = await res.json();
-  memberCache[group] = data;
 
-  return data;
+  // ★ここで generation を必ず付与（重要）
+  const normalized = data.flatMap(g =>
+    g.members.map(name => ({
+      name,
+      generation: g.generation
+    }))
+  );
+
+  memberCache[group] = normalized;
+
+  return normalized;
 }
 
 async function loadAllMembers() {
   const all = await Promise.all(GROUPS.map(loadMembers));
+
+  // そのまま全部残す（重複排除しない）
   return all.flat();
 }
 
