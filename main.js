@@ -582,7 +582,6 @@ async function initTimelinePage() {
   const grouped = await loadAKBGrouped();
 
   renderTimelineSummary(timeline);
-  renderCurrentMemberCount(memberState);
   renderGenerationCount(grouped, memberState);
   renderTimelineCards(timeline, memberState, grouped);
 }
@@ -611,39 +610,6 @@ function renderTimelineSummary(timeline) {
     </div>
   `;
 }
-
-/* =========================
-   CURRENT COUNT
-========================= */
-
- function renderCurrentMemberCount(memberState) {
-  const el = document.getElementById("current-member-count");
-  if (!el) return;
-
-  const today = new Date()
-    .toISOString()
-    .slice(0, 10);
-
-  let count = 0;
-
-  Object.values(memberState).forEach(periods => {
-    const active = periods.some(p => {
-      if (p.start && today < p.start) return false;
-      if (p.end && today > p.end) return false;
-
-      return true;
-    });
-
-    if (active) count++;
-  });
-
-  el.innerHTML = `
-    <div class="timeline-current-count">
-      現在の在籍人数: ${count}人
-    </div>
-  `;
-}
-
 
 /* =========================
    GENERATION COUNT
