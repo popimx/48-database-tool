@@ -22,6 +22,7 @@ h1 {
 
 /* =========================
    select / controls
+   （メンバーページ基準）
 ========================= */
 
 .controls {
@@ -40,16 +41,16 @@ h1 {
 
   height: 40px;
 
-  padding: 8px 10px;   /* ←他ツールと完全一致 */
-  font-size: 1rem;     /* ←統一 */
+  padding: 10px;
+  font-size: 16px;
 
-  border-radius: 8px;  /* ←統一 */
+  border-radius: 10px;
   border: 1px solid #ccc;
-  background-color: #ffffff;
+  background: white;
 
   box-sizing: border-box;
 
-  appearance: none;    /* ←ズレ防止（重要） */
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 }
