@@ -849,7 +849,17 @@ function renderTimelineCards(timeline, memberState, grouped) {
 
     grouped.forEach(group => {
       const members = [];
+     
+    group.members.sort((a, b) => {
+  const aStart =
+    memberState[a]?.find(p => p.generation === group.generation)?.start || "9999-12-31";
 
+  const bStart =
+    memberState[b]?.find(p => p.generation === group.generation)?.start || "9999-12-31";
+
+  return new Date(aStart) - new Date(bStart);
+});
+     
       group.members.forEach(name => {
         const periods = memberState?.[name];
         if (!Array.isArray(periods)) return;
