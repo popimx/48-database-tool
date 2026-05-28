@@ -563,7 +563,6 @@ async function initDaysPage() {
   document.getElementById("status-filter")?.addEventListener("change", updateDays);
   updateDays();
 }
-
 /* =========================
    TIMELINE PAGE
 ========================= */
@@ -578,17 +577,17 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouping（正規化なし・完全安定）
+  // grouping（世代単位 + 重複防止のみ）
   // =========================
   const groupedMap = new Map();
 
   Object.entries(memberState || {}).forEach(([name, periods]) => {
     if (!Array.isArray(periods)) return;
 
-    periods.forEach(p => {
-      if (!p?.generation) return;
+    for (const p of periods) {
+      if (!p?.generation) continue;
 
-      const gen = p.generation; // ←絶対そのまま
+      const gen = p.generation;
 
       if (!groupedMap.has(gen)) {
         groupedMap.set(gen, {
@@ -599,14 +598,15 @@ async function initTimelinePage() {
 
       const groupData = groupedMap.get(gen);
 
+      // 世代ごとに一意追加（ここはOK）
       if (!groupData.members.includes(name)) {
         groupData.members.push(name);
       }
-    });
+    }
   });
 
   // =========================
-  // 世代順リスト（安全化）
+  // 世代順（固定順優先）
   // =========================
   const groupKey = group ? group.toUpperCase() : "AKB48";
 
@@ -615,9 +615,6 @@ async function initTimelinePage() {
     GENERATION_ORDER_MAP?.AKB48 ||
     [];
 
-  // =========================
-  // ソート（安定版）
-  // =========================
   const grouped = Array.from(groupedMap.entries())
     .sort((a, b) => {
       const orderA = orderList.indexOf(a[0]);
@@ -631,12 +628,57 @@ async function initTimelinePage() {
       members: data.members
     }));
 
+  // =========================
+  // ★重要：ここで「表示対象日」を使う準備
+  // =========================
+  const selectedDateStr =
+    timeline?.selectedDate ||
+    timeline?.date ||
+    new Date().toISOString().slice(0, 10);
+
+  const selectedDate = new Date(selectedDateStr);
+
+  // =========================
+  // 重要：active判定を必ず generation単位で行うようにする
+  // =========================
+  function isActiveInGeneration(periods, generation, date) {
+    return periods.some(p => {
+      if (p.generation !== generation) return false;
+
+      const start = new Date(p.start);
+      const end = p.end ? new Date(p.end) : null;
+
+      return start <= date && (!end || end >= date);
+    });
+  }
+
+  // =========================
+  // ★修正ポイント：timelineへ渡す前に「正しい状態を保証」
+  // =========================
+  const filteredMemberState = {};
+
+  for (const [name, periods] of Object.entries(memberState || {})) {
+    if (!Array.isArray(periods)) continue;
+
+    filteredMemberState[name] = periods.filter(p => {
+      if (!p?.generation) return false;
+
+      const start = new Date(p.start);
+      const end = p.end ? new Date(p.end) : null;
+
+      return start <= selectedDate && (!end || end >= selectedDate);
+    });
+  }
+
+  // =========================
+  // render
+  // =========================
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
 
   renderTimelineCards(
     timeline,
-    memberState,
+    filteredMemberState, // ←ここ重要（修正済みデータを渡す）
     grouped
   );
 }
