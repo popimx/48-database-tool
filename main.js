@@ -577,6 +577,9 @@ async function initTimelinePage() {
 
   const memberState = await loadMemberState(group);
 
+  const normalizeGen = (gen) =>
+    String(gen).replace("期生", "期").trim();
+
   const groupedMap = {};
 
   Object.entries(memberState || {}).forEach(([name, periods]) => {
@@ -585,7 +588,7 @@ async function initTimelinePage() {
     periods.forEach(p => {
       if (!p?.generation) return;
 
-      const gen = p.generation;
+      const gen = normalizeGen(p.generation);
 
       if (!groupedMap[gen]) {
         groupedMap[gen] = {
@@ -594,6 +597,7 @@ async function initTimelinePage() {
         };
       }
 
+      // ★重要：重複防止は「同一期内だけ」
       if (!groupedMap[gen].members.includes(name)) {
         groupedMap[gen].members.push(name);
       }
@@ -601,12 +605,17 @@ async function initTimelinePage() {
   });
 
   // =========================
-  // ★修正ポイントここ（重要）
+  // ★ここが本体修正
   // =========================
-  const grouped = Object.keys(groupedMap)
-    .map(gen => ({
+  const grouped = Object.entries(groupedMap)
+    .sort((a, b) => {
+      const orderA = GENERATION_ORDER_MAP?.[a[0]] ?? 9999;
+      const orderB = GENERATION_ORDER_MAP?.[b[0]] ?? 9999;
+      return orderA - orderB;
+    })
+    .map(([gen, data]) => ({
       generation: gen,
-      members: groupedMap[gen].members
+      members: data.members
     }));
 
   renderTimelineSummary(timeline, group);
