@@ -3,19 +3,13 @@
 <head>
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
     人数遷移 | 48グループ データベース
   </title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -26,31 +20,34 @@
       人数遷移
     </h1>
 
-    <a
-      href="index.html"
-      class="back-button"
-    >
+    <a href="index.html" class="back-button">
       ← トップへ戻る
     </a>
+
+    <!-- グループ選択 -->
+    <div class="group-select-wrapper">
+      <select id="group-select">
+        <option value="akb48">AKB48</option>
+        <option value="ske48">SKE48</option>
+        <option value="nmb48">NMB48</option>
+        <option value="hkt48">HKT48</option>
+        <option value="ngt48">NGT48</option>
+        <option value="stu48">STU48</option>
+      </select>
+    </div>
 
   </header>
 
   <main>
 
-    <div
-      id="timeline-summary"
-      class="timeline-summary"
-    ></div>
+    <!-- サマリー -->
+    <div id="timeline-summary" class="timeline-summary"></div>
 
-    <div
-      class="generation-grid"
-      id="generation-count"
-    ></div>
+    <!-- 年タブ -->
+    <div id="year-tabs" class="year-tabs"></div>
 
-    <div
-      class="timeline-list"
-      id="timeline-list"
-    ></div>
+    <!-- タイムライン本体 -->
+    <div id="timeline-list" class="timeline-list"></div>
 
   </main>
 
