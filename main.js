@@ -676,7 +676,7 @@ function renderYearTabs(timeline, group) {
     renderTimelineCards(
       timeline,
       memberStateCache[group],
-      groupedCache[group]
+      grouped
     );
   };
 
