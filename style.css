@@ -1,4 +1,4 @@
- body {
+body {
   margin: 0;
   padding: 20px;
 
@@ -133,7 +133,6 @@ select {
   line-height: 1.4;
 
   flex: 1;
-  /* ★余計な制御は全部削除（ここが復元ポイント） */
 }
 
 /* =========================
@@ -241,6 +240,160 @@ select {
 
 .member-card .member-kana {
   margin-top: 6px;
+}
+
+/* =========================
+   timeline
+========================= */
+
+.timeline-summary-box {
+  background: white;
+  border-radius: 16px;
+
+  padding: 20px;
+  margin-bottom: 20px;
+
+  text-align: center;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.timeline-summary-title {
+  font-size: 14px;
+  color: #666;
+
+  margin-bottom: 8px;
+}
+
+.timeline-summary-count {
+  font-size: 40px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.timeline-summary-date {
+  margin-top: 10px;
+  color: #888;
+  font-size: 14px;
+}
+
+.timeline-current-count {
+  background: white;
+
+  padding: 16px;
+  border-radius: 14px;
+
+  margin-bottom: 20px;
+
+  font-weight: 700;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.generation-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(140px, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 24px;
+}
+
+.generation-count-row {
+  background: white;
+
+  border-radius: 12px;
+
+  padding: 14px;
+
+  display: flex;
+  justify-content: space-between;
+
+  font-weight: 700;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.timeline-card {
+  background: white;
+
+  border-radius: 16px;
+
+  padding: 20px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.timeline-date {
+  font-size: 20px;
+  font-weight: 700;
+
+  margin-bottom: 16px;
+}
+
+.timeline-events {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin-bottom: 20px;
+}
+
+.timeline-event {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+
+  border-bottom: 1px solid #eee;
+
+  padding-bottom: 8px;
+}
+
+.timeline-event-text {
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.timeline-event-right {
+  display: flex;
+  gap: 10px;
+
+  white-space: nowrap;
+}
+
+.timeline-event-value {
+  font-weight: 700;
+}
+
+.timeline-event-delta {
+  color: #666;
+}
+
+.timeline-members {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline-generation-title {
+  font-size: 15px;
+  font-weight: 700;
+
+  margin-bottom: 6px;
+}
+
+.timeline-generation-members {
+  line-height: 1.8;
+  color: #444;
 }
 
 /* =========================
