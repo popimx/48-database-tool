@@ -604,7 +604,7 @@ async function initTimelinePage() {
   const grouped = Object.values(groupedMap);
 
   renderTimelineSummary(timeline, group);
-  renderYearTabs(timeline, group);
+  renderYearTabs(timeline, group, grouped);
 
   renderTimelineCards(
     timeline,
