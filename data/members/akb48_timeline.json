@@ -2,1924 +2,1924 @@
   {
     "date": "2005-12-08",
     "events": [
-      { "text": "AKB48 1期生 加入", "value": 20, "delta": 20 }
+      { "text": "AKB48 1期生 加入", "delta": 20 }
     ]
   },
   {
     "date": "2006-01-22",
     "events": [
-      { "text": "篠田麻里子 加入", "value": 21, "delta": 1 }
+      { "text": "篠田麻里子 加入", "delta": 1 }
     ]
   },
   {
     "date": "2006-03-31",
     "events": [
-      { "text": "宇佐美友紀 卒業", "value": 20, "delta": -1 }
+      { "text": "宇佐美友紀 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2006-04-01",
     "events": [
-      { "text": "AKB48 2期生 加入", "value": 37, "delta": 17 }
+      { "text": "AKB48 2期生 加入", "delta": 17 }
     ]
   },
   {
     "date": "2006-06-17",
     "events": [
-      { "text": "上村彩子 脱退", "value": 36, "delta": -1 }
+      { "text": "上村彩子 脱退", "delta": -1 }
     ]
   },
   {
     "date": "2006-12-09",
     "events": [
-      { "text": "AKB48 3期生 加入", "value": 54, "delta": 18 }
+      { "text": "AKB48 3期生 加入", "delta": 18 }
     ]
   },
   {
     "date": "2006-12-19",
     "events": [
-      { "text": "磯怜奈 活動辞退", "value": 53, "delta": -1 },
-      { "text": "大塚亜季 活動辞退", "value": 52, "delta": -1 },
-      { "text": "坂田涼 活動辞退", "value": 51, "delta": -1 },
-      { "text": "藤島マリアチカ 活動辞退", "value": 50, "delta": -1 },
-      { "text": "堀江聖夏 活動辞退", "value": 49, "delta": -1 }
+      { "text": "磯怜奈 活動辞退", "delta": -1 },
+      { "text": "大塚亜季 活動辞退", "delta": -1 },
+      { "text": "坂田涼 活動辞退", "delta": -1 },
+      { "text": "藤島マリアチカ 活動辞退", "delta": -1 },
+      { "text": "堀江聖夏 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2007-01-25",
     "events": [
-      { "text": "折井あゆみ 卒業", "value": 48, "delta": -1 }
+      { "text": "折井あゆみ 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2007-06-16",
     "events": [
-      { "text": "AKB48 4期生 加入", "value": 66, "delta": 18 }
+      { "text": "AKB48 4期生 加入", "delta": 18 }
     ]
   },
   {
     "date": "2007-06-22",
     "events": [
-      { "text": "今井優 卒業", "value": 65, "delta": -1 },
-      { "text": "高田彩奈 卒業", "value": 64, "delta": -1 }
+      { "text": "今井優 卒業", "delta": -1 },
+      { "text": "高田彩奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2007-06-26",
     "events": [
-      { "text": "星野みちる 卒業", "value": 63, "delta": -1 }
+      { "text": "星野みちる 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2007-10-02",
     "events": [
-      { "text": "渡邊志穂 卒業", "value": 62, "delta": -1 }
+      { "text": "渡邊志穂 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2007-11-15",
     "events": [
-      { "text": "飯沼友里奈 活動辞退", "value": 61, "delta": -1 },
-      { "text": "金子智美 活動辞退", "value": 60, "delta": -1 },
-      { "text": "小塚里菜 活動辞退", "value": 59, "delta": -1 },
-      { "text": "吉岡沙葵 活動辞退", "value": 58, "delta": -1 },
-      { "text": "渡辺茉莉絵 活動辞退", "value": 57, "delta": -1 }
+      { "text": "飯沼友里奈 活動辞退", "delta": -1 },
+      { "text": "金子智美 活動辞退", "delta": -1 },
+      { "text": "小塚里菜 活動辞退", "delta": -1 },
+      { "text": "吉岡沙葵 活動辞退", "delta": -1 },
+      { "text": "渡辺茉莉絵 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2007-11-26",
     "events": [
-      { "text": "出口陽 卒業", "value": 56, "delta": -1 }
+      { "text": "出口陽 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2007-11-30",
     "events": [
-      { "text": "増山加弥乃 卒業", "value": 55, "delta": -1 }
+      { "text": "増山加弥乃 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2007-12-08",
     "events": [
-      { "text": "AKB48 5期生 加入", "value": 67, "delta": 12 }
+      { "text": "AKB48 5期生 加入", "delta": 12 }
     ]
   },
-{
-  "date": "2008-04-28",
-  "events": [
-    { "text": "AKB48 6期生 加入", "value": 71, "delta": 4 }
-  ]
-},
-{
-  "date": "2008-07-31",
-  "events": [
-    { "text": "西澤沙羅 活動辞退", "value": 70, "delta": -1 }
-  ]
-},
-{
-  "date": "2008-08-14",
-  "events": [
-    { "text": "菊地彩香 解雇", "value": 69, "delta": -1 }
-  ]
-},
-{
-  "date": "2008-08-23",
-  "events": [
-    { "text": "中西優香 移籍", "value": 68, "delta": -1 }
-  ]
-},
-{
-  "date": "2008-08-31",
-  "events": [
-    { "text": "片野友里恵 活動辞退", "value": 67, "delta": -1 }
-  ]
-},
-{
-  "date": "2008-09-29",
-  "events": [
-    { "text": "井上奈瑠 卒業", "value": 66, "delta": -1 }
-  ]
-},
-{
-  "date": "2008-11-23",
-  "events": [
-    { "text": "大江朝美 卒業", "value": 65, "delta": -1 },
-    { "text": "駒谷仁美 卒業", "value": 64, "delta": -1 },
-    { "text": "戸島花 卒業", "value": 63, "delta": -1 },
-    { "text": "中西里菜 卒業", "value": 62, "delta": -1 },
-    { "text": "成田梨紗 卒業", "value": 61, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-01-18",
-  "events": [
-    { "text": "AKB48 7期生 加入", "value": 71, "delta": 10 },
-    { "text": "鈴木菜絵 活動終了", "value": 70, "delta": -1 },
-    { "text": "藤本紗羅 活動終了", "value": 69, "delta": -1 },
-    { "text": "村中聡美 活動終了", "value": 68, "delta": -1 },
-    { "text": "有馬優茄 活動終了", "value": 67, "delta": -1 },
-    { "text": "冨田麻友 活動終了", "value": 66, "delta": -1 },
-    { "text": "畑山亜梨沙 活動終了", "value": 65, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-02-01",
-  "events": [
-    { "text": "野口玲菜 卒業", "value": 64, "delta": -1 },
-    { "text": "松岡由紀 卒業", "value": 63, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-02-27",
-  "events": [
-    { "text": "川崎希 卒業", "value": 62, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-04-18",
-  "events": [
-    { "text": "早乙女美樹 卒業", "value": 61, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-04-26",
-  "events": [
-    { "text": "大島麻衣 卒業", "value": 60, "delta": -1 },
-    { "text": "早野薫 卒業", "value": 59, "delta": -1 },
-    { "text": "瓜屋茜 卒業", "value": 58, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-05-24",
-  "events": [
-    { "text": "成瀬理沙 卒業", "value": 57, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-05-26",
-  "events": [
-    { "text": "AKB48 8期生 加入", "value": 72, "delta": 15 }
-  ]
-},
-{
-  "date": "2009-06-09",
-  "events": [
-    { "text": "上遠野瑞穂 活動辞退", "value": 71, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-07-14",
-  "events": [
-    { "text": "小松瑞希 活動辞退", "value": 70, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-07-18",
-  "events": [
-    { "text": "林彩乃 活動辞退", "value": 69, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-07-25",
-  "events": [
-    { "text": "西川七海 解雇", "value": 68, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-08-23",
-  "events": [
-    { "text": "佐伯美香 卒業", "value": 67, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-09-20",
-  "events": [
-    { "text": "鈴木紫帆里 活動辞退", "value": 66, "delta": -1 }
-  ]
-},
-{
-  "date": "2009-11-14",
-  "events": [
-    { "text": "AKB48 9期生 加入", "value": 80, "delta": 14 }
-  ]
-},
-{
-  "date": "2009-12-04",
-  "events": [
-    { "text": "浅居円 活動終了", "value": 79, "delta": -1 },
-    { "text": "石井彩夏 活動終了", "value": 78, "delta": -1 },
-    { "text": "石部郁 活動終了", "value": 77, "delta": -1 },
-    { "text": "郭グレース 活動終了", "value": 76, "delta": -1 },
-    { "text": "小水七海 活動終了", "value": 75, "delta": -1 },
-    { "text": "坂本莉央 活動終了", "value": 74, "delta": -1 },
-    { "text": "杉山未来 活動終了", "value": 73, "delta": -1 },
-    { "text": "冨手麻妙 活動終了", "value": 72, "delta": -1 },
-    { "text": "三木にこる 活動終了", "value": 71, "delta": -1 },
-    { "text": "村中聡美 活動終了", "value": 70, "delta": -1 }
-  ]
-},
-{
+  {
+    "date": "2008-04-28",
+    "events": [
+      { "text": "AKB48 6期生 加入", "delta": 4 }
+    ]
+  },
+  {
+    "date": "2008-07-31",
+    "events": [
+      { "text": "西澤沙羅 活動辞退", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2008-08-14",
+    "events": [
+      { "text": "菊地彩香 解雇", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2008-08-23",
+    "events": [
+      { "text": "中西優香 移籍", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2008-08-31",
+    "events": [
+      { "text": "片野友里恵 活動辞退", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2008-09-29",
+    "events": [
+      { "text": "井上奈瑠 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2008-11-23",
+    "events": [
+      { "text": "大江朝美 卒業", "delta": -1 },
+      { "text": "駒谷仁美 卒業", "delta": -1 },
+      { "text": "戸島花 卒業", "delta": -1 },
+      { "text": "中西里菜 卒業", "delta": -1 },
+      { "text": "成田梨紗 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-01-18",
+    "events": [
+      { "text": "AKB48 7期生 加入", "delta": 10 },
+      { "text": "鈴木菜絵 活動終了", "delta": -1 },
+      { "text": "藤本紗羅 活動終了", "delta": -1 },
+      { "text": "村中聡美 活動終了", "delta": -1 },
+      { "text": "有馬優茄 活動終了", "delta": -1 },
+      { "text": "冨田麻友 活動終了", "delta": -1 },
+      { "text": "畑山亜梨沙 活動終了", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-02-01",
+    "events": [
+      { "text": "野口玲菜 卒業", "delta": -1 },
+      { "text": "松岡由紀 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-02-27",
+    "events": [
+      { "text": "川崎希 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-04-18",
+    "events": [
+      { "text": "早乙女美樹 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-04-26",
+    "events": [
+      { "text": "大島麻衣 卒業", "delta": -1 },
+      { "text": "早野薫 卒業", "delta": -1 },
+      { "text": "瓜屋茜 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-05-24",
+    "events": [
+      { "text": "成瀬理沙 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-05-26",
+    "events": [
+      { "text": "AKB48 8期生 加入", "delta": 15 }
+    ]
+  },
+  {
+    "date": "2009-06-09",
+    "events": [
+      { "text": "上遠野瑞穂 活動辞退", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-07-14",
+    "events": [
+      { "text": "小松瑞希 活動辞退", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-07-18",
+    "events": [
+      { "text": "林彩乃 活動辞退", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-07-25",
+    "events": [
+      { "text": "西川七海 解雇", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-08-23",
+    "events": [
+      { "text": "佐伯美香 卒業", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-09-20",
+    "events": [
+      { "text": "鈴木紫帆里 活動辞退", "delta": -1 }
+    ]
+  },
+  {
+    "date": "2009-11-14",
+    "events": [
+      { "text": "AKB48 9期生 加入", "delta": 14 }
+    ]
+  },
+  {
+    "date": "2009-12-04",
+    "events": [
+      { "text": "浅居円 活動終了", "delta": -1 },
+      { "text": "石井彩夏 活動終了", "delta": -1 },
+      { "text": "石部郁 活動終了", "delta": -1 },
+      { "text": "郭グレース 活動終了", "delta": -1 },
+      { "text": "小水七海 活動終了", "delta": -1 },
+      { "text": "坂本莉央 活動終了", "delta": -1 },
+      { "text": "杉山未来 活動終了", "delta": -1 },
+      { "text": "冨手麻妙 活動終了", "delta": -1 },
+      { "text": "三木にこる 活動終了", "delta": -1 },
+      { "text": "村中聡美 活動終了", "delta": -1 }
+    ]
+  },
+ {
   "date": "2010-01-06",
   "events": [
-    { "text": "伊藤彩夏 活動辞退", "value": 69, "delta": -1 }
+    { "text": "伊藤彩夏 活動辞退", "delta": -1 }
   ]
 },
 {
   "date": "2010-02-01",
   "events": [
-    { "text": "今井悠理枝 活動辞退", "value": 68, "delta": -1 }
+    { "text": "今井悠理枝 活動辞退", "delta": -1 }
   ]
 },
 {
   "date": "2010-02-21",
   "events": [
-    { "text": "大堀恵 移籍", "value": 67, "delta": -1 },
-    { "text": "野呂佳代 移籍", "value": 66, "delta": -1 }
+    { "text": "大堀恵 移籍", "delta": -1 },
+    { "text": "野呂佳代 移籍", "delta": -1 }
   ]
 },
 {
   "date": "2010-04-16",
   "events": [
-    { "text": "浦野一美 移籍", "value": 65, "delta": -1 },
-    { "text": "小原春香 移籍", "value": 64, "delta": -1 }
+    { "text": "浦野一美 移籍", "delta": -1 },
+    { "text": "小原春香 移籍", "delta": -1 }
   ]
 },
 {
   "date": "2010-05-27",
   "events": [
-    { "text": "佐藤由加理 移籍", "value": 63, "delta": -1 }
+    { "text": "佐藤由加理 移籍", "delta": -1 }
   ]
 },
 {
   "date": "2010-06-20",
   "events": [
-    { "text": "石黒貴己 活動終了", "value": 62, "delta": -1 },
-    { "text": "絹本桃子 活動終了", "value": 61, "delta": -1 },
-    { "text": "高松恵理 活動辞退", "value": 60, "delta": -1 },
-    { "text": "藤本紗羅 活動終了", "value": 59, "delta": -1 }
+    { "text": "石黒貴己 活動終了", "delta": -1 },
+    { "text": "絹本桃子 活動終了", "delta": -1 },
+    { "text": "高松恵理 活動辞退", "delta": -1 },
+    { "text": "藤本紗羅 活動終了", "delta": -1 }
   ]
 },
 {
   "date": "2010-06-24",
   "events": [
-    { "text": "AKB48 10期生 加入", "value": 69, "delta": 10 }
+    { "text": "AKB48 10期生 加入", "delta": 10 }
   ]
 },
 {
   "date": "2010-07-06",
   "events": [
-    { "text": "植木あさ香 活動辞退", "value": 68, "delta": -1 }
+    { "text": "植木あさ香 活動辞退", "delta": -1 }
   ]
 },
 {
   "date": "2010-09-27",
   "events": [
-    { "text": "小野恵令奈 卒業", "value": 67, "delta": -1 }
+    { "text": "小野恵令奈 卒業", "delta": -1 }
   ]
 },
 {
   "date": "2010-10-05",
   "events": [
-    { "text": "佐野友里子 活動終了", "value": 66, "delta": -1 },
-    { "text": "岩崎仁美 活動終了", "value": 65, "delta": -1 }
+    { "text": "佐野友里子 活動終了", "delta": -1 },
+    { "text": "岩崎仁美 活動終了", "delta": -1 }
   ]
 },
 {
   "date": "2010-10-10",
   "events": [
-    { "text": "AKB48 11期生 加入", "value": 75, "delta": 10 }
+    { "text": "AKB48 11期生 加入", "delta": 10 }
   ]
 },
 {
   "date": "2010-10-23",
   "events": [
-    { "text": "豊田早姫 活動辞退", "value": 74, "delta": -1 }
+    { "text": "豊田早姫 活動辞退", "delta": -1 }
   ]
 },
 {
   "date": "2010-10-27",
   "events": [
-    { "text": "岡﨑ちなみ 活動辞退", "value": 73, "delta": -1 }
+    { "text": "岡﨑ちなみ 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2010-12-03",
+  "events": [
+    { "text": "川上麻里奈 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2011-02-20",
+  "events": [
+    { "text": "金沢有希 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2011-05-22",
+  "events": [
+    { "text": "AKB48 12期生 加入", "delta": 9 }
+  ]
+},
+{
+  "date": "2011-06-11",
+  "events": [
+    { "text": "江口愛美 加入", "delta": 1 }
+  ]
+},
+{
+  "date": "2011-06-19",
+  "events": [
+    { "text": "奥真奈美 卒業", "delta": -1 },
+    { "text": "牛窪紗良 活動辞退", "delta": -1 },
+    { "text": "山口菜有 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2011-09-02",
+  "events": [
+    { "text": "森杏奈 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2011-12-08",
+  "events": [
+    { "text": "AKB48 13期生 加入", "delta": 16 }
+  ]
+},
+{
+  "date": "2012-02-05",
+  "events": [
+    { "text": "平嶋夏海 活動辞退", "delta": -1 },
+    { "text": "米沢瑠美 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-03-24",
+  "events": [
+    { "text": "松井珠理奈 兼任開始", "delta": 1 },
+    { "text": "渡辺美優紀 兼任開始", "delta": 1 }
+  ]
+},
+{
+  "date": "2012-03-31",
+  "events": [
+    { "text": "鈴木里香 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-06-16",
+  "events": [
+    { "text": "指原莉乃 移籍", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-07-09",
+  "events": [
+    { "text": "AKB48 14期生 加入", "delta": 6 }
+  ]
+},
+{
+  "date": "2012-08-05",
+  "events": [
+    { "text": "雨宮舞夏 活動終了", "delta": -1 },
+    { "text": "北汐莉 活動終了", "delta": -1 },
+    { "text": "長谷川晴奈 活動終了", "delta": -1 },
+    { "text": "森山さくら 活動終了", "delta": -1 },
+    { "text": "渡邊寧々 活動終了", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-08-27",
+  "events": [
+    { "text": "前田敦子 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-10-06",
+  "events": [
+    { "text": "サイード横田絵玲奈 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-10-24",
+  "events": [
+    { "text": "光宗薫 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-11-01",
+  "events": [
+    { "text": "石田安奈 兼任開始", "delta": 1 },
+    { "text": "小谷里歩 兼任開始", "delta": 1 },
+    { "text": "多田愛佳 移籍", "delta": -1 },
+    { "text": "高城亜樹 移籍", "delta": -1 },
+    { "text": "仲川遥香 移籍", "delta": -1 },
+    { "text": "宮澤佐江 移籍", "delta": -1 },
+    { "text": "鈴木まりや 移籍", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-11-30",
+  "events": [
+    { "text": "佐藤夏希 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2012-12-17",
+  "events": [
+    { "text": "増田有華 活動辞退", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-03-06",
+  "events": [
+    { "text": "仲谷明香 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-04-28",
+  "events": [
+    { "text": "古畑奈和 兼任開始", "delta": 1 },
+    { "text": "矢倉楓子 兼任開始", "delta": 1 },
+    { "text": "兒玉遥 兼任開始", "delta": 1 },
+    { "text": "高城亜樹 兼任開始", "delta": 1 },
+    { "text": "鈴木まりや 兼任開始", "delta": 1 },
+    { "text": "宮澤佐江 兼任開始", "delta": 1 },
+    { "text": "仁藤萌乃 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-05-03",
+  "events": [
+    { "text": "河西智美 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-05-08",
+  "events": [
+    { "text": "江口愛美 プロフィール削除", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-05-21",
+  "events": [
+    { "text": "石田安奈 兼任解除", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-05-27",
+  "events": [
+    { "text": "小谷里歩 兼任解除", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-06-05",
+  "events": [
+    { "text": "AKB48 15期生 加入", "delta": 8 }
+  ]
+},
+{
+  "date": "2013-06-18",
+  "events": [
+    { "text": "野澤玲奈 兼任開始", "delta": 1 }
+  ]
+},
+{
+  "date": "2013-06-24",
+  "events": [
+    { "text": "宮澤佐江 兼任解除", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-07-07",
+  "events": [
+    { "text": "中塚智実 卒業", "delta": -1 },
+    { "text": "松原夏海 卒業", "delta": -1 },
+    { "text": "小森美果 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-07-22",
+  "events": [
+    { "text": "篠田麻里子 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-08-27",
+  "events": [
+    { "text": "板野友美 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-08-28",
+  "events": [
+    { "text": "秋元才加 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-09-23",
+  "events": [
+    { "text": "仲俣汐里 卒業", "delta": -1 }
+  ]
+},
+{
+  "date": "2013-10-28",
+  "events": [
+    { "text": "大川莉央 加入", "delta": 1 },
+    { "text": "達家真姫宝 加入", "delta": 1 }
+  ]
+},
+{
+  "date": "2013-11-10",
+  "events": [
+    { "text": "ドラフト1期生 加入", "delta": 6 }
   ]
 },
   {
-    "date": "2010-12-03",
-    "events": [
-      { "text": "川上麻里奈 活動辞退", "value": 72, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2011-02-20",
-    "events": [
-      { "text": "金沢有希 活動辞退", "value": 71, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2011-05-22",
-    "events": [
-      { "text": "AKB48 12期生 加入", "value": 80, "delta": 9 }
-    ]
-  },
-  {
-    "date": "2011-06-11",
-    "events": [
-      { "text": "江口愛美 加入", "value": 81, "delta": 1 }
-    ]
-  },
-  {
-    "date": "2011-06-19",
-    "events": [
-      { "text": "奥真奈美 卒業", "value": 80, "delta": -1 },
-      { "text": "牛窪紗良 活動辞退", "value": 79, "delta": -1 },
-      { "text": "山口菜有 活動辞退", "value": 78, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2011-09-02",
-    "events": [
-      { "text": "森杏奈 活動辞退", "value": 77, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2011-12-08",
-    "events": [
-      { "text": "AKB48 13期生 加入", "value": 93, "delta": 16 }
-    ]
-  },
-  {
-    "date": "2012-02-05",
-    "events": [
-      { "text": "平嶋夏海 活動辞退", "value": 92, "delta": -1 },
-      { "text": "米沢瑠美 活動辞退", "value": 91, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-03-24",
-    "events": [
-      { "text": "松井珠理奈 兼任開始", "value": 92, "delta": 1 },
-      { "text": "渡辺美優紀 兼任開始", "value": 93, "delta": 1 }
-    ]
-  },
-  {
-    "date": "2012-03-31",
-    "events": [
-      { "text": "鈴木里香 活動辞退", "value": 92, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-06-16",
-    "events": [
-      { "text": "指原莉乃 移籍", "value": 91, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-07-09",
-    "events": [
-      { "text": "AKB48 14期生 加入", "value": 97, "delta": 6 }
-    ]
-  },
-  {
-    "date": "2012-08-05",
-    "events": [
-      { "text": "雨宮舞夏 活動終了", "value": 96, "delta": -1 },
-      { "text": "北汐莉 活動終了", "value": 95, "delta": -1 },
-      { "text": "長谷川晴奈 活動終了", "value": 94, "delta": -1 },
-      { "text": "森山さくら 活動終了", "value": 93, "delta": -1 },
-      { "text": "渡邊寧々 活動終了", "value": 92, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-08-27",
-    "events": [
-      { "text": "前田敦子 卒業", "value": 91, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-10-06",
-    "events": [
-      { "text": "サイード横田絵玲奈 活動辞退", "value": 90, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-10-24",
-    "events": [
-      { "text": "光宗薫 活動辞退", "value": 89, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-11-01",
-    "events": [
-      { "text": "石田安奈 兼任開始", "value": 90, "delta": 1 },
-      { "text": "小谷里歩 兼任開始", "value": 91, "delta": 1 },
-      { "text": "多田愛佳 移籍", "value": 90, "delta": -1 },
-      { "text": "高城亜樹 移籍", "value": 89, "delta": -1 },
-      { "text": "仲川遥香 移籍", "value": 88, "delta": -1 },
-      { "text": "宮澤佐江 移籍", "value": 87, "delta": -1 },
-      { "text": "鈴木まりや 移籍", "value": 86, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-11-30",
-    "events": [
-      { "text": "佐藤夏希 卒業", "value": 85, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2012-12-17",
-    "events": [
-      { "text": "増田有華 活動辞退", "value": 84, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-03-06",
-    "events": [
-      { "text": "仲谷明香 卒業", "value": 83, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-04-28",
-    "events": [
-      { "text": "古畑奈和 兼任開始", "value": 84, "delta": 1 },
-      { "text": "矢倉楓子 兼任開始", "value": 85, "delta": 1 },
-      { "text": "兒玉遥 兼任開始", "value": 86, "delta": 1 },
-      { "text": "高城亜樹 兼任開始", "value": 87, "delta": 1 },
-      { "text": "鈴木まりや 兼任開始", "value": 88, "delta": 1 },
-      { "text": "宮澤佐江 兼任開始", "value": 89, "delta": 1 },
-      { "text": "仁藤萌乃 卒業", "value": 88, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-05-03",
-    "events": [
-      { "text": "河西智美 卒業", "value": 87, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-05-08",
-    "events": [
-      { "text": "江口愛美 プロフィール削除", "value": 86, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-05-21",
-    "events": [
-      { "text": "石田安奈 兼任解除", "value": 85, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-05-27",
-    "events": [
-      { "text": "小谷里歩 兼任解除", "value": 84, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-06-05",
-    "events": [
-      { "text": "AKB48 15期生 加入", "value": 92, "delta": 8 }
-    ]
-  },
-  {
-    "date": "2013-06-18",
-    "events": [
-      { "text": "野澤玲奈 兼任開始", "value": 93, "delta": 1 }
-    ]
-  },
-  {
-    "date": "2013-06-24",
-    "events": [
-      { "text": "宮澤佐江 兼任解除", "value": 92, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-07-07",
-    "events": [
-      { "text": "中塚智実 卒業", "value": 91, "delta": -1 },
-      { "text": "松原夏海 卒業", "value": 90, "delta": -1 },
-      { "text": "小森美果 卒業", "value": 89, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-07-22",
-    "events": [
-      { "text": "篠田麻里子 卒業", "value": 88, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-08-27",
-    "events": [
-      { "text": "板野友美 卒業", "value": 87, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-08-28",
-    "events": [
-      { "text": "秋元才加 卒業", "value": 86, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-09-23",
-    "events": [
-      { "text": "仲俣汐里 卒業", "value": 85, "delta": -1 }
-    ]
-  },
-  {
-    "date": "2013-10-28",
-    "events": [
-      { "text": "大川莉央 加入", "value": 86, "delta": 1 },
-      { "text": "達家真姫宝 加入", "value": 87, "delta": 1 }
-    ]
-  },
-  {
-    "date": "2013-11-10",
-    "events": [
-      { "text": "ドラフト1期生 加入", "value": 93, "delta": 6 }
-    ]
-  },
-  {
     "date": "2014-04-03",
     "events": [
-      { "text": "AKB48 チーム8 加入", "value": 140, "delta": 47 }
+      { "text": "AKB48 チーム8 加入", "delta": 47 }
     ]
   },
   {
     "date": "2014-04-14",
     "events": [
-      { "text": "飯野雅 加入", "value": 141, "delta": 1 },
-      { "text": "谷口めぐ 加入", "value": 142, "delta": 1 }
+      { "text": "飯野雅 加入", "delta": 1 },
+      { "text": "谷口めぐ 加入", "delta": 1 }
     ]
   },
   {
     "date": "2014-04-17",
     "events": [
-      { "text": "塚本まり子 加入", "value": 143, "delta": 1 }
+      { "text": "塚本まり子 加入", "delta": 1 }
     ]
   },
   {
     "date": "2014-04-24",
     "events": [
-      { "text": "木﨑ゆりあ 移籍", "value": 144, "delta": 1 },
-      { "text": "小笠原茉由 移籍", "value": 145, "delta": 1 },
-      { "text": "中西智代梨 移籍", "value": 146, "delta": 1 },
-      { "text": "山本彩 兼任開始", "value": 147, "delta": 1 },
-      { "text": "小谷里歩 兼任開始", "value": 148, "delta": 1 },
-      { "text": "渋谷凪咲 兼任開始", "value": 149, "delta": 1 },
-      { "text": "宮脇咲良 兼任開始", "value": 150, "delta": 1 },
-      { "text": "朝長美桜 兼任開始", "value": 151, "delta": 1 },
-      { "text": "生駒里奈 兼任開始", "value": 152, "delta": 1 },
-      { "text": "佐藤すみれ 移籍", "value": 151, "delta": -1 },
-      { "text": "大場美奈 移籍", "value": 150, "delta": -1 },
-      { "text": "山内鈴蘭 移籍", "value": 149, "delta": -1 },
-      { "text": "市川美織 移籍", "value": 148, "delta": -1 },
-      { "text": "梅田彩佳 移籍", "value": 147, "delta": -1 },
-      { "text": "藤江れいな 移籍", "value": 146, "delta": -1 },
-      { "text": "近野莉菜 移籍", "value": 145, "delta": -1 },
-      { "text": "渡辺美優紀 兼任解除", "value": 144, "delta": -1 }
+      { "text": "木﨑ゆりあ 移籍", "delta": 1 },
+      { "text": "小笠原茉由 移籍", "delta": 1 },
+      { "text": "中西智代梨 移籍", "delta": 1 },
+      { "text": "山本彩 兼任開始", "delta": 1 },
+      { "text": "小谷里歩 兼任開始", "delta": 1 },
+      { "text": "渋谷凪咲 兼任開始", "delta": 1 },
+      { "text": "宮脇咲良 兼任開始", "delta": 1 },
+      { "text": "朝長美桜 兼任開始", "delta": 1 },
+      { "text": "生駒里奈 兼任開始", "delta": 1 },
+      { "text": "佐藤すみれ 移籍", "delta": -1 },
+      { "text": "大場美奈 移籍", "delta": -1 },
+      { "text": "山内鈴蘭 移籍", "delta": -1 },
+      { "text": "市川美織 移籍", "delta": -1 },
+      { "text": "梅田彩佳 移籍", "delta": -1 },
+      { "text": "藤江れいな 移籍", "delta": -1 },
+      { "text": "近野莉菜 移籍", "delta": -1 },
+      { "text": "渡辺美優紀 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2014-06-09",
     "events": [
-      { "text": "大島優子 卒業", "value": 143, "delta": -1 }
+      { "text": "大島優子 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2014-06-18",
     "events": [
-      { "text": "奥洞千捺 卒業", "value": 142, "delta": -1 }
+      { "text": "奥洞千捺 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2014-06-29",
     "events": [
-      { "text": "佐藤亜美菜 卒業", "value": 141, "delta": -1 }
+      { "text": "佐藤亜美菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2014-07-27",
     "events": [
-      { "text": "服部有菜 加入", "value": 142, "delta": 1 }
+      { "text": "服部有菜 加入", "delta": 1 }
     ]
   },
   {
     "date": "2014-09-01",
     "events": [
-      { "text": "塚本まり子 卒業", "value": 141, "delta": -1 }
+      { "text": "塚本まり子 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2014-09-23",
     "events": [
-      { "text": "菊地あやか 卒業", "value": 140, "delta": -1 },
-      { "text": "野中美郷 卒業", "value": 139, "delta": -1 }
+      { "text": "菊地あやか 卒業", "delta": -1 },
+      { "text": "野中美郷 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2014-09-29",
     "events": [
-      { "text": "片山陽加 卒業", "value": 138, "delta": -1 }
+      { "text": "片山陽加 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2014-12-27",
     "events": [
-      { "text": "髙島祐利奈 卒業", "value": 137, "delta": -1 }
+      { "text": "髙島祐利奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2015-01-26",
     "events": [
-      { "text": "森脇由衣 活動辞退", "value": 136, "delta": -1 }
+      { "text": "森脇由衣 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2015-04-03",
     "events": [
-      { "text": "吉田華恋 加入", "value": 137, "delta": 1 }
+      { "text": "吉田華恋 加入", "delta": 1 }
     ]
   },
   {
     "date": "2015-05-10",
     "events": [
-      { "text": "ドラフト2期生 加入", "value": 144, "delta": 7 }
+      { "text": "ドラフト2期生 加入", "delta": 7 }
     ]
   },
   {
     "date": "2015-05-14",
     "events": [
-      { "text": "生駒里奈 兼任解除", "value": 143, "delta": -1 }
+      { "text": "生駒里奈 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2015-05-28",
     "events": [
-      { "text": "小谷里歩 兼任解除", "value": 142, "delta": -1 }
+      { "text": "小谷里歩 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2015-05-29",
     "events": [
-      { "text": "古畑奈和 兼任解除", "value": 141, "delta": -1 },
-      { "text": "矢倉楓子 兼任解除", "value": 140, "delta": -1 }
+      { "text": "古畑奈和 兼任解除", "delta": -1 },
+      { "text": "矢倉楓子 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2015-05-30",
     "events": [
-      { "text": "森川彩香 卒業", "value": 139, "delta": -1 },
-      { "text": "鈴木紫帆里 卒業", "value": 138, "delta": -1 }
+      { "text": "森川彩香 卒業", "delta": -1 },
+      { "text": "鈴木紫帆里 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2015-08-04",
     "events": [
-      { "text": "川栄李奈 卒業", "value": 137, "delta": -1 }
+      { "text": "川栄李奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2015-08-09",
     "events": [
-      { "text": "松井咲子 卒業", "value": 136, "delta": -1 },
-      { "text": "橋本耀 卒業", "value": 135, "delta": -1 },
-      { "text": "小林茉里奈 卒業", "value": 134, "delta": -1 },
-      { "text": "土保瑞希 卒業", "value": 133, "delta": -1 },
-      { "text": "前田美月 卒業", "value": 132, "delta": -1 }
+      { "text": "松井咲子 卒業", "delta": -1 },
+      { "text": "橋本耀 卒業", "delta": -1 },
+      { "text": "小林茉里奈 卒業", "delta": -1 },
+      { "text": "土保瑞希 卒業", "delta": -1 },
+      { "text": "前田美月 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2015-08-17",
     "events": [
-      { "text": "倉持明日香 卒業", "value": 131, "delta": -1 }
+      { "text": "倉持明日香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2015-08-26",
     "events": [
-      { "text": "北原里英 移籍", "value": 130, "delta": -1 }
+      { "text": "北原里英 移籍", "delta": -1 }
     ]
   },
   {
     "date": "2015-09-01",
     "events": [
-      { "text": "北川綾巴 兼任開始", "value": 131, "delta": 1 },
-      { "text": "白間美瑠 兼任開始", "value": 132, "delta": 1 },
-      { "text": "渡辺美優紀 兼任開始", "value": 133, "delta": 1 },
-      { "text": "矢吹奈子 兼任開始", "value": 134, "delta": 1 }
+      { "text": "北川綾巴 兼任開始", "delta": 1 },
+      { "text": "白間美瑠 兼任開始", "delta": 1 },
+      { "text": "渡辺美優紀 兼任開始", "delta": 1 },
+      { "text": "矢吹奈子 兼任開始", "delta": 1 }
     ]
   },
   {
     "date": "2015-10-25",
     "events": [
-      { "text": "内田眞由美 卒業", "value": 133, "delta": -1 }
+      { "text": "内田眞由美 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2015-12-15",
     "events": [
-      { "text": "馬嘉伶 加入", "value": 134, "delta": 1 }
+      { "text": "馬嘉伶 加入", "delta": 1 }
     ]
   },
   {
     "date": "2015-12-23",
     "events": [
-      { "text": "西山怜那 卒業", "value": 133, "delta": -1 }
+      { "text": "西山怜那 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2015-12-24",
     "events": [
-      { "text": "松井珠理奈 兼任解除", "value": 132, "delta": -1 }
+      { "text": "松井珠理奈 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2016-02-14",
     "events": [
-      { "text": "名取稚菜 卒業", "value": 131, "delta": -1 }
+      { "text": "名取稚菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-02-21",
     "events": [
-      { "text": "内山奈月 卒業", "value": 130, "delta": -1 }
+      { "text": "内山奈月 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-03-31",
     "events": [
-      { "text": "小林香菜 卒業", "value": 129, "delta": -1 }
+      { "text": "小林香菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-04-03",
     "events": [
-      { "text": "藤村菜月 卒業", "value": 128, "delta": -1 },
-      { "text": "岩﨑萌花 卒業", "value": 127, "delta": -1 }
+      { "text": "藤村菜月 卒業", "delta": -1 },
+      { "text": "岩﨑萌花 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-04-08",
     "events": [
-      { "text": "高橋みなみ 卒業", "value": 126, "delta": -1 }
+      { "text": "高橋みなみ 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-05-01",
     "events": [
-      { "text": "高城亜樹 卒業", "value": 125, "delta": -1 },
-      { "text": "永尾まりや 卒業", "value": 124, "delta": -1 }
+      { "text": "高城亜樹 卒業", "delta": -1 },
+      { "text": "永尾まりや 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-05-07",
     "events": [
-      { "text": "山本亜依 卒業", "value": 123, "delta": -1 }
+      { "text": "山本亜依 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-05-21",
     "events": [
-      { "text": "岩田華怜 卒業", "value": 122, "delta": -1 },
-      { "text": "岩佐美咲 卒業", "value": 121, "delta": -1 }
+      { "text": "岩田華怜 卒業", "delta": -1 },
+      { "text": "岩佐美咲 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-05-26",
     "events": [
-      { "text": "山本彩 兼任解除", "value": 120, "delta": -1 }
+      { "text": "山本彩 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2016-06-05",
     "events": [
-      { "text": "石田晴香 卒業", "value": 119, "delta": -1 }
+      { "text": "石田晴香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-06-25",
     "events": [
-      { "text": "歌田初夏 加入", "value": 120, "delta": 1 },
-      { "text": "野田陽菜乃 加入", "value": 121, "delta": 1 },
-      { "text": "寺田美咲 加入", "value": 122, "delta": 1 }
+      { "text": "歌田初夏 加入", "delta": 1 },
+      { "text": "野田陽菜乃 加入", "delta": 1 },
+      { "text": "寺田美咲 加入", "delta": 1 }
     ]
   },
   {
     "date": "2016-08-09",
     "events": [
-      { "text": "渡辺美優紀 卒業", "value": 121, "delta": -1 }
+      { "text": "渡辺美優紀 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-08-24",
     "events": [
-      { "text": "平田梨奈 卒業", "value": 120, "delta": -1 }
+      { "text": "平田梨奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-08-29",
     "events": [
-      { "text": "前田亜美 卒業", "value": 119, "delta": -1 }
+      { "text": "前田亜美 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-10-08",
     "events": [
-      { "text": "北玲名 卒業", "value": 118, "delta": -1 },
-      { "text": "近藤萌恵里 卒業", "value": 117, "delta": -1 }
+      { "text": "北玲名 卒業", "delta": -1 },
+      { "text": "近藤萌恵里 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-12-08",
     "events": [
-      { "text": "AKB48 16期生 加入", "value": 136, "delta": 19 }
+      { "text": "AKB48 16期生 加入", "delta": 19 }
     ]
   },
   {
     "date": "2016-12-09",
     "events": [
-      { "text": "平野ひかる 加入", "value": 137, "delta": 1 },
-      { "text": "髙橋彩香 加入", "value": 138, "delta": 1 }
+      { "text": "平野ひかる 加入", "delta": 1 },
+      { "text": "髙橋彩香 加入", "delta": 1 }
     ]
   },
   {
     "date": "2016-12-24",
     "events": [
-      { "text": "小笠原茉由 卒業", "value": 137, "delta": -1 }
+      { "text": "小笠原茉由 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2016-12-31",
     "events": [
-      { "text": "島崎遥香 卒業", "value": 136, "delta": -1 }
+      { "text": "島崎遥香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-01-29",
     "events": [
-      { "text": "吉野未優 卒業", "value": 135, "delta": -1 }
+      { "text": "吉野未優 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-03-18",
     "events": [
-      { "text": "大和田南那 卒業", "value": 134, "delta": -1 }
+      { "text": "大和田南那 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-03-20",
     "events": [
-      { "text": "山田杏華 加入", "value": 135, "delta": 1 }
+      { "text": "山田杏華 加入", "delta": 1 }
     ]
   },
   {
     "date": "2017-03-21",
     "events": [
-      { "text": "相笠萌 卒業", "value": 134, "delta": -1 }
+      { "text": "相笠萌 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-03-22",
     "events": [
-      { "text": "梅田綾乃 卒業", "value": 133, "delta": -1 }
+      { "text": "梅田綾乃 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-03-27",
     "events": [
-      { "text": "西野未姫 卒業", "value": 132, "delta": -1 }
+      { "text": "西野未姫 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-03-30",
     "events": [
-      { "text": "中村麻里子 卒業", "value": 131, "delta": -1 }
+      { "text": "中村麻里子 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-03-31",
     "events": [
-      { "text": "野口菜々美 活動辞退", "value": 130, "delta": -1 }
+      { "text": "野口菜々美 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2017-04-11",
     "events": [
-      { "text": "高橋希良 卒業", "value": 129, "delta": -1 }
+      { "text": "高橋希良 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-04-19",
     "events": [
-      { "text": "小嶋陽菜 卒業", "value": 128, "delta": -1 }
+      { "text": "小嶋陽菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-04-24",
     "events": [
-      { "text": "中田ちさと 卒業", "value": 127, "delta": -1 }
+      { "text": "中田ちさと 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-05-13",
     "events": [
-      { "text": "福地礼奈 卒業", "value": 126, "delta": -1 }
+      { "text": "福地礼奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-06-05",
     "events": [
-      { "text": "横島亜衿 卒業", "value": 125, "delta": -1 }
+      { "text": "横島亜衿 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-06-08",
     "events": [
-      { "text": "大島涼花 卒業", "value": 124, "delta": -1 }
+      { "text": "大島涼花 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-06-10",
     "events": [
-      { "text": "鈴木まりや 卒業", "value": 123, "delta": -1 }
+      { "text": "鈴木まりや 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-06-22",
     "events": [
-      { "text": "岡田彩花 卒業", "value": 122, "delta": -1 }
+      { "text": "岡田彩花 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-06-24",
     "events": [
-      { "text": "谷優里 卒業", "value": 121, "delta": -1 }
+      { "text": "谷優里 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-06-29",
     "events": [
-      { "text": "伊豆田莉奈 移籍", "value": 120, "delta": -1 }
+      { "text": "伊豆田莉奈 移籍", "delta": -1 }
     ]
   },
   {
     "date": "2017-07-02",
     "events": [
-      { "text": "濵松里緒菜 卒業", "value": 119, "delta": -1 }
+      { "text": "濵松里緒菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-07-23",
     "events": [
-      { "text": "田名部生来 卒業", "value": 118, "delta": -1 }
+      { "text": "田名部生来 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-08-08",
     "events": [
-      { "text": "川原美咲 加入", "value": 119, "delta": 1 }
+      { "text": "川原美咲 加入", "delta": 1 }
     ]
   },
   {
     "date": "2017-08-13",
     "events": [
-      { "text": "野村奈央 卒業", "value": 118, "delta": -1 }
+      { "text": "野村奈央 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-08-20",
     "events": [
-      { "text": "阿部芽唯 卒業", "value": 117, "delta": -1 }
+      { "text": "阿部芽唯 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-09-02",
     "events": [
-      { "text": "奥本陽菜 加入", "value": 118, "delta": 1 }
+      { "text": "奥本陽菜 加入", "delta": 1 }
     ]
   },
   {
     "date": "2017-09-10",
     "events": [
-      { "text": "春本ゆき 加入", "value": 119, "delta": 1 }
+      { "text": "春本ゆき 加入", "delta": 1 }
     ]
   },
   {
     "date": "2017-09-30",
     "events": [
-      { "text": "木﨑ゆりあ 卒業", "value": 118, "delta": -1 }
+      { "text": "木﨑ゆりあ 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-11-13",
     "events": [
-      { "text": "島田晴香 卒業", "value": 117, "delta": -1 }
+      { "text": "島田晴香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2017-11-19",
     "events": [
-      { "text": "奥原妃奈子 加入", "value": 118, "delta": 1 }
+      { "text": "奥原妃奈子 加入", "delta": 1 }
     ]
   },
   {
     "date": "2017-12-01",
     "events": [
-      { "text": "阿部マリア 移籍", "value": 117, "delta": -1 }
+      { "text": "阿部マリア 移籍", "delta": -1 }
     ]
   },
   {
     "date": "2017-12-31",
     "events": [
-      { "text": "渡辺麻友 卒業", "value": 116, "delta": -1 }
+      { "text": "渡辺麻友 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2018-01-21",
     "events": [
-      { "text": "ドラフト3期生 加入", "value": 134, "delta": 18 }
+      { "text": "ドラフト3期生 加入", "delta": 18 }
     ]
   },
   {
     "date": "2018-01-22",
     "events": [
-      { "text": "飯野雅 卒業", "value": 133, "delta": -1 }
+      { "text": "飯野雅 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2018-02-18",
     "events": [
-      { "text": "舞木香純 卒業", "value": 132, "delta": -1 }
+      { "text": "舞木香純 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2018-03-04",
     "events": [
-      { "text": "廣瀬なつき 卒業", "value": 131, "delta": -1 }
+      { "text": "廣瀬なつき 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2018-04-20",
     "events": [
-      { "text": "早坂つむぎ 卒業", "value": 130, "delta": -1 }
+      { "text": "早坂つむぎ 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2018-04-29",
     "events": [
-      { "text": "伊藤きらら 加入", "value": 131, "delta": 1 },
-      { "text": "立仙愛理 加入", "value": 132, "delta": 1 }
+      { "text": "伊藤きらら 加入", "delta": 1 },
+      { "text": "立仙愛理 加入", "delta": 1 }
     ]
   },
   {
     "date": "2018-05-15",
     "events": [
-      { "text": "兒玉遥 兼任解除", "value": 131, "delta": -1 }
+      { "text": "兒玉遥 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2018-05-16",
     "events": [
-      { "text": "白間美瑠 兼任解除", "value": 130, "delta": -1 },
-      { "text": "宮脇咲良 兼任解除", "value": 129, "delta": -1 }
+      { "text": "白間美瑠 兼任解除", "delta": -1 },
+      { "text": "宮脇咲良 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2018-05-18",
     "events": [
-      { "text": "北川綾巴 兼任解除", "value": 128, "delta": -1 },
-      { "text": "渋谷凪咲 兼任解除", "value": 127, "delta": -1 },
-      { "text": "朝長美桜 兼任解除", "value": 126, "delta": -1 }
+      { "text": "北川綾巴 兼任解除", "delta": -1 },
+      { "text": "渋谷凪咲 兼任解除", "delta": -1 },
+      { "text": "朝長美桜 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2018-05-28",
     "events": [
-      { "text": "矢吹奈子 兼任解除", "value": 125, "delta": -1 }
+      { "text": "矢吹奈子 兼任解除", "delta": -1 }
     ]
   },
   {
     "date": "2018-08-08",
     "events": [
-      { "text": "御供茉白 加入", "value": 126, "delta": 1 }
+      { "text": "御供茉白 加入", "delta": 1 }
     ]
   },
   {
     "date": "2018-08-10",
     "events": [
-      { "text": "下青木香鈴 卒業", "value": 125, "delta": -1 }
+      { "text": "下青木香鈴 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2018-08-12",
     "events": [
-      { "text": "小嶋菜月 卒業", "value": 124, "delta": -1 },
-      { "text": "田野優花 卒業", "value": 123, "delta": -1 }
+      { "text": "小嶋菜月 卒業", "delta": -1 },
+      { "text": "田野優花 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2018-08-22",
     "events": [
-      { "text": "原澤音妃 活動辞退", "value": 122, "delta": -1 }
+      { "text": "原澤音妃 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2018-10-20",
     "events": [
-      { "text": "藤園麗 加入", "value": 123, "delta": 1 },
-      { "text": "神山莉穂 活動辞退", "value": 122, "delta": -1 }
+      { "text": "藤園麗 加入", "delta": 1 },
+      { "text": "神山莉穂 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2018-11-04",
     "events": [
-      { "text": "谷口もか 卒業", "value": 121, "delta": -1 },
-      { "text": "庄司なぎさ 活動辞退", "value": 120, "delta": -1 }
+      { "text": "谷口もか 卒業", "delta": -1 },
+      { "text": "庄司なぎさ 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2018-11-25",
     "events": [
-      { "text": "梅本和泉 活動辞退", "value": 119, "delta": -1 }
+      { "text": "梅本和泉 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2018-12-03",
     "events": [
-      { "text": "大川莉央 卒業", "value": 118, "delta": -1 }
+      { "text": "大川莉央 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-01-07",
     "events": [
-      { "text": "藤田奈那 卒業", "value": 117, "delta": -1 }
+      { "text": "藤田奈那 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-02-02",
     "events": [
-      { "text": "長久玲奈 卒業", "value": 116, "delta": -1 }
+      { "text": "長久玲奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-04-07",
     "events": [
-      { "text": "田屋美咲 卒業", "value": 115, "delta": -1 }
+      { "text": "田屋美咲 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-05",
     "events": [
-      { "text": "野田陽菜乃 卒業", "value": 114, "delta": -1 }
+      { "text": "野田陽菜乃 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-06",
     "events": [
-      { "text": "野澤玲奈 卒業", "value": 113, "delta": -1 },
-      { "text": "高橋朱里 卒業", "value": 112, "delta": -1 },
-      { "text": "竹内美宥 卒業", "value": 111, "delta": -1 }
+      { "text": "野澤玲奈 卒業", "delta": -1 },
+      { "text": "高橋朱里 卒業", "delta": -1 },
+      { "text": "竹内美宥 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-11",
     "events": [
-      { "text": "播磨七海 活動辞退", "value": 110, "delta": -1 }
+      { "text": "播磨七海 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-12",
     "events": [
-      { "text": "小嶋真子 卒業", "value": 109, "delta": -1 }
+      { "text": "小嶋真子 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-18",
     "events": [
-      { "text": "横道侑里 卒業", "value": 108, "delta": -1 }
+      { "text": "横道侑里 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-20",
     "events": [
-      { "text": "人見古都音 卒業", "value": 107, "delta": -1 }
+      { "text": "人見古都音 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-30",
     "events": [
-      { "text": "中野郁海 卒業", "value": 106, "delta": -1 }
+      { "text": "中野郁海 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-05-31",
     "events": [
-      { "text": "谷川聖 卒業", "value": 105, "delta": -1 }
+      { "text": "谷川聖 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-06-08",
     "events": [
-      { "text": "佐藤栞 卒業", "value": 104, "delta": -1 }
+      { "text": "佐藤栞 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-06-22",
     "events": [
-      { "text": "山田菜々美 卒業", "value": 103, "delta": -1 }
+      { "text": "山田菜々美 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-06-28",
     "events": [
-      { "text": "勝又彩央里 活動辞退", "value": 102, "delta": -1 }
+      { "text": "勝又彩央里 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2019-08-12",
     "events": [
-      { "text": "伊藤きらら 卒業", "value": 101, "delta": -1 }
+      { "text": "伊藤きらら 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-08-13",
     "events": [
-      { "text": "後藤萌咲 卒業", "value": 100, "delta": -1 }
+      { "text": "後藤萌咲 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-09-30",
     "events": [
-      { "text": "佐藤七海 卒業", "value": 99, "delta": -1 }
+      { "text": "佐藤七海 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-10-06",
     "events": [
-      { "text": "福留光帆 加入", "value": 100, "delta": 1 },
-      { "text": "徳永羚海 加入", "value": 101, "delta": 1 },
-      { "text": "蒲地志奈 加入", "value": 102, "delta": 1 }
+      { "text": "福留光帆 加入", "delta": 1 },
+      { "text": "徳永羚海 加入", "delta": 1 },
+      { "text": "蒲地志奈 加入", "delta": 1 }
     ]
   },
   {
     "date": "2019-10-13",
     "events": [
-      { "text": "布谷梨琉 加入", "value": 103, "delta": 1 },
-      { "text": "井上美優 加入", "value": 104, "delta": 1 },
-      { "text": "長谷川百々花 加入", "value": 105, "delta": 1 }
+      { "text": "布谷梨琉 加入", "delta": 1 },
+      { "text": "井上美優 加入", "delta": 1 },
+      { "text": "長谷川百々花 加入", "delta": 1 }
     ]
   },
   {
     "date": "2019-10-14",
     "events": [
-      { "text": "塩原香凜 加入", "value": 106, "delta": 1 },
-      { "text": "鈴木優香 加入", "value": 107, "delta": 1 },
-      { "text": "松村美紅 加入", "value": 108, "delta": 1 },
-      { "text": "上見天乃 加入", "value": 109, "delta": 1 }
+      { "text": "塩原香凜 加入", "delta": 1 },
+      { "text": "鈴木優香 加入", "delta": 1 },
+      { "text": "松村美紅 加入", "delta": 1 },
+      { "text": "上見天乃 加入", "delta": 1 }
     ]
   },
   {
     "date": "2019-10-22",
     "events": [
-      { "text": "寺田美咲 卒業", "value": 108, "delta": -1 }
+      { "text": "寺田美咲 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-11-09",
     "events": [
-      { "text": "尾上美月 加入", "value": 109, "delta": 1 }
+      { "text": "尾上美月 加入", "delta": 1 }
     ]
   },
   {
     "date": "2019-11-27",
     "events": [
-      { "text": "佐藤詩識 活動辞退", "value": 108, "delta": -1 }
+      { "text": "佐藤詩識 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2019-11-28",
     "events": [
-      { "text": "樋渡結依 卒業", "value": 107, "delta": -1 }
+      { "text": "樋渡結依 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-12-20",
     "events": [
-      { "text": "太田奈緒 卒業", "value": 106, "delta": -1 }
+      { "text": "太田奈緒 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2019-12-28",
     "events": [
-      { "text": "坂川陽香 加入", "value": 107, "delta": 1 }
+      { "text": "坂川陽香 加入", "delta": 1 }
     ]
   },
   {
     "date": "2020-02-04",
     "events": [
-      { "text": "矢作萌夏 卒業", "value": 106, "delta": -1 }
+      { "text": "矢作萌夏 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2020-06-28",
     "events": [
-      { "text": "山本瑠香 卒業", "value": 105, "delta": -1 }
+      { "text": "山本瑠香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2020-08-31",
     "events": [
-      { "text": "川本紗矢 卒業", "value": 104, "delta": -1 }
+      { "text": "川本紗矢 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2020-09-24",
     "events": [
-      { "text": "布谷梨琉 卒業", "value": 103, "delta": -1 },
-      { "text": "井上美優 卒業", "value": 102, "delta": -1 },
-      { "text": "塩原香凜 卒業", "value": 101, "delta": -1 }
+      { "text": "布谷梨琉 卒業", "delta": -1 },
+      { "text": "井上美優 卒業", "delta": -1 },
+      { "text": "塩原香凜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2020-11-30",
     "events": [
-      { "text": "末永祐月 活動辞退", "value": 100, "delta": -1 }
+      { "text": "末永祐月 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2020-12-11",
     "events": [
-      { "text": "達家真姫宝 卒業", "value": 99, "delta": -1 }
+      { "text": "達家真姫宝 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-02-28",
     "events": [
-      { "text": "立仙愛理 卒業", "value": 98, "delta": -1 }
+      { "text": "立仙愛理 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-03-26",
     "events": [
-      { "text": "長谷川百々花 活動辞退", "value": 97, "delta": -1 }
+      { "text": "長谷川百々花 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2021-03-29",
     "events": [
-      { "text": "佐藤朱 卒業", "value": 96, "delta": -1 }
+      { "text": "佐藤朱 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-03-31",
     "events": [
-      { "text": "前田彩佳 卒業", "value": 95, "delta": -1 }
+      { "text": "前田彩佳 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-04-30",
     "events": [
-      { "text": "松村美紅 卒業", "value": 94, "delta": -1 }
+      { "text": "松村美紅 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-05-27",
     "events": [
-      { "text": "本田そら 卒業", "value": 93, "delta": -1 }
+      { "text": "本田そら 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-05-29",
     "events": [
-      { "text": "峯岸みなみ 卒業", "value": 92, "delta": -1 }
+      { "text": "峯岸みなみ 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-06-30",
     "events": [
-      { "text": "蒲地志奈 卒業", "value": 91, "delta": -1 }
+      { "text": "蒲地志奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-07-28",
     "events": [
-      { "text": "宮里莉羅 卒業", "value": 90, "delta": -1 }
+      { "text": "宮里莉羅 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-07-31",
     "events": [
-      { "text": "尾上美月 卒業", "value": 89, "delta": -1 }
+      { "text": "尾上美月 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-09-28",
     "events": [
-      { "text": "鈴木優香 卒業", "value": 88, "delta": -1 }
+      { "text": "鈴木優香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-10-01",
     "events": [
-      { "text": "本間麻衣 卒業", "value": 87, "delta": -1 }
+      { "text": "本間麻衣 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-10-24",
     "events": [
-      { "text": "春本ゆき 卒業", "value": 86, "delta": -1 }
+      { "text": "春本ゆき 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-11-30",
     "events": [
-      { "text": "横山結衣 卒業", "value": 85, "delta": -1 }
+      { "text": "横山結衣 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-12-09",
     "events": [
-      { "text": "横山由依 卒業", "value": 84, "delta": -1 }
+      { "text": "横山由依 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2021-12-29",
     "events": [
-      { "text": "大家志津香 卒業", "value": 83, "delta": -1 }
+      { "text": "大家志津香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-02-20",
     "events": [
-      { "text": "加藤玲奈 卒業", "value": 82, "delta": -1 }
+      { "text": "加藤玲奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-02-27",
     "events": [
-      { "text": "田北香世子 卒業", "value": 81, "delta": -1 }
+      { "text": "田北香世子 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-03-17",
     "events": [
-      { "text": "入山杏奈 卒業", "value": 80, "delta": -1 }
+      { "text": "入山杏奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-03-21",
     "events": [
-      { "text": "古川夏凪 卒業", "value": 79, "delta": -1 }
+      { "text": "古川夏凪 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-03-23",
     "events": [
-      { "text": "蔵本美結 卒業", "value": 78, "delta": -1 }
+      { "text": "蔵本美結 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-03-24",
     "events": [
-      { "text": "奥本陽菜 卒業", "value": 77, "delta": -1 }
+      { "text": "奥本陽菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-03-25",
     "events": [
-      { "text": "安田叶 卒業", "value": 76, "delta": -1 }
+      { "text": "安田叶 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-03-28",
     "events": [
-      { "text": "久保怜音 卒業", "value": 75, "delta": -1 }
+      { "text": "久保怜音 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-03-30",
     "events": [
-      { "text": "西川怜 卒業", "value": 74, "delta": -1 }
+      { "text": "西川怜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-04-15",
     "events": [
-      { "text": "宮崎美穂 卒業", "value": 73, "delta": -1 }
+      { "text": "宮崎美穂 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-05-04",
     "events": [
-      { "text": "AKB48 17期生 加入", "value": 84, "delta": 11 }
+      { "text": "AKB48 17期生 加入", "delta": 11 }
     ]
   },
   {
     "date": "2022-07-31",
     "events": [
-      { "text": "福留光帆 卒業", "value": 83, "delta": -1 }
+      { "text": "福留光帆 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-08-28",
     "events": [
-      { "text": "長谷川新奈 活動辞退", "value": 82, "delta": -1 }
+      { "text": "長谷川新奈 活動辞退", "delta": -1 }
     ]
   },
   {
     "date": "2022-12-24",
     "events": [
-      { "text": "御供茉白 卒業", "value": 81, "delta": -1 }
+      { "text": "御供茉白 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2022-12-27",
     "events": [
-      { "text": "稲垣香織 卒業", "value": 80, "delta": -1 }
+      { "text": "稲垣香織 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-03-08",
     "events": [
-      { "text": "武藤十夢 卒業", "value": 79, "delta": -1 }
+      { "text": "武藤十夢 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-03-22",
     "events": [
-      { "text": "永野恵 卒業", "value": 78, "delta": -1 }
+      { "text": "永野恵 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-04-02",
     "events": [
-      { "text": "岡田奈々 卒業", "value": 77, "delta": -1 }
+      { "text": "岡田奈々 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-04-09",
     "events": [
-      { "text": "AKB48 18期生 加入", "value": 85, "delta": 8 }
+      { "text": "AKB48 18期生 加入", "delta": 8 }
     ]
   },
   {
     "date": "2023-04-30",
     "events": [
-      { "text": "平野ひかる 卒業", "value": 84, "delta": -1 },
-      { "text": "濵咲友菜 卒業", "value": 83, "delta": -1 }
+      { "text": "平野ひかる 卒業", "delta": -1 },
+      { "text": "濵咲友菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-05-18",
     "events": [
-      { "text": "藤園麗 卒業", "value": 82, "delta": -1 }
+      { "text": "藤園麗 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-05-22",
     "events": [
-      { "text": "小林蘭 卒業", "value": 81, "delta": -1 }
+      { "text": "小林蘭 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-05-31",
     "events": [
-      { "text": "服部有菜 卒業", "value": 80, "delta": -1 }
+      { "text": "服部有菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-07-30",
     "events": [
-      { "text": "歌田初夏 卒業", "value": 79, "delta": -1 }
+      { "text": "歌田初夏 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-07-31",
     "events": [
-      { "text": "左伴彩佳 卒業", "value": 78, "delta": -1 }
+      { "text": "左伴彩佳 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-01",
     "events": [
-      { "text": "清水麻璃亜 卒業", "value": 77, "delta": -1 }
+      { "text": "清水麻璃亜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-05",
     "events": [
-      { "text": "坂口渚沙 卒業", "value": 76, "delta": -1 }
+      { "text": "坂口渚沙 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-07",
     "events": [
-      { "text": "石綿星南 卒業", "value": 75, "delta": -1 }
+      { "text": "石綿星南 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-11",
     "events": [
-      { "text": "川原美咲 卒業", "value": 74, "delta": -1 }
+      { "text": "川原美咲 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-17",
     "events": [
-      { "text": "髙橋彩香 卒業", "value": 73, "delta": -1 }
+      { "text": "髙橋彩香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-21",
     "events": [
-      { "text": "大森美優 卒業", "value": 72, "delta": -1 }
+      { "text": "大森美優 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-24",
     "events": [
-      { "text": "吉川七瀬 卒業", "value": 71, "delta": -1 }
+      { "text": "吉川七瀬 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-28",
     "events": [
-      { "text": "中西智代梨 卒業", "value": 70, "delta": -1 }
+      { "text": "中西智代梨 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-29",
     "events": [
-      { "text": "高岡薫 卒業", "value": 69, "delta": -1 }
+      { "text": "高岡薫 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-08-31",
     "events": [
-      { "text": "市川愛美 卒業", "value": 68, "delta": -1 }
+      { "text": "市川愛美 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-09-05",
     "events": [
-      { "text": "北澤早紀 卒業", "value": 67, "delta": -1 }
+      { "text": "北澤早紀 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-09-08",
     "events": [
-      { "text": "奥原妃奈子 卒業", "value": 66, "delta": -1 }
+      { "text": "奥原妃奈子 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-09-10",
     "events": [
-      { "text": "多田京加 卒業", "value": 65, "delta": -1 }
+      { "text": "多田京加 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-09-14",
     "events": [
-      { "text": "道枝咲 卒業", "value": 64, "delta": -1 }
+      { "text": "道枝咲 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-09-17",
     "events": [
-      { "text": "佐藤妃星 卒業", "value": 63, "delta": -1 }
+      { "text": "佐藤妃星 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-10-01",
     "events": [
-      { "text": "吉田華恋 卒業", "value": 62, "delta": -1 }
+      { "text": "吉田華恋 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-10-14",
     "events": [
-      { "text": "上見天乃 卒業", "value": 61, "delta": -1 }
+      { "text": "上見天乃 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-10-28",
     "events": [
-      { "text": "山邊歩夢 卒業", "value": 60, "delta": -1 }
+      { "text": "山邊歩夢 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-10-30",
     "events": [
-      { "text": "湯本亜美 卒業", "value": 59, "delta": -1 }
+      { "text": "湯本亜美 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-10-31",
     "events": [
-      { "text": "岡田梨奈 卒業", "value": 58, "delta": -1 }
+      { "text": "岡田梨奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-12-26",
     "events": [
-      { "text": "山田杏華 卒業", "value": 57, "delta": -1 }
+      { "text": "山田杏華 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2023-12-29",
     "events": [
-      { "text": "吉橋柚花 卒業", "value": 56, "delta": -1 }
+      { "text": "吉橋柚花 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-01-10",
     "events": [
-      { "text": "齋藤陽菜 卒業", "value": 55, "delta": -1 }
+      { "text": "齋藤陽菜 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-01-19",
     "events": [
-      { "text": "茂木忍 卒業", "value": 54, "delta": -1 }
+      { "text": "茂木忍 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-01-21",
     "events": [
-      { "text": "大竹ひとみ 卒業", "value": 53, "delta": -1 }
+      { "text": "大竹ひとみ 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-01-28",
     "events": [
-      { "text": "本田仁美 卒業", "value": 52, "delta": -1 }
+      { "text": "本田仁美 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-01-31",
     "events": [
-      { "text": "浅井七海 卒業", "value": 51, "delta": -1 }
+      { "text": "浅井七海 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-02-10",
     "events": [
-      { "text": "篠崎彩奈 卒業", "value": 50, "delta": -1 }
+      { "text": "篠崎彩奈 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-02-15",
     "events": [
-      { "text": "大西桃香 卒業", "value": 49, "delta": -1 }
+      { "text": "大西桃香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-02-20",
     "events": [
-      { "text": "馬嘉伶 卒業", "value": 48, "delta": -1 }
+      { "text": "馬嘉伶 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-02-23",
     "events": [
-      { "text": "佐々木優佳里 卒業", "value": 47, "delta": -1 }
+      { "text": "佐々木優佳里 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-02-25",
     "events": [
-      { "text": "下口ひなな 卒業", "value": 46, "delta": -1 }
+      { "text": "下口ひなな 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-03-17",
     "events": [
-      { "text": "AKB48 19期生 加入", "value": 51, "delta": 5 }
+      { "text": "AKB48 19期生 加入", "delta": 5 }
     ]
   },
   {
     "date": "2024-04-04",
     "events": [
-      { "text": "岡部麟 卒業", "value": 50, "delta": -1 }
+      { "text": "岡部麟 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-04-23",
     "events": [
-      { "text": "小田えりな 卒業", "value": 49, "delta": -1 }
+      { "text": "小田えりな 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-04-30",
     "events": [
-      { "text": "柏木由紀 卒業", "value": 48, "delta": -1 }
+      { "text": "柏木由紀 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-05-30",
     "events": [
-      { "text": "谷口めぐ 卒業", "value": 47, "delta": -1 }
+      { "text": "谷口めぐ 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-06-01",
     "events": [
-      { "text": "行天優莉奈 移籍", "value": 46, "delta": -1 },
-      { "text": "黒須遥香 移籍", "value": 45, "delta": -1 },
-      { "text": "山根涼羽 移籍", "value": 44, "delta": -1 }
+      { "text": "行天優莉奈 移籍", "delta": -1 },
+      { "text": "黒須遥香 移籍", "delta": -1 },
+      { "text": "山根涼羽 移籍", "delta": -1 }
     ]
   },
   {
     "date": "2024-07-01",
     "events": [
-      { "text": "佐藤美波 卒業", "value": 43, "delta": -1 }
+      { "text": "佐藤美波 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-09-30",
     "events": [
-      { "text": "小濱心音 卒業", "value": 42, "delta": -1 }
+      { "text": "小濱心音 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2024-12-20",
     "events": [
-      { "text": "AKB48 20期生 加入", "value": 45, "delta": 3 }
+      { "text": "AKB48 20期生 加入", "delta": 3 }
     ]
   },
   {
     "date": "2025-02-28",
     "events": [
-      { "text": "込山榛香 卒業", "value": 44, "delta": -1 }
+      { "text": "込山榛香 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2025-06-15",
     "events": [
-      { "text": "村山彩希 卒業", "value": 43, "delta": -1 }
+      { "text": "村山彩希 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2025-12-04",
     "events": [
-      { "text": "AKB48 21期生 加入", "value": 48, "delta": 5 }
+      { "text": "AKB48 21期生 加入", "delta": 5 }
     ]
   },
   {
     "date": "2026-03-01",
     "events": [
-      { "text": "行天優莉奈 復帰", "value": 49, "delta": 1 },
-      { "text": "黒須遥香 復帰", "value": 50, "delta": 1 },
-      { "text": "山根涼羽 復帰", "value": 51, "delta": 1 }
+      { "text": "行天優莉奈 復帰", "delta": 1 },
+      { "text": "黒須遥香 復帰", "delta": 1 },
+      { "text": "山根涼羽 復帰", "delta": 1 }
     ]
   },
   {
     "date": "2026-04-30",
     "events": [
-      { "text": "向井地美音 卒業", "value": 50, "delta": -1 }
+      { "text": "向井地美音 卒業", "delta": -1 }
     ]
   },
   {
     "date": "2026-05-15",
     "events": [
-      { "text": "鈴木くるみ 卒業", "value": 49, "delta": -1 }
+      { "text": "鈴木くるみ 卒業", "delta": -1 }
     ]
   }
 ]
