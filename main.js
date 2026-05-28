@@ -578,7 +578,7 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   // =========================
-  // grouped安全生成（重複＋順序安定版）
+  // grouped安全生成（完全修正版）
   // =========================
   const groupedMap = {};
 
@@ -586,7 +586,7 @@ async function initTimelinePage() {
     if (!Array.isArray(periods)) return;
 
     periods.forEach(p => {
-      if (!p || !p.generation) return;
+      if (!p?.generation) return;
 
       const gen = p.generation;
 
@@ -597,29 +597,23 @@ async function initTimelinePage() {
         };
       }
 
-      // ★重複防止（③対策）
-      const exists = groupedMap[gen].members.includes(name);
-      if (exists) return;
-
-      groupedMap[gen].members.push(name);
+      // ★完全正解：同一世代内のみ重複防止
+      if (!groupedMap[gen].members.includes(name)) {
+        groupedMap[gen].members.push(name);
+      }
     });
   });
 
   // =========================
-  // ★重要：GENERATION_ORDER_MAP適用前の並び安定化
+  // ★重要：JSON順をそのまま採用（ソート禁止）
   // =========================
-  const grouped = Object.values(groupedMap)
-    .sort((a, b) => {
-      const aOrder = GENERATION_ORDER_MAP?.[a.generation] ?? 9999;
-      const bOrder = GENERATION_ORDER_MAP?.[b.generation] ?? 9999;
-      return aOrder - bOrder;
-    })
-    .map(group => ({
-      ...group,
-      // ★表示順崩れ防止（五十音順固定）
-      members: group.members.slice().sort((a, b) =>
-        a.localeCompare(b, "ja")
-      )
+  const generationOrder = Object.keys(memberState || {});
+
+  const grouped = generationOrder
+    .filter(gen => groupedMap[gen])
+    .map(gen => ({
+      generation: gen,
+      members: groupedMap[gen].members
     }));
 
   renderTimelineSummary(timeline, group);
