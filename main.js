@@ -420,6 +420,26 @@ function getActiveMembersByDate(date, memberState, grouped) {
   return result;
 }
 
+function calculateTimelineCounts(timeline) {
+  let current = 0;
+
+  return timeline.map(card => {
+    const events = card.events.map(event => {
+      current += Number(event.delta || 0);
+
+      return {
+        ...event,
+        currentValue: current
+      };
+    });
+
+    return {
+      ...card,
+      events
+    };
+  });
+}
+
 /* =========================
    RENDER MEMBERS
 ========================= */
@@ -550,7 +570,10 @@ async function initDaysPage() {
 ========================= */
 
 async function initTimelinePage() {
-  const timeline = await loadAKBTimeline();
+  let timeline = await loadAKBTimeline();
+
+  timeline = calculateTimelineCounts(timeline);
+
   const memberState = await loadAKBMemberState();
   const grouped = await loadAKBGrouped();
 
@@ -573,13 +596,14 @@ function renderTimelineSummary(timeline) {
     return;
   }
 
-  const latest = timeline[timeline.length - 1];
+  const latestCard = timeline[timeline.length - 1];
+  const latestEvent = latestCard.events[latestCard.events.length - 1];
 
   el.innerHTML = `
     <div class="timeline-summary-box">
       <div class="timeline-summary-title">AKB48 人数推移</div>
-      <div class="timeline-summary-count">${latest.value}人</div>
-      <div class="timeline-summary-date">${formatDate(latest.date)}</div>
+      <div class="timeline-summary-count">${latestEvent.currentValue}人</div>
+      <div class="timeline-summary-date">${formatDate(latestCard.date)}</div>
     </div>
   `;
 }
@@ -674,12 +698,25 @@ function renderTimelineCards(timeline, memberState, grouped) {
     let eventsHtml = "";
 
     cardData.events.forEach(event => {
+      const deltaText =
+        event.delta > 0
+          ? `+${event.delta}`
+          : `${event.delta}`;
+
       eventsHtml += `
         <div class="timeline-event">
           <div class="timeline-event-text">${event.text}</div>
+
           <div class="timeline-event-right">
-            <span class="timeline-event-value">${event.value}人</span>
-            ${event.delta ? `<span class="timeline-event-delta">${event.delta}</span>` : ""}
+            <span class="timeline-event-value">
+              ${event.currentValue}人
+            </span>
+
+            ${
+              event.delta
+                ? `<span class="timeline-event-delta">${deltaText}</span>`
+                : ""
+            }
           </div>
         </div>
       `;
@@ -694,6 +731,7 @@ function renderTimelineCards(timeline, memberState, grouped) {
       membersHtml += `
         <div class="timeline-generation">
           <div class="timeline-generation-title">${group.generation}</div>
+
           <div class="timeline-generation-members">
             ${group.members.join(" ・ ")}
           </div>
@@ -718,6 +756,7 @@ function renderTimelineCards(timeline, memberState, grouped) {
 function scheduleMidnightUpdate() {
   const now = new Date();
   const next = new Date();
+
   next.setHours(24, 0, 0, 0);
 
   const ms = next - now;
@@ -748,9 +787,11 @@ async function updateDays() {
 
   members.sort((a, b) => {
     const d = calcDays(b.joinDate) - calcDays(a.joinDate);
+
     if (d !== 0) return d;
 
     const g = GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
+
     if (g !== 0) return g;
 
     return (a.kana || "").localeCompare(b.kana || "", "ja");
@@ -765,6 +806,7 @@ async function updateDays() {
 
 function renderDaysMembers(members) {
   const container = document.getElementById("days-list");
+
   if (!container) return;
 
   container.innerHTML = "";
@@ -806,6 +848,7 @@ function getDaysLabel(m) {
   if (isTeam8(m)) return "チーム8";
 
   const gen = (m.generation || "").trim();
+
   if (!gen) return "-";
 
   if (m.role === "kenkyuusei") return `${gen}研究生`;
@@ -858,6 +901,7 @@ function formatMonthDay(date) {
   if (!date) return "-";
 
   const d = new Date(date);
+
   return `${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
