@@ -620,29 +620,38 @@ async function initTimelinePage() {
     });
   });
 
-  // =========================
-  // 世代ソート（維持）
-  // =========================
-  const grouped = Object.entries(groupedMap)
-    .sort((a, b) => {
-      const orderA = GENERATION_ORDER_MAP?.[a[0]] ?? 9999;
-      const orderB = GENERATION_ORDER_MAP?.[b[0]] ?? 9999;
-      return orderA - orderB;
-    })
-    .map(([gen, data]) => ({
-      generation: gen,
-      members: data.members
-    }));
+ // =========================
+// 世代ソート（修正版）
+// =========================
 
-  renderTimelineSummary(timeline, group);
-  renderYearTabs(timeline, group, grouped);
+// groupに応じた正しい順序リストを取得
+const orderList =
+  GENERATION_ORDER_MAP?.[group.toUpperCase?.()] ||
+  GENERATION_ORDER_MAP?.AKB48 ||
+  [];
 
-  renderTimelineCards(
-    timeline,
-    memberState,
-    grouped
-  );
-}
+// Map → Array化してソート
+const grouped = Object.entries(groupedMap)
+  .sort((a, b) => {
+    const orderA = orderList.indexOf(a[0]);
+    const orderB = orderList.indexOf(b[0]);
+
+    return (orderA === -1 ? 9999 : orderA)
+         - (orderB === -1 ? 9999 : orderB);
+  })
+  .map(([gen, data]) => ({
+    generation: gen,
+    members: data.members
+  }));
+
+renderTimelineSummary(timeline, group);
+renderYearTabs(timeline, group, grouped);
+
+renderTimelineCards(
+  timeline,
+  memberState,
+  grouped
+);
 
 /* =========================
    TIMELINE SUMMARY
