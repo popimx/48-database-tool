@@ -815,21 +815,19 @@ function renderTimelineCards(timeline, memberState, grouped) {
     // =========================
     // ★重要：世代ごとのメンバー生成
     // =========================
-    const activeGenerations = [];
+   // =========================
+// ★重要：世代ごとのメンバー生成（修正版）
+// =========================
+const activeGenerations = [];
 
-    grouped.forEach(genGroup => {
+grouped.forEach(genGroup => {
   const eventDate = new Date(cardData.date);
 
-  const members = []; // ★必須（ここが抜けてた）
+  const members = [];
 
   const sortedMembers = [...genGroup.members].sort((a, b) => {
-    const aPeriods = (memberState[a] || []).filter(
-      p => p.generation === genGroup.generation
-    );
-
-    const bPeriods = (memberState[b] || []).filter(
-      p => p.generation === genGroup.generation
-    );
+    const aPeriods = memberState[a] || [];
+    const bPeriods = memberState[b] || [];
 
     const aStart = aPeriods.length
       ? Math.min(...aPeriods.map(p => new Date(p.start).getTime()))
@@ -847,7 +845,6 @@ function renderTimelineCards(timeline, memberState, grouped) {
     if (!Array.isArray(periods)) return;
 
     const isMatch = periods.some(p =>
-      p.generation === genGroup.generation &&
       isActive(p, eventDate)
     );
 
