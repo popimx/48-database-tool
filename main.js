@@ -646,6 +646,79 @@ el.innerHTML = `
 `;
 }
 
+
+/* =========================
+   YEAR TABS
+========================= */
+
+function renderYearTabs(timeline, group) {
+  const container = document.getElementById("year-tabs");
+  if (!container) return;
+
+  // 年を抽出（重複削除）
+  const years = [...new Set(
+    timeline.map(t => t.date.slice(0, 4))
+  )];
+
+  // 古い順 → 新しい順
+  years.sort((a, b) => a - b);
+
+  container.innerHTML = "";
+
+  // 「全体」タブ
+  const allBtn = document.createElement("button");
+  allBtn.textContent = "全体";
+  allBtn.className = "year-tab active";
+
+  allBtn.onclick = () => {
+    setActiveTab(allBtn);
+    renderTimelineCards(
+      timeline,
+      memberStateCache[group],
+      groupedCache[group]
+    );
+  };
+
+  container.appendChild(allBtn);
+
+  // 年ごとのタブ
+  years.forEach(year => {
+    const btn = document.createElement("button");
+    btn.textContent = year;
+    btn.className = "year-tab";
+
+    btn.onclick = () => {
+      setActiveTab(btn);
+
+      const filtered = timeline.filter(t =>
+        t.date.startsWith(year)
+      );
+
+      renderTimelineCards(
+        filtered,
+        memberStateCache[group],
+        groupedCache[group]
+      );
+    };
+
+    container.appendChild(btn);
+  });
+}
+
+
+/* =========================
+   TAB ACTIVE制御
+========================= */
+
+function setActiveTab(activeBtn) {
+  document.querySelectorAll(".year-tab").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  activeBtn.classList.add("active");
+}
+
+
 /* =========================
    GENERATION COUNT
 ========================= */
