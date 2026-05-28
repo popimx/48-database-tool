@@ -599,16 +599,23 @@ function renderTimelineSummary(timeline) {
     return;
   }
 
-  const latestCard = timeline[timeline.length - 1];
-  const latestEvent = latestCard.events[latestCard.events.length - 1];
+const latestCard = timeline[timeline.length - 1];
+const latestEvent = latestCard.events[latestCard.events.length - 1];
 
-  el.innerHTML = `
-    <div class="timeline-summary-box">
-      <div class="timeline-summary-title">AKB48 人数推移</div>
-      <div class="timeline-summary-count">${latestEvent.currentValue}人</div>
-      <div class="timeline-summary-date">${formatDate(latestCard.date)}</div>
-    </div>
-  `;
+const now = new Date();
+
+const currentDate =
+  `${now.getFullYear()}年` +
+  `${now.getMonth() + 1}月` +
+  `${now.getDate()}日`;
+
+el.innerHTML = `
+  <div class="timeline-summary-box">
+    <div class="timeline-summary-title">AKB48 人数推移</div>
+    <div class="timeline-summary-count">${latestEvent.currentValue}人</div>
+    <div class="timeline-summary-date">${currentDate}現在</div>
+  </div>
+`;
 }
 
 /* =========================
