@@ -64,10 +64,9 @@ const AKB_ORDER = [
 ========================= */
 
 const memberCache = {};
-
-let akbTimelineCache = null;
-let akbMemberStateCache = null;
-let akbGroupedCache = null;
+const timelineCache = {};
+const memberStateCache = {};
+const groupedCache = {};
 
 /* =========================
    データ取得
@@ -96,55 +95,73 @@ async function loadAllMembers() {
   return all.flat();
 }
 
-async function loadAKBTimeline() {
-  if (akbTimelineCache) return akbTimelineCache;
+/* =========================
+   TIMELINE（グループ対応）
+========================= */
+
+async function loadTimeline(group) {
+  if (timelineCache[group]) return timelineCache[group];
 
   const res = await fetch(
-    `data/members/akb48_timeline.json?t=${Date.now()}`,
+    `data/members/${group}_timeline.json?t=${Date.now()}`,
     { cache: "no-store" }
   );
 
   if (!res.ok) {
-    console.error("AKB TIMELINE LOAD FAILED");
+    console.error("TIMELINE LOAD FAILED:", group);
     return [];
   }
 
-  akbTimelineCache = await res.json();
-  return akbTimelineCache;
+  const data = await res.json();
+  timelineCache[group] = data;
+
+  return data;
 }
 
-async function loadAKBMemberState() {
-  if (akbMemberStateCache) return akbMemberStateCache;
+/* =========================
+   MEMBER STATE（グループ対応）
+========================= */
+
+async function loadMemberState(group) {
+  if (memberStateCache[group]) return memberStateCache[group];
 
   const res = await fetch(
-    `data/members/akb48_member_state.json?t=${Date.now()}`,
+    `data/members/${group}_member_state.json?t=${Date.now()}`,
     { cache: "no-store" }
   );
 
   if (!res.ok) {
-    console.error("AKB MEMBER STATE LOAD FAILED");
+    console.error("MEMBER STATE LOAD FAILED:", group);
     return {};
   }
 
-  akbMemberStateCache = await res.json();
-  return akbMemberStateCache;
+  const data = await res.json();
+  memberStateCache[group] = data;
+
+  return data;
 }
 
-async function loadAKBGrouped() {
-  if (akbGroupedCache) return akbGroupedCache;
+/* =========================
+   GROUPED（グループ対応）
+========================= */
+
+async function loadGrouped(group) {
+  if (groupedCache[group]) return groupedCache[group];
 
   const res = await fetch(
-    `data/members/akb48_grouped.json?t=${Date.now()}`,
+    `data/members/${group}_grouped.json?t=${Date.now()}`,
     { cache: "no-store" }
   );
 
   if (!res.ok) {
-    console.error("AKB GROUPED LOAD FAILED");
+    console.error("GROUPED LOAD FAILED:", group);
     return {};
   }
 
-  akbGroupedCache = await res.json();
-  return akbGroupedCache;
+  const data = await res.json();
+  groupedCache[group] = data;
+
+  return data;
 }
 
 /* =========================
@@ -574,16 +591,27 @@ async function initDaysPage() {
 ========================= */
 
 async function initTimelinePage() {
-  let timeline = await loadAKBTimeline();
+  const params = new URLSearchParams(location.search);
+
+  const group = params.get("group") || "akb48";
+
+  let timeline = await loadTimeline(group);
 
   timeline = calculateTimelineCounts(timeline);
 
-  const memberState = await loadAKBMemberState();
-  const grouped = await loadAKBGrouped();
+  const memberState = await loadMemberState(group);
+  const grouped = await loadGrouped(group);
 
-  renderTimelineSummary(timeline);
+  renderTimelineSummary(timeline, group);
+  renderYearTabs(timeline, group);
+
   renderGenerationCount(grouped, memberState);
-  renderTimelineCards(timeline, memberState, grouped);
+
+  renderTimelineCards(
+    timeline,
+    memberState,
+    grouped
+  );
 }
 
 /* =========================
