@@ -843,22 +843,29 @@ function renderTimelineCards(timeline, memberState, grouped) {
       const eventDate = new Date(cardData.date);
 
       // ① sortはコピーでやる（破壊禁止）
-      const sortedMembers = [...group.members].sort((a, b) => {
-        const aStart =
-          memberState[a]
-            ?.find(p => p.generation === group.generation)
-            ?.start || "9999-12-31";
+const sortedMembers = [...group.members].sort((a, b) => {
+  const aPeriods = (memberState[a] || []).filter(
+    p => p.generation === group.generation
+  );
 
-        const bStart =
-          memberState[b]
-            ?.find(p => p.generation === group.generation)
-            ?.start || "9999-12-31";
+  const bPeriods = (memberState[b] || []).filter(
+    p => p.generation === group.generation
+  );
 
-        return new Date(aStart) - new Date(bStart);
-      });
+  // その世代での最初の加入日を使う
+  const aStart = aPeriods.length
+    ? Math.min(...aPeriods.map(p => new Date(p.start)))
+    : new Date("9999-12-31");
 
-      const members = [];
+  const bStart = bPeriods.length
+    ? Math.min(...bPeriods.map(p => new Date(p.start)))
+    : new Date("9999-12-31");
 
+  return aStart - bStart;
+});
+
+const members = [];
+     
       // ② イベント日で判定
       sortedMembers.forEach(name => {
         const periods = memberState?.[name];
