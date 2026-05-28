@@ -401,19 +401,23 @@ function isMemberActive(date, periods) {
   return periods.some(p =>
     p.start <= date && (!p.end || p.end >= date)
   );
-}
+} 
 
-function getActiveMembersByDate(date, memberState, grouped) {
+ function getActiveMembersByDate(date, memberState, grouped) {
   const result = [];
 
-  Object.entries(grouped).forEach(([gen, members]) => {
-    const active = members.filter(name => {
+  grouped.forEach(group => {
+    const active = group.members.filter(name => {
       const periods = memberState[name];
+
       return periods && isMemberActive(date, periods);
     });
 
     if (active.length) {
-      result.push({ generation: gen, members: active });
+      result.push({
+        generation: group.generation,
+        members: active
+      });
     }
   });
 
@@ -612,20 +616,20 @@ function renderTimelineSummary(timeline) {
    CURRENT COUNT
 ========================= */
 
-function renderCurrentMemberCount(memberState) {
+ function renderCurrentMemberCount(memberState) {
   const el = document.getElementById("current-member-count");
   if (!el) return;
 
-  const today = new Date();
+  const today = new Date()
+    .toISOString()
+    .slice(0, 10);
+
   let count = 0;
 
   Object.values(memberState).forEach(periods => {
     const active = periods.some(p => {
-      const start = p.start ? new Date(p.start) : null;
-      const end = p.end ? new Date(p.end) : null;
-
-      if (start && today < start) return false;
-      if (end && today > end) return false;
+      if (p.start && today < p.start) return false;
+      if (p.end && today > p.end) return false;
 
       return true;
     });
@@ -640,44 +644,36 @@ function renderCurrentMemberCount(memberState) {
   `;
 }
 
+
 /* =========================
    GENERATION COUNT
 ========================= */
 
-function renderGenerationCount(grouped, memberState) {
+ function renderGenerationCount(grouped, memberState) {
   const el = document.getElementById("generation-count");
   if (!el) return;
-
-  const today = new Date();
+  const today = new Date()
+    .toISOString()
+    .slice(0, 10);
   let html = "";
-
-  Object.entries(grouped).forEach(([gen, members]) => {
+  grouped.forEach(group => {
     let activeCount = 0;
-
-    members.forEach(name => {
+    group.members.forEach(name => {
       const periods = memberState[name] || [];
-
       const active = periods.some(p => {
-        const start = p.start ? new Date(p.start) : null;
-        const end = p.end ? new Date(p.end) : null;
-
-        if (start && today < start) return false;
-        if (end && today > end) return false;
-
+        if (p.start && today < p.start) return false;
+        if (p.end && today > p.end) return false;
         return true;
       });
-
       if (active) activeCount++;
     });
-
     html += `
       <div class="generation-count-row">
-        <span>${gen}</span>
+        <span>${group.generation}</span>
         <span>${activeCount}人</span>
       </div>
     `;
   });
-
   el.innerHTML = html;
 }
 
