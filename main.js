@@ -817,52 +817,52 @@ function renderTimelineCards(timeline, memberState, grouped) {
     // =========================
     const activeGenerations = [];
 
-    grouped.forEach(group => {
-      const eventDate = new Date(cardData.date);
+    grouped.forEach(genGroup => {
+  const eventDate = new Date(cardData.date);
 
-      // ① sortはコピーでやる（破壊禁止）
-const sortedMembers = [...group.members].sort((a, b) => {
-  const aPeriods = (memberState[a] || []).filter(
-    p => p.generation === group.generation
-  );
+  const members = []; // ★必須（ここが抜けてた）
 
-  const bPeriods = (memberState[b] || []).filter(
-    p => p.generation === group.generation
-  );
+  const sortedMembers = [...genGroup.members].sort((a, b) => {
+    const aPeriods = (memberState[a] || []).filter(
+      p => p.generation === genGroup.generation
+    );
 
-  const aStart = aPeriods.length
-    ? Math.min(...aPeriods.map(p => new Date(p.start).getTime()))
-    : Infinity;
+    const bPeriods = (memberState[b] || []).filter(
+      p => p.generation === genGroup.generation
+    );
 
-  const bStart = bPeriods.length
-    ? Math.min(...bPeriods.map(p => new Date(p.start).getTime()))
-    : Infinity;
+    const aStart = aPeriods.length
+      ? Math.min(...aPeriods.map(p => new Date(p.start).getTime()))
+      : Infinity;
 
-  return aStart - bStart;
-});
-     
-      // ② イベント日で判定
-      sortedMembers.forEach(name => {
-        const periods = memberState?.[name];
-        if (!Array.isArray(periods)) return;
+    const bStart = bPeriods.length
+      ? Math.min(...bPeriods.map(p => new Date(p.start).getTime()))
+      : Infinity;
 
-        const isMatch = periods.some(p =>
-          p.generation === group.generation &&
-          isActive(p, eventDate)
-        );
+    return aStart - bStart;
+  });
 
-        if (isMatch) {
-          members.push(name);
-        }
-      });
+  sortedMembers.forEach(name => {
+    const periods = memberState?.[name];
+    if (!Array.isArray(periods)) return;
 
-      if (members.length > 0) {
-        activeGenerations.push({
-          generation: group.generation,
-          members
-        });
-      }
+    const isMatch = periods.some(p =>
+      p.generation === genGroup.generation &&
+      isActive(p, eventDate)
+    );
+
+    if (isMatch) {
+      members.push(name);
+    }
+  });
+
+  if (members.length > 0) {
+    activeGenerations.push({
+      generation: genGroup.generation,
+      members
     });
+  }
+});
 
     // =========================
     // HTML生成
