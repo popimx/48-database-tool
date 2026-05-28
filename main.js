@@ -399,7 +399,7 @@ function globalDefaultSort(a, b) {
 
 function isMemberActive(date, periods) {
   return periods.some(p =>
-    p.start <= date && (!p.end || p.end >= date)
+    p.start <= date && (!p.end || p.end > date)
   );
 } 
 
