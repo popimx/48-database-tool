@@ -33,18 +33,25 @@ h1 {
 
 /* controls内のselectだけ制御 */
 .controls select {
-  padding: 10px;
-  font-size: 16px;
+  display: block;
 
-  width: 220px;          /* ←これが基準 */
-  height: 40px;          /* ←高さも固定（重要） */
+  width: 220px;
+  flex: 0 0 220px;
 
-  border-radius: 10px;
+  height: 40px;
+
+  padding: 8px 10px;   /* ←他ツールと完全一致 */
+  font-size: 1rem;     /* ←統一 */
+
+  border-radius: 8px;  /* ←統一 */
   border: 1px solid #ccc;
-  background: white;
+  background-color: #ffffff;
 
   box-sizing: border-box;
-  flex: 0 0 220px;       /* ← flex完全固定 */
+
+  appearance: none;    /* ←ズレ防止（重要） */
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 /* スマホ */
@@ -56,7 +63,7 @@ h1 {
 
   .controls select {
     width: 100%;
-    flex: unset;
+    flex: none;
   }
 }
 
