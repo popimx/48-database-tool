@@ -729,7 +729,7 @@ function renderTimelineCards(timeline, memberState, grouped) {
           <div class="timeline-generation-title">${group.generation}</div>
 
           <div class="timeline-generation-members">
-            ${group.members.join(" ・ ")}
+            ${group.members.join("・")}
           </div>
         </div>
       `;
