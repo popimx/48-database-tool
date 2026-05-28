@@ -790,19 +790,11 @@ function setActiveTab(activeBtn) {
   activeBtn.classList.add("active");
 }
 
-/* =========================
-   TIMELINE CARDS
-========================= */
-
 function renderTimelineCards(timeline, memberState, grouped) {
   const container = document.getElementById("timeline-list");
   if (!container) return;
 
   container.innerHTML = "";
-
-  const selectedDate = new Date(
-    timeline?.selectedDate || new Date().toISOString().slice(0, 10)
-  );
 
   const isActive = (p, date) => {
     const start = new Date(p.start);
@@ -843,30 +835,38 @@ function renderTimelineCards(timeline, memberState, grouped) {
     });
 
     // =========================
-    // ★重要：ここで正しく生成
+    // ★重要：世代ごとのメンバー生成
     // =========================
     const activeGenerations = [];
 
     grouped.forEach(group => {
+      const eventDate = new Date(cardData.date);
+
+      // ① sortはコピーでやる（破壊禁止）
+      const sortedMembers = [...group.members].sort((a, b) => {
+        const aStart =
+          memberState[a]
+            ?.find(p => p.generation === group.generation)
+            ?.start || "9999-12-31";
+
+        const bStart =
+          memberState[b]
+            ?.find(p => p.generation === group.generation)
+            ?.start || "9999-12-31";
+
+        return new Date(aStart) - new Date(bStart);
+      });
+
       const members = [];
-     
-    group.members.sort((a, b) => {
-  const aStart =
-    memberState[a]?.find(p => p.generation === group.generation)?.start || "9999-12-31";
 
-  const bStart =
-    memberState[b]?.find(p => p.generation === group.generation)?.start || "9999-12-31";
-
-  return new Date(aStart) - new Date(bStart);
-});
-     
-      group.members.forEach(name => {
+      // ② イベント日で判定
+      sortedMembers.forEach(name => {
         const periods = memberState?.[name];
         if (!Array.isArray(periods)) return;
 
         const isMatch = periods.some(p =>
           p.generation === group.generation &&
-          isActive(p, selectedDate)
+          isActive(p, eventDate)
         );
 
         if (isMatch) {
