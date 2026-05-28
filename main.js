@@ -800,17 +800,28 @@ function renderTimelineCards(timeline, memberState, grouped) {
 
   container.innerHTML = "";
 
+  const selectedDate = new Date(
+    timeline?.selectedDate || new Date().toISOString().slice(0, 10)
+  );
+
+  const isActive = (p, date) => {
+    const start = new Date(p.start);
+    const end = p.end ? new Date(p.end) : null;
+    return start <= date && (!end || end >= date);
+  };
+
   timeline.forEach(cardData => {
     const card = document.createElement("div");
     card.className = "timeline-card";
 
+    // =========================
+    // events
+    // =========================
     let eventsHtml = "";
 
     cardData.events.forEach(event => {
       const deltaText =
-        event.delta > 0
-          ? `+${event.delta}`
-          : `${event.delta}`;
+        event.delta > 0 ? `+${event.delta}` : `${event.delta}`;
 
       eventsHtml += `
         <div class="timeline-event">
@@ -831,15 +842,47 @@ function renderTimelineCards(timeline, memberState, grouped) {
       `;
     });
 
-    const activeGenerations =
-      getActiveMembersByDate(cardData.date, memberState, grouped);
+    // =========================
+    // ★重要：ここで正しく生成
+    // =========================
+    const activeGenerations = [];
 
+    grouped.forEach(group => {
+      const members = [];
+
+      group.members.forEach(name => {
+        const periods = memberState?.[name];
+        if (!Array.isArray(periods)) return;
+
+        const isMatch = periods.some(p =>
+          p.generation === group.generation &&
+          isActive(p, selectedDate)
+        );
+
+        if (isMatch) {
+          members.push(name);
+        }
+      });
+
+      if (members.length > 0) {
+        activeGenerations.push({
+          generation: group.generation,
+          members
+        });
+      }
+    });
+
+    // =========================
+    // HTML生成
+    // =========================
     let membersHtml = "";
 
     activeGenerations.forEach(group => {
       membersHtml += `
         <div class="timeline-generation">
-          <div class="timeline-generation-title">${group.generation}</div>
+          <div class="timeline-generation-title">
+            ${group.generation}
+          </div>
 
           <div class="timeline-generation-members">
             ${group.members.join("・")}
