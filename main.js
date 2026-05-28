@@ -580,33 +580,34 @@ async function initTimelinePage() {
   // =========================
   // grouping（世代単位 + 正しいperiod保持）
   // =========================
-  const groupedMap = new Map();
 
-  Object.entries(memberState || {}).forEach(([name, periods]) => {
-    if (!Array.isArray(periods)) return;
+ const groupedMap = new Map();
 
-    for (const p of periods) {
-      if (!p?.generation) continue;
+Object.entries(memberState || {}).forEach(([name, periods]) => {
+  if (!Array.isArray(periods)) return;
 
-      const gen = p.generation;
+  for (const p of periods) {
+    if (!p?.generation) continue;
 
-      if (!groupedMap.has(gen)) {
-        groupedMap.set(gen, {
-          generation: gen,
-          members: new Map() // ← ★名前だけじゃなくperiod保持
-        });
-      }
+    const gen = p.generation;
 
-      const groupData = groupedMap.get(gen);
-
-      if (!groupData.members.has(name)) {
-        groupData.members.set(name, []);
-      }
-
-      groupData.members.get(name).push(p);
+    if (!groupedMap.has(gen)) {
+      groupedMap.set(gen, {
+        generation: gen,
+        members: new Map()
+      });
     }
-  });
 
+    const groupData = groupedMap.get(gen);
+
+    if (!groupData.members.has(name)) {
+      groupData.members.set(name, []);
+    }
+
+    groupData.members.get(name).push(p);
+  }
+});
+ 
   // =========================
   // 世代順（固定順優先）
   // =========================
@@ -618,33 +619,33 @@ async function initTimelinePage() {
     [];
 
   const grouped = Array.from(groupedMap.entries())
-    .sort((a, b) => {
-      const orderA = orderList.indexOf(a[0]);
-      const orderB = orderList.indexOf(b[0]);
+  .sort((a, b) => {
+    const orderA = orderList.indexOf(a[0]);
+    const orderB = orderList.indexOf(b[0]);
 
-      return (orderA === -1 ? 9999 : orderA)
-           - (orderB === -1 ? 9999 : orderB);
-    })
-    .map(([gen, data]) => {
-      // Map → 配列に変換（ここで初めて表示用にする）
-      const members = Array.from(data.members.entries())
-        .map(([name, periods]) => {
-          const genPeriods = periods.filter(p => p.generation === gen);
+    return (orderA === -1 ? 9999 : orderA)
+         - (orderB === -1 ? 9999 : orderB);
+  })
+  .map(([gen, data]) => {
+    const members = Array.from(data.members.entries())
+      .map(([name, periods]) => {
+        const genPeriods = periods.filter(p => p.generation === gen);
 
-          const start = Math.min(
-            ...genPeriods.map(p => new Date(p.start))
-          );
+        // 🔥ここが重要（NaN防止）
+        const start = Math.min(
+          ...genPeriods.map(p => new Date(p.start).getTime())
+        );
 
-          return { name, start };
-        })
-        .sort((a, b) => a.start - b.start)
-        .map(m => m.name);
+        return { name, start };
+      })
+      .sort((a, b) => a.start - b.start)
+      .map(m => m.name);
 
-      return {
-        generation: gen,
-        members
-      };
-    });
+    return {
+      generation: gen,
+      members
+    };
+  });
 
   // =========================
   // ★重要：日付は「各cardData側」で使うのでここでは不要
@@ -829,19 +830,16 @@ const sortedMembers = [...group.members].sort((a, b) => {
     p => p.generation === group.generation
   );
 
-  // その世代での最初の加入日を使う
   const aStart = aPeriods.length
-    ? Math.min(...aPeriods.map(p => new Date(p.start)))
-    : new Date("9999-12-31");
+    ? Math.min(...aPeriods.map(p => new Date(p.start).getTime()))
+    : Infinity;
 
   const bStart = bPeriods.length
-    ? Math.min(...bPeriods.map(p => new Date(p.start)))
-    : new Date("9999-12-31");
+    ? Math.min(...bPeriods.map(p => new Date(p.start).getTime()))
+    : Infinity;
 
   return aStart - bStart;
 });
-
-const members = [];
      
       // ② イベント日で判定
       sortedMembers.forEach(name => {
