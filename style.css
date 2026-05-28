@@ -24,34 +24,30 @@ h1 {
    select / controls
 ========================= */
 
-select {
-  padding: 10px;
-  font-size: 16px;
-
-  border-radius: 10px;
-  border: 1px solid #ccc;
-
-  background: white;
-
-  width: 100%;          /* ←追加：横幅を統一 */
-  max-width: 220px;     /* ←追加：基準幅 */
-  box-sizing: border-box;
-}
-
 .controls {
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
-
-  align-items: center;  /* ←見た目揃える */
+  align-items: center;
 }
 
+/* controls内のselectだけ制御 */
 .controls select {
-  flex: unset;          /* ←削除の代わり */
-  width: 220px;         /* ←統一幅 */
+  padding: 10px;
+  font-size: 16px;
+
+  width: 220px;          /* ←これが基準 */
+  height: 40px;          /* ←高さも固定（重要） */
+
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: white;
+
+  box-sizing: border-box;
+  flex: 0 0 220px;       /* ← flex完全固定 */
 }
 
-/* ★スマホは縦に戻す */
+/* スマホ */
 @media (max-width: 600px) {
   .controls {
     flex-direction: column;
@@ -60,7 +56,7 @@ select {
 
   .controls select {
     width: 100%;
-    max-width: 100%;
+    flex: unset;
   }
 }
 
