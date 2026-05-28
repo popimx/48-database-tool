@@ -194,8 +194,10 @@ async function loadMemberState(group) {
    GROUPED（グループ対応）
 ========================= */
 
-async function loadGrouped(group) {
-  if (groupedCache[group]) return groupedCache[group];
+async function loadGrouped(group, { latestOnly = false } = {}) {
+  if (groupedCache[group] && !latestOnly) {
+    return groupedCache[group];
+  }
 
   const res = await fetch(
     `data/members/${group}_grouped.json?t=${Date.now()}`,
@@ -204,13 +206,49 @@ async function loadGrouped(group) {
 
   if (!res.ok) {
     console.error("GROUPED LOAD FAILED:", group);
-    return {};
+    return [];
   }
 
   const data = await res.json();
+
+  // =========================
+  // ① 生データはそのままキャッシュ
+  // =========================
   groupedCache[group] = data;
 
-  return data;
+  // =========================
+  // ② フィルタしない（デフォルト）
+  // =========================
+  if (!latestOnly) {
+    return data;
+  }
+
+  // =========================
+  // ③ 最新generationだけ残す（表示用）
+  // =========================
+  const latestMap = new Map();
+
+  // 新しいgeneration優先
+  for (let i = data.length - 1; i >= 0; i--) {
+    const g = data[i];
+
+    for (const name of g.members) {
+      if (!latestMap.has(name)) {
+        latestMap.set(name, g.generation);
+      }
+    }
+  }
+
+  const filtered = data
+    .map(g => ({
+      ...g,
+      members: g.members.filter(name =>
+        latestMap.get(name) === g.generation
+      )
+    }))
+    .filter(g => g.members.length > 0);
+
+  return filtered;
 }
 
 /* =========================
