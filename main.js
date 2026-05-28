@@ -76,6 +76,7 @@ async function loadMembers(group) {
   if (memberCache[group]) return memberCache[group];
 
   const url = `data/members/${group}.json?t=${Date.now()}`;
+
   const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) {
@@ -84,64 +85,14 @@ async function loadMembers(group) {
   }
 
   const data = await res.json();
+  memberCache[group] = data;
 
-  // =========================
-  // 1. flatten（generation付与）
-  // =========================
-  const normalized = data.flatMap(g =>
-    g.members.map(name => ({
-      name,
-      generation: g.generation,
-      groupId: group
-    }))
-  );
-
-  // =========================
-  // 2. 最新generationだけ残す（表示用フィルタ）
-  // =========================
-  const filtered = filterLatestGenerationOnlyByName(normalized);
-
-  memberCache[group] = filtered;
-  return filtered;
+  return data;
 }
-
-
-/* =========================
-   ALL MEMBERS
-========================= */
 
 async function loadAllMembers() {
   const all = await Promise.all(GROUPS.map(loadMembers));
-
-  const flat = all.flat();
-
-  // ここでも念のため最終フィルタ（安全策）
-  const filtered = filterLatestGenerationOnlyByName(flat);
-
-  return filtered;
-}
-
-
-/* =========================
-   FILTER（追加）
-========================= */
-
-function filterLatestGenerationOnlyByName(list) {
-  const latestMap = new Map();
-
-  // 新しいgenerationを優先（後ろから走査）
-  for (let i = list.length - 1; i >= 0; i--) {
-    const m = list[i];
-
-    if (!latestMap.has(m.name)) {
-      latestMap.set(m.name, m.generation);
-    }
-  }
-
-  // 最新generationだけ残す
-  return list.filter(m =>
-    latestMap.get(m.name) === m.generation
-  );
+  return all.flat();
 }
 
 /* =========================
@@ -194,10 +145,8 @@ async function loadMemberState(group) {
    GROUPED（グループ対応）
 ========================= */
 
-async function loadGrouped(group, { latestOnly = false } = {}) {
-  if (groupedCache[group] && !latestOnly) {
-    return groupedCache[group];
-  }
+async function loadGrouped(group) {
+  if (groupedCache[group]) return groupedCache[group];
 
   const res = await fetch(
     `data/members/${group}_grouped.json?t=${Date.now()}`,
@@ -206,49 +155,13 @@ async function loadGrouped(group, { latestOnly = false } = {}) {
 
   if (!res.ok) {
     console.error("GROUPED LOAD FAILED:", group);
-    return [];
+    return {};
   }
 
   const data = await res.json();
-
-  // =========================
-  // ① 生データはそのままキャッシュ
-  // =========================
   groupedCache[group] = data;
 
-  // =========================
-  // ② フィルタしない（デフォルト）
-  // =========================
-  if (!latestOnly) {
-    return data;
-  }
-
-  // =========================
-  // ③ 最新generationだけ残す（表示用）
-  // =========================
-  const latestMap = new Map();
-
-  // 新しいgeneration優先
-  for (let i = data.length - 1; i >= 0; i--) {
-    const g = data[i];
-
-    for (const name of g.members) {
-      if (!latestMap.has(name)) {
-        latestMap.set(name, g.generation);
-      }
-    }
-  }
-
-  const filtered = data
-    .map(g => ({
-      ...g,
-      members: g.members.filter(name =>
-        latestMap.get(name) === g.generation
-      )
-    }))
-    .filter(g => g.members.length > 0);
-
-  return filtered;
+  return data;
 }
 
 /* =========================
