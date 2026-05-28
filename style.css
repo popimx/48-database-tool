@@ -385,14 +385,14 @@ select {
 }
 
 .timeline-generation-title {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
 
   margin-bottom: 6px;
 }
 
 .timeline-generation-members {
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.8;
   color: #444;
 }
