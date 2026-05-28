@@ -564,7 +564,7 @@ async function initDaysPage() {
   updateDays();
 }
 
-/* =========================
+ /* =========================
    TIMELINE PAGE
 ========================= */
 
@@ -577,11 +577,25 @@ async function initTimelinePage() {
 
   const memberState = await loadMemberState(group);
 
-  const normalizeGen = (gen) =>
-    String(gen).replace("期生", "期").trim();
+  // =========================
+  // generation 正規化（強化版）
+  // =========================
+  const normalizeGen = (gen) => {
+    if (!gen) return "";
+
+    return String(gen)
+      .replace(/期生/g, "期")
+      .replace(/\s/g, "")
+      .replace(/　/g, "")
+      .trim();
+  };
 
   const groupedMap = {};
+  const keySet = new Set();
 
+  // =========================
+  // grouping（修正版）
+  // =========================
   Object.entries(memberState || {}).forEach(([name, periods]) => {
     if (!Array.isArray(periods)) return;
 
@@ -590,6 +604,11 @@ async function initTimelinePage() {
 
       const gen = normalizeGen(p.generation);
 
+      const key = `${gen}__${name}`;
+      if (keySet.has(key)) return;
+
+      keySet.add(key);
+
       if (!groupedMap[gen]) {
         groupedMap[gen] = {
           generation: gen,
@@ -597,15 +616,12 @@ async function initTimelinePage() {
         };
       }
 
-      // ★重要：重複防止は「同一期内だけ」
-      if (!groupedMap[gen].members.includes(name)) {
-        groupedMap[gen].members.push(name);
-      }
+      groupedMap[gen].members.push(name);
     });
   });
 
   // =========================
-  // ★ここが本体修正
+  // 世代ソート（維持）
   // =========================
   const grouped = Object.entries(groupedMap)
     .sort((a, b) => {
