@@ -85,24 +85,63 @@ async function loadMembers(group) {
 
   const data = await res.json();
 
-  // ★ここで generation を必ず付与（重要）
+  // =========================
+  // 1. flatten（generation付与）
+  // =========================
   const normalized = data.flatMap(g =>
     g.members.map(name => ({
       name,
-      generation: g.generation
+      generation: g.generation,
+      groupId: group
     }))
   );
 
-  memberCache[group] = normalized;
+  // =========================
+  // 2. 最新generationだけ残す（表示用フィルタ）
+  // =========================
+  const filtered = filterLatestGenerationOnlyByName(normalized);
 
-  return normalized;
+  memberCache[group] = filtered;
+  return filtered;
 }
+
+
+/* =========================
+   ALL MEMBERS
+========================= */
 
 async function loadAllMembers() {
   const all = await Promise.all(GROUPS.map(loadMembers));
 
-  // そのまま全部残す（重複排除しない）
-  return all.flat();
+  const flat = all.flat();
+
+  // ここでも念のため最終フィルタ（安全策）
+  const filtered = filterLatestGenerationOnlyByName(flat);
+
+  return filtered;
+}
+
+
+/* =========================
+   FILTER（追加）
+========================= */
+
+function filterLatestGenerationOnlyByName(list) {
+  const latestMap = new Map();
+
+  // 新しいgenerationを優先（後ろから走査）
+  for (let i = list.length - 1; i >= 0; i--) {
+    const m = list[i];
+
+    if (!latestMap.has(m.name)) {
+      latestMap.set(m.name, m.generation);
+    }
+  }
+
+  // 最新generationだけ残す
+  return list.filter(m =>
+    latestMap.get(m.name) === m.generation
+  );
 }
 
 /* =========================
