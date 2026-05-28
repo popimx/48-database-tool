@@ -388,27 +388,37 @@ function globalDefaultSort(a, b) {
   return (a.kana || "").localeCompare(b.kana || "", "ja");
 }
 
-/* =========================
-   TIMELINE関連
+ /* =========================
+   TIMELINE関連（修正版）
 ========================= */
 
 function isMemberActive(date, periods) {
-  return periods.some(p =>
-    p.start <= date && (!p.end || p.end > date)
-  );
-} 
+  if (!Array.isArray(periods)) return false;
 
- function getActiveMembersByDate(date, memberState, grouped) {
+  return periods.some(p => {
+    if (!p?.start) return false;
+
+    return (
+      p.start <= date &&
+      (!p.end || p.end > date)
+    );
+  });
+}
+
+function getActiveMembersByDate(date, memberState, grouped) {
   const result = [];
 
-  grouped.forEach(group => {
-    const active = group.members.filter(name => {
-      const periods = memberState[name];
+  if (!grouped || !memberState) return result;
 
-      return periods && isMemberActive(date, periods);
+  grouped.forEach(group => {
+    if (!group?.members) return;
+
+    const active = group.members.filter(name => {
+      const periods = memberState?.[name];
+      return isMemberActive(date, periods);
     });
 
-    if (active.length) {
+    if (active.length > 0) {
       result.push({
         generation: group.generation,
         members: active
@@ -422,8 +432,10 @@ function isMemberActive(date, periods) {
 function calculateTimelineCounts(timeline) {
   let current = 0;
 
+  if (!Array.isArray(timeline)) return [];
+
   return timeline.map(card => {
-    const events = card.events.map(event => {
+    const events = (card.events || []).map(event => {
       current += Number(event.delta || 0);
 
       return {
