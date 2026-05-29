@@ -647,14 +647,28 @@ const grouped = Array.from(groupedMap.entries())
     return (orderA === -1 ? 9999 : orderA)
          - (orderB === -1 ? 9999 : orderB);
   })
-  .map(([gen, data]) => ({
-    generation: gen,
 
-    // ★ 元json順を維持
-    members: Array.from(data.members.entries())
-      .sort((a, b) => a[1] - b[1])
-      .map(([name]) => name)
-  }));
+  .map(([gen, data]) => ({
+  generation: gen,
+
+  members: Array.from(data.members.keys())
+    .sort((a, b) => {
+      const order =
+        GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
+
+      const ai = order.indexOf(a);
+      const bi = order.indexOf(b);
+
+      if (ai === -1 && bi === -1) {
+        return 0;
+      }
+
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+
+      return ai - bi;
+    })
+}));
   
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
