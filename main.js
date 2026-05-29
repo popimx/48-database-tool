@@ -403,7 +403,6 @@ function getActiveMembersByDate(date, memberState, grouped) {
 
       if (!Array.isArray(periods)) return false;
 
-      // ★ そのgenerationのperiodだけ見る
       return periods.some(p => {
         if (p.generation !== group.generation) {
           return false;
@@ -419,9 +418,6 @@ function getActiveMembersByDate(date, memberState, grouped) {
                targetDate <= end;
       });
     });
-
-    // ★ groupedMap に追加された順を維持
-    // （member_state.json の順番）
 
     if (active.length) {
       result.push({
@@ -592,34 +588,42 @@ async function initTimelinePage() {
 
   const memberState = await loadMemberState(group);
 
-  // =========================
-  // grouping（正規化なし・完全安定）
-  // =========================
-  const groupedMap = new Map();
 
-  Object.entries(memberState || {}).forEach(([name, periods]) => {
-    if (!Array.isArray(periods)) return;
+// =========================
+// grouping（完全安定版）
+// =========================
 
-    periods.forEach(p => {
-      if (!p?.generation) return;
+const groupedMap = new Map();
 
-      const gen = p.generation; // ←絶対そのまま
+let memberIndex = 0;
 
-      if (!groupedMap.has(gen)) {
-        groupedMap.set(gen, {
-          generation: gen,
-          members: []
-        });
-      }
+Object.entries(memberState || {}).forEach(([name, periods]) => {
+  if (!Array.isArray(periods)) return;
 
-      const groupData = groupedMap.get(gen);
+  periods.forEach(p => {
+    if (!p?.generation) return;
 
-      if (!groupData.members.includes(name)) {
-        groupData.members.push(name);
-      }
-    });
+    const gen = p.generation;
+
+    if (!groupedMap.has(gen)) {
+      groupedMap.set(gen, {
+        generation: gen,
+        members: new Map()
+      });
+    }
+
+    const groupData = groupedMap.get(gen);
+
+    // ★ 初回だけ登録
+    if (!groupData.members.has(name)) {
+      groupData.members.set(name, memberIndex);
+    }
   });
 
+  memberIndex++;
+});
+
+  
   // =========================
   // 世代順リスト（安全化）
   // =========================
@@ -633,19 +637,24 @@ async function initTimelinePage() {
   // =========================
   // ソート（安定版）
   // =========================
-  const grouped = Array.from(groupedMap.entries())
-    .sort((a, b) => {
-      const orderA = orderList.indexOf(a[0]);
-      const orderB = orderList.indexOf(b[0]);
+  
+const grouped = Array.from(groupedMap.entries())
+  .sort((a, b) => {
+    const orderA = orderList.indexOf(a[0]);
+    const orderB = orderList.indexOf(b[0]);
 
-      return (orderA === -1 ? 9999 : orderA)
-           - (orderB === -1 ? 9999 : orderB);
-    })
-    .map(([gen, data]) => ({
-      generation: gen,
-      members: data.members
-    }));
+    return (orderA === -1 ? 9999 : orderA)
+         - (orderB === -1 ? 9999 : orderB);
+  })
+  .map(([gen, data]) => ({
+    generation: gen,
 
+    // ★ 元json順を維持
+    members: Array.from(data.members.entries())
+      .sort((a, b) => a[1] - b[1])
+      .map(([name]) => name)
+  }));
+  
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
 
