@@ -1,4 +1,4 @@
- import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
+import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
 import { GENERATION_MEMBER_ORDER } from "./config/generationMemberOrder.js";
 
 document.addEventListener("DOMContentLoaded", () => {
