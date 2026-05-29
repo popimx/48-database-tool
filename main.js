@@ -582,107 +582,97 @@ async function initDaysPage() {
 
 async function initTimelinePage() {
   const params = new URLSearchParams(location.search);
-  const group = params.get("group") || "akb48";
 
-  let timeline = await loadTimeline(group);
+  const rawGroup = params.get("group")?.toLowerCase() || "akb48";
+  const groupKey = groupNameMap[rawGroup] || "AKB48";
+
+  let timeline = await loadTimeline(rawGroup);
   timeline = calculateTimelineCounts(timeline);
 
-  const memberState = await loadMemberState(group);
-
-
-// =========================
-// grouping（完全安定版）
-// =========================
-
-const groupedMap = new Map();
-
-let memberIndex = 0;
-
-Object.entries(memberState || {}).forEach(([name, periods]) => {
-  if (!Array.isArray(periods)) return;
-
-  periods.forEach(p => {
-    if (!p?.generation) return;
-
-    const gen = p.generation;
-
-    if (!groupedMap.has(gen)) {
-      groupedMap.set(gen, {
-        generation: gen,
-        members: new Map()
-      });
-    }
-
-    const groupData = groupedMap.get(gen);
-
-    // ★ 初回だけ登録
-    if (!groupData.members.has(name)) {
-      groupData.members.set(name, memberIndex);
-    }
-  });
-
-  memberIndex++;
-});
+  const memberState = await loadMemberState(rawGroup);
 
   // =========================
-// 世代順リスト（安全化）
-// =========================
-const groupKey = groupNameMap[group];
+  // grouping（安定版）
+  // =========================
+  const groupedMap = new Map();
 
-if (!groupKey) {
-  console.error("Invalid group:", group);
-  return;
-}
+  let memberIndex = 0;
 
-const orderList = GENERATION_ORDER_MAP?.[groupKey];
+  Object.entries(memberState || {}).forEach(([name, periods]) => {
+    if (!Array.isArray(periods)) return;
 
-if (!orderList) {
-  console.error("Missing GENERATION_ORDER_MAP for:", groupKey);
-  return;
-}
+    periods.forEach(p => {
+      if (!p?.generation) return;
 
-// =========================
-// ソート（安定版）
-// =========================
+      const gen = (p.generation || "").trim();
 
-const grouped = Array.from(groupedMap.entries())
-  .sort((a, b) => {
-    const orderA = orderList.indexOf(a[0]);
-    const orderB = orderList.indexOf(b[0]);
+      if (!groupedMap.has(gen)) {
+        groupedMap.set(gen, {
+          generation: gen,
+          members: new Map()
+        });
+      }
 
-    return (orderA === -1 ? 9999 : orderA)
-         - (orderB === -1 ? 9999 : orderB);
-  })
-  .map(([gen, data]) => ({
-    generation: gen,
+      const groupData = groupedMap.get(gen);
 
-    members: Array.from(data.members.keys())
-      .sort((a, b) => {
+      if (!groupData.members.has(name)) {
+        groupData.members.set(name, memberIndex);
+      }
+    });
+
+    memberIndex++;
+  });
+
+  // =========================
+  // 世代順リスト（安全化・非停止版）
+  // =========================
+  const orderList =
+    GENERATION_ORDER_MAP?.[groupKey] || [];
+
+  if (!GENERATION_ORDER_MAP?.[groupKey]) {
+    console.warn(
+      "GENERATION_ORDER_MAP missing, fallback mode:",
+      groupKey
+    );
+  }
+
+  // =========================
+  // ソート（安全版）
+  // =========================
+  const grouped = Array.from(groupedMap.entries())
+    .sort((a, b) => {
+      const orderA = orderList.indexOf(a[0]);
+      const orderB = orderList.indexOf(b[0]);
+
+      return (orderA === -1 ? 9999 : orderA)
+           - (orderB === -1 ? 9999 : orderB);
+    })
+    .map(([gen, data]) => ({
+      generation: gen,
+
+      members: Array.from(data.members.keys()).sort((a, b) => {
         const order =
           GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
 
         const ai = order.indexOf(a);
         const bi = order.indexOf(b);
 
-        if (ai === -1 && bi === -1) {
-          return 0;
-        }
-
+        // 両方未定義でも落とさない（重要）
+        if (ai === -1 && bi === -1) return 0;
         if (ai === -1) return 1;
         if (bi === -1) return -1;
 
         return ai - bi;
       })
-  }));
+    }));
 
-renderTimelineSummary(timeline, group);
-renderYearTabs(timeline, group, grouped);
-
-renderTimelineCards(
-  timeline,
-  memberState,
-  grouped
-);
+  // =========================
+  // ★ 必ず描画する（ここ重要）
+  // =========================
+  renderTimelineSummary(timeline, rawGroup);
+  renderYearTabs(timeline, rawGroup, grouped);
+  renderTimelineCards(timeline, memberState, grouped);
+}
 
 /* =========================
    TIMELINE SUMMARY
