@@ -584,102 +584,109 @@ async function initTimelinePage() {
   const params = new URLSearchParams(location.search);
   const group = params.get("group") || "akb48";
 
+  await updateTimelinePage(group);
+
+  // SPA切り替え
+  document.getElementById("group-select")?.addEventListener("change", (e) => {
+    updateTimelinePage(e.target.value);
+  });
+}
+
+
+/* =========================
+   SPA core function
+========================= */
+
+async function updateTimelinePage(group) {
+  const groupKey = groupNameMap[group] || "AKB48";
+
+  // ★ URLも同期（戻る問題防止）
+  const url = new URL(location.href);
+  url.searchParams.set("group", group);
+  history.replaceState({}, "", url);
+
   let timeline = await loadTimeline(group);
   timeline = calculateTimelineCounts(timeline);
 
   const memberState = await loadMemberState(group);
 
-  document.getElementById("group-select")?.addEventListener("change", (e) => {
-  updateTimelinePage(e.target.value);
-});
-
-// =========================
-// grouping（完全安定版）
-// =========================
-
-const groupedMap = new Map();
-
-let memberIndex = 0;
-
-Object.entries(memberState || {}).forEach(([name, periods]) => {
-  if (!Array.isArray(periods)) return;
-
-  periods.forEach(p => {
-    if (!p?.generation) return;
-
-    const gen = p.generation;
-
-    if (!groupedMap.has(gen)) {
-      groupedMap.set(gen, {
-        generation: gen,
-        members: new Map()
-      });
-    }
-
-    const groupData = groupedMap.get(gen);
-
-    // ★ 初回だけ登録
-    if (!groupData.members.has(name)) {
-      groupData.members.set(name, memberIndex);
-    }
-  });
-
-  memberIndex++;
-});
-
-  
   // =========================
-  // 世代順リスト（安全化）
+  // grouping（完全安定版）
   // =========================
-  
-  const groupKey = groupNameMap[group] || "AKB48";
 
-  const orderList =
-  GENERATION_ORDER_MAP?.[groupKey] ?? [];
-  
-  // =========================
-  // ソート（安定版）
-  // =========================
-  
-const grouped = Array.from(groupedMap.entries())
-  .sort((a, b) => {
-    const orderA = orderList.indexOf(a[0]);
-    const orderB = orderList.indexOf(b[0]);
+  const groupedMap = new Map();
+  let memberIndex = 0;
 
-    return (orderA === -1 ? 9999 : orderA)
-         - (orderB === -1 ? 9999 : orderB);
-  })
+  Object.entries(memberState || {}).forEach(([name, periods]) => {
+    if (!Array.isArray(periods)) return;
 
-  .map(([gen, data]) => ({
-  generation: gen,
+    periods.forEach(p => {
+      if (!p?.generation) return;
 
-  members: Array.from(data.members.keys())
-    .sort((a, b) => {
-      const order =
-        GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
+      const gen = (p.generation || "").trim(); // ★重要：正規化
 
-      const ai = order.indexOf(a);
-      const bi = order.indexOf(b);
-
-      if (ai === -1 && bi === -1) {
-        return 0;
+      if (!groupedMap.has(gen)) {
+        groupedMap.set(gen, {
+          generation: gen,
+          members: new Map()
+        });
       }
 
-      if (ai === -1) return 1;
-      if (bi === -1) return -1;
+      const groupData = groupedMap.get(gen);
 
-      return ai - bi;
+      if (!groupData.members.has(name)) {
+        groupData.members.set(name, memberIndex);
+      }
+    });
+
+    memberIndex++;
+  });
+
+  // =========================
+  // 世代順リスト
+  // =========================
+
+  const orderList =
+    GENERATION_ORDER_MAP?.[groupKey] ?? []; // ★ fallback削除済み安全版
+
+  const grouped = Array.from(groupedMap.entries())
+    .sort((a, b) => {
+      const orderA = orderList.indexOf(a[0]);
+      const orderB = orderList.indexOf(b[0]);
+
+      return (orderA === -1 ? 9999 : orderA)
+           - (orderB === -1 ? 9999 : orderB);
     })
-}));
-  
+    .map(([gen, data]) => ({
+      generation: gen,
+
+      members: Array.from(data.members.keys())
+        .sort((a, b) => {
+          const order =
+            GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
+
+          const ai = order.indexOf(a);
+          const bi = order.indexOf(b);
+
+          if (ai === -1 && bi === -1) return 0;
+          if (ai === -1) return 1;
+          if (bi === -1) return -1;
+
+          return ai - bi;
+        })
+    }));
+
+  // =========================
+  // render
+  // =========================
+
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
+  renderTimelineCards(timeline, memberState, grouped);
 
-  renderTimelineCards(
-    timeline,
-    memberState,
-    grouped
-  );
+  // ★ UI同期（超重要）
+  const select = document.getElementById("group-select");
+  if (select) select.value = group;
 }
 
 /* =========================
