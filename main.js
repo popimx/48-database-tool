@@ -590,7 +590,7 @@ async function initTimelinePage() {
   const memberState = await loadMemberState(group);
 
   document.getElementById("group-select")?.addEventListener("change", (e) => {
-  location.href = `timeline.html?group=${e.target.value}`;
+  updateTimelinePage(e.target.value);
 });
 
 // =========================
