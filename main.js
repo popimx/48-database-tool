@@ -416,7 +416,7 @@ function getActiveMembersByDate(date, memberState, grouped) {
           : Infinity;
 
         return start <= targetDate &&
-               targetDate <= end;
+               targetDate < end;
       });
     });
 
