@@ -624,19 +624,27 @@ Object.entries(memberState || {}).forEach(([name, periods]) => {
   memberIndex++;
 });
 
-  
   // =========================
-  // 世代順リスト（安全化）
-  // =========================
-  const groupKey = groupNameMap[group] || "AKB48";
+// 世代順リスト（安全化）
+// =========================
+const groupKey = groupNameMap[group];
 
-  const orderList =
-  GENERATION_ORDER_MAP?.[groupKey] ?? [];
+if (!groupKey) {
+  console.error("Invalid group:", group);
+  return;
+}
 
-  // =========================
-  // ソート（安定版）
-  // =========================
-  
+const orderList = GENERATION_ORDER_MAP?.[groupKey];
+
+if (!orderList) {
+  console.error("Missing GENERATION_ORDER_MAP for:", groupKey);
+  return;
+}
+
+// =========================
+// ソート（安定版）
+// =========================
+
 const grouped = Array.from(groupedMap.entries())
   .sort((a, b) => {
     const orderA = orderList.indexOf(a[0]);
@@ -645,38 +653,36 @@ const grouped = Array.from(groupedMap.entries())
     return (orderA === -1 ? 9999 : orderA)
          - (orderB === -1 ? 9999 : orderB);
   })
-
   .map(([gen, data]) => ({
-  generation: gen,
+    generation: gen,
 
-  members: Array.from(data.members.keys())
-    .sort((a, b) => {
-      const order =
-        GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
+    members: Array.from(data.members.keys())
+      .sort((a, b) => {
+        const order =
+          GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
 
-      const ai = order.indexOf(a);
-      const bi = order.indexOf(b);
+        const ai = order.indexOf(a);
+        const bi = order.indexOf(b);
 
-      if (ai === -1 && bi === -1) {
-        return 0;
-      }
+        if (ai === -1 && bi === -1) {
+          return 0;
+        }
 
-      if (ai === -1) return 1;
-      if (bi === -1) return -1;
+        if (ai === -1) return 1;
+        if (bi === -1) return -1;
 
-      return ai - bi;
-    })
-}));
-  
-  renderTimelineSummary(timeline, group);
-  renderYearTabs(timeline, group, grouped);
+        return ai - bi;
+      })
+  }));
 
-  renderTimelineCards(
-    timeline,
-    memberState,
-    grouped
-  );
-}
+renderTimelineSummary(timeline, group);
+renderYearTabs(timeline, group, grouped);
+
+renderTimelineCards(
+  timeline,
+  memberState,
+  grouped
+);
 
 /* =========================
    TIMELINE SUMMARY
