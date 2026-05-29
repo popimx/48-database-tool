@@ -401,16 +401,58 @@ function isMemberActive(date, periods) {
  function getActiveMembersByDate(date, memberState, grouped) {
   const result = [];
 
-  grouped.forEach(group => {
-    const active = group.members.filter(name => {
-      const periods = memberState[name];
+  const targetDate = new Date(date).getTime();
 
-      return periods && isMemberActive(date, periods);
-    });
+  grouped.forEach(genGroup => {
+    const active = [...genGroup.members]
+      .filter(name => {
+        const periods = memberState[name];
+
+        if (!Array.isArray(periods)) return false;
+
+        // ★ generationごとのperiodだけ見る
+        return periods.some(p => {
+          if (p.generation !== genGroup.generation) {
+            return false;
+          }
+
+          const start = new Date(p.start).getTime();
+          const end = p.end
+            ? new Date(p.end).getTime()
+            : Infinity;
+
+          return start <= targetDate && targetDate <= end;
+        });
+      })
+
+      // ★ generation内の加入順で安定ソート
+      .sort((a, b) => {
+        const aPeriods = (memberState[a] || []).filter(
+          p => p.generation === genGroup.generation
+        );
+
+        const bPeriods = (memberState[b] || []).filter(
+          p => p.generation === genGroup.generation
+        );
+
+        const aStart = aPeriods.length
+          ? Math.min(...aPeriods.map(
+              p => new Date(p.start).getTime()
+            ))
+          : Infinity;
+
+        const bStart = bPeriods.length
+          ? Math.min(...bPeriods.map(
+              p => new Date(p.start).getTime()
+            ))
+          : Infinity;
+
+        return aStart - bStart;
+      });
 
     if (active.length) {
       result.push({
-        generation: group.generation,
+        generation: genGroup.generation,
         members: active
       });
     }
