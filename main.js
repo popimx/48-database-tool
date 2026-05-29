@@ -392,67 +392,40 @@ function globalDefaultSort(a, b) {
    TIMELINE関連
 ========================= */
 
-function isMemberActive(date, periods) {
-  return periods.some(p =>
-    p.start <= date && (!p.end || p.end > date)
-  );
-} 
-
- function getActiveMembersByDate(date, memberState, grouped) {
+function getActiveMembersByDate(date, memberState, grouped) {
   const result = [];
 
   const targetDate = new Date(date).getTime();
 
-  grouped.forEach(genGroup => {
-    const active = [...genGroup.members]
-      .filter(name => {
-        const periods = memberState[name];
+  grouped.forEach(group => {
+    const active = group.members.filter(name => {
+      const periods = memberState[name];
 
-        if (!Array.isArray(periods)) return false;
+      if (!Array.isArray(periods)) return false;
 
-        // ★ generationごとのperiodだけ見る
-        return periods.some(p => {
-          if (p.generation !== genGroup.generation) {
-            return false;
-          }
+      // ★ そのgenerationのperiodだけ見る
+      return periods.some(p => {
+        if (p.generation !== group.generation) {
+          return false;
+        }
 
-          const start = new Date(p.start).getTime();
-          const end = p.end
-            ? new Date(p.end).getTime()
-            : Infinity;
+        const start = new Date(p.start).getTime();
 
-          return start <= targetDate && targetDate <= end;
-        });
-      })
-
-      // ★ generation内の加入順で安定ソート
-      .sort((a, b) => {
-        const aPeriods = (memberState[a] || []).filter(
-          p => p.generation === genGroup.generation
-        );
-
-        const bPeriods = (memberState[b] || []).filter(
-          p => p.generation === genGroup.generation
-        );
-
-        const aStart = aPeriods.length
-          ? Math.min(...aPeriods.map(
-              p => new Date(p.start).getTime()
-            ))
+        const end = p.end
+          ? new Date(p.end).getTime()
           : Infinity;
 
-        const bStart = bPeriods.length
-          ? Math.min(...bPeriods.map(
-              p => new Date(p.start).getTime()
-            ))
-          : Infinity;
-
-        return aStart - bStart;
+        return start <= targetDate &&
+               targetDate <= end;
       });
+    });
+
+    // ★ groupedMap に追加された順を維持
+    // （member_state.json の順番）
 
     if (active.length) {
       result.push({
-        generation: genGroup.generation,
+        generation: group.generation,
         members: active
       });
     }
