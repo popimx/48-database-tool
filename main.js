@@ -1,4 +1,4 @@
-import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
+ import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
 import { GENERATION_MEMBER_ORDER } from "./config/generationMemberOrder.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -582,102 +582,105 @@ async function initDaysPage() {
 
 async function initTimelinePage() {
   const params = new URLSearchParams(location.search);
+  const group = params.get("group") || "akb48";
 
-  const rawGroup = params.get("group")?.toLowerCase() || "akb48";
-  const groupKey = groupNameMap[rawGroup] || "AKB48";
-
-  let timeline = await loadTimeline(rawGroup);
+  let timeline = await loadTimeline(group);
   timeline = calculateTimelineCounts(timeline);
 
-  const memberState = await loadMemberState(rawGroup);
-  
-document.getElementById("group-select")?.addEventListener("change", (e) => {
-  const group = e.target.value;
+  const memberState = await loadMemberState(group);
 
-  location.href = `timeline.html?group=${group}`;
+  document.getElementById("group-select")?.addEventListener("change", (e) => {
+  location.href = `timeline.html?group=${e.target.value}`;
 });
-  
-  // =========================
-  // grouping（安定版）
-  // =========================
-  const groupedMap = new Map();
 
-  let memberIndex = 0;
+// =========================
+// grouping（完全安定版）
+// =========================
 
-  Object.entries(memberState || {}).forEach(([name, periods]) => {
-    if (!Array.isArray(periods)) return;
+const groupedMap = new Map();
 
-    periods.forEach(p => {
-      if (!p?.generation) return;
+let memberIndex = 0;
 
-      const gen = (p.generation || "").trim();
+Object.entries(memberState || {}).forEach(([name, periods]) => {
+  if (!Array.isArray(periods)) return;
 
-      if (!groupedMap.has(gen)) {
-        groupedMap.set(gen, {
-          generation: gen,
-          members: new Map()
-        });
-      }
+  periods.forEach(p => {
+    if (!p?.generation) return;
 
-      const groupData = groupedMap.get(gen);
+    const gen = p.generation;
 
-      if (!groupData.members.has(name)) {
-        groupData.members.set(name, memberIndex);
-      }
-    });
+    if (!groupedMap.has(gen)) {
+      groupedMap.set(gen, {
+        generation: gen,
+        members: new Map()
+      });
+    }
 
-    memberIndex++;
+    const groupData = groupedMap.get(gen);
+
+    // ★ 初回だけ登録
+    if (!groupData.members.has(name)) {
+      groupData.members.set(name, memberIndex);
+    }
   });
 
+  memberIndex++;
+});
+
+  
   // =========================
-  // 世代順リスト（安全化・非停止版）
+  // 世代順リスト（安全化）
   // =========================
+  const groupKey = group ? group.toUpperCase() : "AKB48";
+
   const orderList =
-    GENERATION_ORDER_MAP?.[groupKey] || [];
-
-  if (!GENERATION_ORDER_MAP?.[groupKey]) {
-    console.warn(
-      "GENERATION_ORDER_MAP missing, fallback mode:",
-      groupKey
-    );
-  }
+    GENERATION_ORDER_MAP?.[groupKey] ||
+    GENERATION_ORDER_MAP?.AKB48 ||
+    [];
 
   // =========================
-  // ソート（安全版）
+  // ソート（安定版）
   // =========================
-  const grouped = Array.from(groupedMap.entries())
+  
+const grouped = Array.from(groupedMap.entries())
+  .sort((a, b) => {
+    const orderA = orderList.indexOf(a[0]);
+    const orderB = orderList.indexOf(b[0]);
+
+    return (orderA === -1 ? 9999 : orderA)
+         - (orderB === -1 ? 9999 : orderB);
+  })
+
+  .map(([gen, data]) => ({
+  generation: gen,
+
+  members: Array.from(data.members.keys())
     .sort((a, b) => {
-      const orderA = orderList.indexOf(a[0]);
-      const orderB = orderList.indexOf(b[0]);
+      const order =
+        GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
 
-      return (orderA === -1 ? 9999 : orderA)
-           - (orderB === -1 ? 9999 : orderB);
+      const ai = order.indexOf(a);
+      const bi = order.indexOf(b);
+
+      if (ai === -1 && bi === -1) {
+        return 0;
+      }
+
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+
+      return ai - bi;
     })
-    .map(([gen, data]) => ({
-      generation: gen,
+}));
+  
+  renderTimelineSummary(timeline, group);
+  renderYearTabs(timeline, group, grouped);
 
-      members: Array.from(data.members.keys()).sort((a, b) => {
-        const order =
-          GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
-
-        const ai = order.indexOf(a);
-        const bi = order.indexOf(b);
-
-        // 両方未定義でも落とさない（重要）
-        if (ai === -1 && bi === -1) return 0;
-        if (ai === -1) return 1;
-        if (bi === -1) return -1;
-
-        return ai - bi;
-      })
-    }));
-
-  // =========================
-  // ★ 必ず描画する（ここ重要）
-  // =========================
-  renderTimelineSummary(timeline, rawGroup);
-  renderYearTabs(timeline, rawGroup, grouped);
-  renderTimelineCards(timeline, memberState, grouped);
+  renderTimelineCards(
+    timeline,
+    memberState,
+    grouped
+  );
 }
 
 /* =========================
