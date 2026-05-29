@@ -590,7 +590,13 @@ async function initTimelinePage() {
   timeline = calculateTimelineCounts(timeline);
 
   const memberState = await loadMemberState(rawGroup);
+  
+document.getElementById("group-select")?.addEventListener("change", (e) => {
+  const group = e.target.value;
 
+  location.href = `timeline.html?group=${group}`;
+});
+  
   // =========================
   // grouping（安定版）
   // =========================
