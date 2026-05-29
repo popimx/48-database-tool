@@ -628,12 +628,10 @@ Object.entries(memberState || {}).forEach(([name, periods]) => {
   // =========================
   // 世代順リスト（安全化）
   // =========================
-  const groupKey = group ? group.toUpperCase() : "AKB48";
+  const groupKey = groupNameMap[group] || "AKB48";
 
   const orderList =
-    GENERATION_ORDER_MAP?.[groupKey] ||
-    GENERATION_ORDER_MAP?.AKB48 ||
-    [];
+  GENERATION_ORDER_MAP?.[groupKey] ?? [];
 
   // =========================
   // ソート（安定版）
