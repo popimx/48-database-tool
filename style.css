@@ -498,12 +498,13 @@ select {
 .stage-table {
   width: 100%;
 
-  /* sticky対策 */
   border-collapse: separate;
   border-spacing: 0;
 
   font-size: 14px;
   white-space: nowrap;
+
+  position: relative; /* ←重要 */
 }
 
 .stage-table th,
@@ -514,62 +515,68 @@ select {
   background: #fff;
 }
 
-/* 上部ヘッダー固定 */
+/* =========================
+   ヘッダー（上固定）
+========================= */
 
 .stage-table th {
   position: sticky;
   top: 0;
-
+  z-index: 10;
   background: #fafafa;
   font-weight: 700;
-
-  z-index: 50;
 }
 
-/* 日付列（ボディ） */
+/* =========================
+   日付列（左固定・ボディ）
+========================= */
+
 .stage-table td:first-child {
   position: sticky;
   left: 0;
-  z-index: 200;
+  z-index: 20;
   background: #fafafa;
   font-weight: 700;
   border-right: 2px solid #d0d0d0;
 }
 
-/* 日付列（ヘッダー） */
+/* =========================
+   日付列（左固定・ヘッダー）
+========================= */
+
 .stage-table th:first-child {
   position: sticky;
   left: 0;
   top: 0;
-  z-index: 300;
+  z-index: 30;
   background: #fafafa;
   font-weight: 700;
   border-right: 2px solid #d0d0d0;
 }
 
-/* hover */
+/* =========================
+   hover
+========================= */
 
-.stage-table tr:hover td:not(.highlight):not(:first-child) {
+.stage-table tr:hover td:not(:first-child) {
   background: #f9f9f9;
 }
 
-/* 検索ヒットセル */
+.stage-table tr:hover td:first-child {
+  background: #fafafa;
+}
+
+/* =========================
+   検索ヒット
+========================= */
 
 .stage-table td.highlight {
   background: #fff2cc;
 }
 
-.stage-table td.highlight .member {
-  color: #111;
-}
-
-/* 日付列は常に固定色 */
-
-.stage-table td:first-child {
-  background: #fafafa;
-}
-
-/* アンダー */
+/* =========================
+   アンダー
+========================= */
 
 .stage-table .substitute {
   color: #d32f2f;
