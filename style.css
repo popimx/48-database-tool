@@ -522,12 +522,12 @@ select {
   width: 140px; /* 任意 */
 }
 
-/* メンバー列（2列目以降）を120px固定 */
+/* メンバー列（2列目以降）を80px固定 */
 .stage-table th:not(:first-child),
 .stage-table td:not(:first-child) {
-  width: 90px;
-  min-width: 90px;
-  max-width: 90px;
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
 }
 
 /* =========================
