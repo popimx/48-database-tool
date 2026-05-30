@@ -1237,7 +1237,7 @@ function calculatePositionPrediction(stageData, inputText) {
 
 // 位置予測テーブル描画
 function renderPredictionTable(prediction) {
-  const el = document.getElementById("stage-prediction");
+  const el = document.getElementById("result");
   if (!el) return;
 
   let html = `<table class="predict-table">`;
