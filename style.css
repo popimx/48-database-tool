@@ -474,15 +474,13 @@ select {
 }
 
 @media (max-width: 600px) {
-
   #stage-search-input {
     font-size: 14px;
   }
-
 }
 
 /* =========================
-   theater stage table
+   table container
 ========================= */
 
 #stage-table-container {
@@ -495,6 +493,10 @@ select {
   overflow-x: auto;
 }
 
+/* =========================
+   table base
+========================= */
+
 .stage-table {
   width: 100%;
 
@@ -504,7 +506,7 @@ select {
   font-size: 14px;
   white-space: nowrap;
 
-  position: relative; /* ←重要 */
+  position: relative;
 }
 
 .stage-table th,
@@ -512,7 +514,8 @@ select {
   border: 1px solid #e0e0e0;
   padding: 8px 10px;
   text-align: center;
-  background: #fff;
+
+  position: relative; /* ←貫通防止 */
 }
 
 /* =========================
@@ -583,8 +586,11 @@ select {
   font-weight: 700;
 }
 
-@media (max-width: 600px) {
+/* =========================
+   responsive
+========================= */
 
+@media (max-width: 600px) {
   #stage-table-container {
     padding: 12px;
   }
@@ -597,6 +603,5 @@ select {
   .stage-table td {
     padding: 6px 8px;
   }
-
 }
 
