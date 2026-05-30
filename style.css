@@ -437,28 +437,16 @@ select {
 
   }
 
-  /* =========================
+/* =========================
    theater stage
-  ========================= */
+========================= */
 
-.stage-summary,
 .stage-analysis {
   background: #fff;
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-}
-
-.stage-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.stage-base-members {
-  color: #666;
-  line-height: 1.8;
 }
 
 .stage-search {
@@ -480,22 +468,12 @@ select {
   display: inline-block;
 }
 
-.member.highlight {
-  background: #ffeb3b;
-  color: #111;
-  font-weight: 700;
-}
-
 .stage-analysis {
   font-weight: 700;
   line-height: 1.8;
 }
 
 @media (max-width: 600px) {
-
-  .stage-title {
-    font-size: 20px;
-  }
 
   #stage-search-input {
     font-size: 14px;
@@ -549,19 +527,26 @@ select {
   background: #fafafa;
   font-weight: 700;
 
-  z-index: 2;
+  z-index: 10;
+
+  border-right: 2px solid #d0d0d0;
 }
 
 .stage-table th:first-child {
-  z-index: 3;
+  z-index: 11;
 }
 
-.stage-table tr:hover td {
+.stage-table tr:hover td:not(.highlight) {
   background: #f9f9f9;
 }
 
-.stage-table .highlight {
-  background: #ffeb3b;
+/* 検索ヒットセル */
+
+.stage-table td.highlight {
+  background: #fff2cc;
+}
+
+.stage-table td.highlight .member {
   color: #111;
   font-weight: 700;
 }
@@ -587,6 +572,4 @@ select {
   }
 
 }
-
-  
 
