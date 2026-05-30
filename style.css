@@ -603,7 +603,8 @@ select {
 ========================= */
 
 .stage-table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   margin-top: 12px;
   background: #fff;
