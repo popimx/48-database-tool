@@ -599,114 +599,71 @@ select {
 }
 
 /* =========================
-   ポジション予想ツール
+   ポジション予測テーブル
 ========================= */
 
-.predict-tool,
-.predict-result,
-.block {
-  background: #fff;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 20px;
-
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-}
-
-/* 見出し統一 */
-.predict-tool h2,
-.predict-result h2,
-.block h2 {
-  margin: 0 0 12px;
-  font-size: 18px;
-}
-
-/* 説明文 */
-.description {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-/* 入力欄 */
-#member-input {
+.stage-table {
   width: 100%;
-  padding: 12px;
-  font-size: 15px;
-
-  border: 1px solid #ccc;
-  border-radius: 10px;
-
-  box-sizing: border-box;
-
-  resize: vertical;
-  min-height: 120px;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-/* ボタン */
-#assign-btn {
+/* ヘッダー */
+.stage-table thead th {
   background: #111;
   color: #fff;
-
-  border: none;
-  border-radius: 10px;
-
-  padding: 10px 16px;
-
-  font-weight: 700;
-  font-size: 14px;
-
-  cursor: pointer;
-
-  transition: 0.15s;
-}
-
-#assign-btn:hover {
-  opacity: 0.8;
-}
-
-/* 結果エリア */
-#result {
-  margin-top: 16px;
-  line-height: 1.8;
-  font-weight: 600;
-}
-
-/* 予想1行表示用（JS用） */
-.prediction-row {
-  background: #f9f9f9;
-  border-radius: 10px;
-
-  padding: 10px 12px;
-  margin-bottom: 8px;
-
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-/* スコア表示 */
-.prediction-score {
-  color: #666;
-  font-size: 12px;
+  font-size: 13px;
+  padding: 10px;
+  text-align: center;
   white-space: nowrap;
 }
 
-/* モバイル調整 */
-@media (max-width: 600px) {
-
-  #member-input {
-    font-size: 14px;
-  }
-
-  #assign-btn {
-    width: 100%;
-  }
-
-  .prediction-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+/* セル */
+.stage-table td {
+  border-top: 1px solid #eee;
+  border-right: 1px solid #eee;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  vertical-align: middle;
 }
 
+/* 左端（順位列） */
+.stage-table td:first-child,
+.stage-table th:first-child {
+  background: #fafafa;
+  font-weight: bold;
+  width: 60px;
+}
+
+/* メンバー表示 */
+.member {
+  display: inline-block;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: #f5f5f5;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* hover */
+.stage-table tbody tr:hover td {
+  background: #f9f9f9;
+}
+
+/* モバイル */
+@media (max-width: 600px) {
+  .stage-table td,
+  .stage-table th {
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  .member {
+    font-size: 11px;
+    padding: 3px 5px;
+  }
+}
