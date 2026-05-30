@@ -649,8 +649,8 @@ select {
 /* 入力欄 */
 #member-input {
   width: 100%;
-  padding: 12px;
-  font-size: 15px;
+  padding: 8px;
+  font-size: 13px;
 
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -658,7 +658,7 @@ select {
   box-sizing: border-box;
 
   resize: vertical;
-  min-height: 50px;
+  min-height: 30px;
 }
 
 /* ボタン */
