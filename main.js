@@ -1291,7 +1291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!group || !file) return;
 
     // ★ここが変更ポイント（グループ付きファイル名）
-    const stageData = await loadStageData(`${group}_${file}`);
+    const stageData = await loadStageData(file);
 
     const prediction = calculatePositionPrediction(stageData, text);
 
