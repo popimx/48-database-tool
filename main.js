@@ -1099,27 +1099,11 @@ function populateStageSelect(group) {
 
 async function updateTheaterStagePage(file) {
 
-  const elSummary = document.getElementById("stage-summary");
-
   const elTable = document.getElementById("stage-table-container");
 
-  if (!elSummary || !elTable) return;
+  if (!elTable) return;
 
   const stageData = await loadStageData(file);
-
-  const fixedMembers = stageData.fixedMembers || [];
-
-  elSummary.innerHTML = `
-
-    <div class="stage-title">${stageData.stage}</div>
-
-    <div class="stage-base-members">
-
-      ${fixedMembers.join(" ・ ")}
-
-    </div>
-
-  `;
 
   renderStageTable(stageData);
 
