@@ -598,3 +598,115 @@ select {
   }
 }
 
+/* =========================
+   ポジション予想ツール
+========================= */
+
+.predict-tool,
+.predict-result,
+.block {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* 見出し統一 */
+.predict-tool h2,
+.predict-result h2,
+.block h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+/* 説明文 */
+.description {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+/* 入力欄 */
+#member-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+
+  border: 1px solid #ccc;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* ボタン */
+#assign-btn {
+  background: #111;
+  color: #fff;
+
+  border: none;
+  border-radius: 10px;
+
+  padding: 10px 16px;
+
+  font-weight: 700;
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: 0.15s;
+}
+
+#assign-btn:hover {
+  opacity: 0.8;
+}
+
+/* 結果エリア */
+#result {
+  margin-top: 16px;
+  line-height: 1.8;
+  font-weight: 600;
+}
+
+/* 予想1行表示用（JS用） */
+.prediction-row {
+  background: #f9f9f9;
+  border-radius: 10px;
+
+  padding: 10px 12px;
+  margin-bottom: 8px;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* スコア表示 */
+.prediction-score {
+  color: #666;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* モバイル調整 */
+@media (max-width: 600px) {
+
+  #member-input {
+    font-size: 14px;
+  }
+
+  #assign-btn {
+    width: 100%;
+  }
+
+  .prediction-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
