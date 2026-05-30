@@ -1196,17 +1196,21 @@ function setupStageSearch(stageData) {
     const name = e.target.value.trim();
 
     document.querySelectorAll(".member").forEach((el) => {
-      if (!name) {
-        el.classList.remove("highlight");
-        return;
-      }
 
-      if (el.textContent.includes(name)) {
-        el.classList.add("highlight");
-      } else {
-        el.classList.remove("highlight");
-      }
-    });
+  const td = el.closest("td");
+
+  if (!name) {
+    td?.classList.remove("highlight");
+    return;
+  }
+
+  if (el.textContent.includes(name)) {
+    td?.classList.add("highlight");
+  } else {
+    td?.classList.remove("highlight");
+  }
+
+});
 
     const result = document.getElementById("stage-analysis");
 
