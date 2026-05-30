@@ -1039,33 +1039,72 @@ function formatGenerationClean(m) {
 ========================= */
 
 async function initTheaterStagePage() {
-  const group =
-    document.getElementById("group-select")?.value || "akb48";
+  const groupSelect = document.getElementById("group-select");
+  const stageSelect = document.getElementById("stage-select");
 
-  await updateTheaterStagePage(group);
+  if (!groupSelect || !stageSelect) return;
 
-  document
-    .getElementById("group-select")
-    ?.addEventListener("change", (e) => {
-      updateTheaterStagePage(e.target.value);
-    });
+  populateStageSelect(groupSelect.value);
+
+  const firstStage = STAGE_LIST[groupSelect.value]?.[0];
+
+  if (firstStage) {
+    stageSelect.value = firstStage.file;
+    await updateTheaterStagePage(firstStage.file);
+  }
+
+  groupSelect.addEventListener("change", async (e) => {
+    const group = e.target.value;
+
+    populateStageSelect(group);
+
+    const firstStage = STAGE_LIST[group]?.[0];
+
+    if (!firstStage) return;
+
+    stageSelect.value = firstStage.file;
+
+    await updateTheaterStagePage(firstStage.file);
+  });
+
+  stageSelect.addEventListener("change", async (e) => {
+    await updateTheaterStagePage(e.target.value);
+  });
+}
+
+/* =========================
+   STAGE SELECT
+========================= */
+
+function populateStageSelect(group) {
+  const stageSelect = document.getElementById("stage-select");
+
+  if (!stageSelect) return;
+
+  stageSelect.innerHTML = "";
+
+  (STAGE_LIST[group] || []).forEach((stage) => {
+    const option = document.createElement("option");
+
+    option.value = stage.file;
+    option.textContent = stage.name;
+
+    stageSelect.appendChild(option);
+  });
 }
 
 /* =========================
    THEATER STAGE MAIN UPDATE
 ========================= */
 
-async function updateTheaterStagePage(group) {
+async function updateTheaterStagePage(file) {
   const elSummary = document.getElementById("stage-summary");
   const elList = document.getElementById("stage-daily-list");
 
   if (!elSummary || !elList) return;
 
-  const stageData = await loadStageData(group);
+  const stageData = await loadStageData(file);
 
-  // ======================
-  // 固定メンバー表示
-  // ======================
   const fixedMembers = stageData.fixedMembers || [];
 
   elSummary.innerHTML = `
@@ -1076,17 +1115,17 @@ async function updateTheaterStagePage(group) {
     </div>
   `;
 
-  // ======================
-  // 日別ポジション表示
-  // ======================
   elList.innerHTML = "";
 
   stageData.positions.forEach((day) => {
     const div = document.createElement("div");
+
     div.className = "stage-day";
 
     div.innerHTML = `
-      <div class="stage-date">${formatDate(day.date)}</div>
+      <div class="stage-date">
+        ${formatDate(day.date)}
+      </div>
 
       <div class="stage-members">
         ${day.members
@@ -1105,11 +1144,11 @@ async function updateTheaterStagePage(group) {
    THEATER STAGE DATA LOADER
 ========================= */
 
-async function loadStageData(group) {
-  const res = await fetch(`data/stage/${group}_stage.json`);
+async function loadStageData(file) {
+  const res = await fetch(`data/stage/${file}.json`);
 
   if (!res.ok) {
-    console.error("stage load failed");
+    console.error(`stage load failed: ${file}`);
 
     return {
       stage: "未設定",
@@ -1127,14 +1166,16 @@ async function loadStageData(group) {
 
 function setupStageSearch(stageData) {
   const input = document.getElementById("stage-search-input");
+
   if (!input) return;
 
-  input.addEventListener("input", (e) => {
+  const newInput = input.cloneNode(true);
+
+  input.parentNode.replaceChild(newInput, input);
+
+  newInput.addEventListener("input", (e) => {
     const name = e.target.value.trim();
 
-    // ======================
-    // ハイライト処理
-    // ======================
     document.querySelectorAll(".member").forEach((el) => {
       if (!name) {
         el.classList.remove("highlight");
@@ -1148,20 +1189,20 @@ function setupStageSearch(stageData) {
       }
     });
 
-    // ======================
-    // 出演回数カウント表示
-    // ======================
-    if (name) {
-      const count = stageData.positions.reduce((acc, day) => {
-        return acc + (day.members.includes(name) ? 1 : 0);
-      }, 0);
+    const result = document.getElementById("stage-analysis");
 
-      const result = document.getElementById("stage-analysis");
+    if (!result) return;
 
-      if (result) {
-        result.textContent = `${name}ポジ : ${count}回`;
-      }
+    if (!name) {
+      result.textContent = "";
+      return;
     }
+
+    const count = stageData.positions.reduce((acc, day) => {
+      return acc + (day.members.includes(name) ? 1 : 0);
+    }, 0);
+
+    result.textContent = `${name}ポジ : ${count}回`;
   });
 }
 
