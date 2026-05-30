@@ -18,7 +18,7 @@ export const STAGE_LIST = {
   nmb48: [
     "チームN「N ship」",
     "チームM「Mのサイン」",
-    "チームBⅡ「僕のアオハル」,
+    "チームBⅡ「僕のアオハル」",
     "NMB48「情熱！めっちゃ楽舞友」",
     "NMB48「青春！恋のDestination」",
     "NMB48「天使のユートピア」",
