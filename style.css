@@ -658,7 +658,7 @@ select {
   box-sizing: border-box;
 
   resize: vertical;
-  min-height: 70px;
+  min-height: 50px;
 }
 
 /* ボタン */
