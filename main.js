@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (path.includes("birthdays.html")) initBirthdaysPage();
   if (path.includes("days.html")) initDaysPage();
   if (path.includes("timeline.html")) initTimelinePage();
-
+  if (path.includes("theaterstage.html")) initTheaterStagePage();
+  
   scheduleMidnightUpdate();
 });
 
@@ -1030,6 +1031,136 @@ function formatGenerationClean(m) {
   if (m.role === "kenkyuusei") return `${gen}期研究生`;
 
   return `${gen}期生`;
+}
+
+/* =========================
+   THEATER STAGE INIT
+========================= */
+
+async function initTheaterStagePage() {
+  const group =
+    document.getElementById("group-select")?.value || "akb48";
+
+  await updateTheaterStagePage(group);
+
+  document
+    .getElementById("group-select")
+    ?.addEventListener("change", (e) => {
+      updateTheaterStagePage(e.target.value);
+    });
+}
+
+/* =========================
+   THEATER STAGE MAIN UPDATE
+========================= */
+
+async function updateTheaterStagePage(group) {
+  const elSummary = document.getElementById("stage-summary");
+  const elList = document.getElementById("stage-daily-list");
+
+  if (!elSummary || !elList) return;
+
+  const stageData = await loadStageData(group);
+
+  // ======================
+  // 固定メンバー表示
+  // ======================
+  const baseMembers = stageData.baseMembers || [];
+
+  elSummary.innerHTML = `
+    <div class="stage-title">${stageData.title}</div>
+    <div class="stage-base-members">
+      ${baseMembers.join(" ・ ")}
+    </div>
+  `;
+
+  // ======================
+  // 日別ポジション表示
+  // ======================
+  elList.innerHTML = "";
+
+  stageData.positions.forEach((day) => {
+    const div = document.createElement("div");
+    div.className = "stage-day";
+
+    div.innerHTML = `
+      <div class="stage-date">${formatDate(day.date)}</div>
+
+      <div class="stage-members">
+        ${day.members
+          .map((m) => `<span class="member">${m}</span>`)
+          .join(" ")}
+      </div>
+    `;
+
+    elList.appendChild(div);
+  });
+
+  setupStageSearch(stageData);
+}
+
+/* =========================
+   THEATER STAGE DATA LOADER
+========================= */
+
+async function loadStageData(group) {
+  const res = await fetch(`data/stage/${group}_stage.json`);
+
+  if (!res.ok) {
+    console.error("stage load failed");
+
+    return {
+      title: "未設定",
+      baseMembers: [],
+      positions: []
+    };
+  }
+
+  return await res.json();
+}
+
+/* =========================
+   THEATER STAGE SEARCH + ANALYSIS
+========================= */
+
+function setupStageSearch(stageData) {
+  const input = document.getElementById("stage-search-input");
+  if (!input) return;
+
+  input.addEventListener("input", (e) => {
+    const name = e.target.value.trim();
+
+    // ======================
+    // ハイライト処理
+    // ======================
+    document.querySelectorAll(".member").forEach((el) => {
+      if (!name) {
+        el.classList.remove("highlight");
+        return;
+      }
+
+      if (el.textContent.includes(name)) {
+        el.classList.add("highlight");
+      } else {
+        el.classList.remove("highlight");
+      }
+    });
+
+    // ======================
+    // 出演回数カウント表示
+    // ======================
+    if (name) {
+      const count = stageData.positions.reduce((acc, day) => {
+        return acc + (day.members.includes(name) ? 1 : 0);
+      }, 0);
+
+      const result = document.getElementById("stage-analysis");
+
+      if (result) {
+        result.textContent = `${name}ポジ : ${count}回`;
+      }
+    }
+  });
 }
 
 /* =========================
