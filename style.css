@@ -561,7 +561,6 @@ select {
 
 .stage-table td.highlight .member {
   color: #111;
-  font-weight: 700;
 }
 
 /* 日付列は常に固定色 */
