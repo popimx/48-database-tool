@@ -1065,12 +1065,13 @@ async function updateTheaterStagePage(group) {
   // ======================
   // 固定メンバー表示
   // ======================
-  const baseMembers = stageData.baseMembers || [];
+  const fixedMembers = stageData.fixedMembers || [];
 
   elSummary.innerHTML = `
-    <div class="stage-title">${stageData.title}</div>
+    <div class="stage-title">${stageData.stage}</div>
+
     <div class="stage-base-members">
-      ${baseMembers.join(" ・ ")}
+      ${fixedMembers.join(" ・ ")}
     </div>
   `;
 
@@ -1110,8 +1111,8 @@ async function loadStageData(group) {
     console.error("stage load failed");
 
     return {
-      title: "未設定",
-      baseMembers: [],
+      stage: "未設定",
+      fixedMembers: [],
       positions: []
     };
   }
