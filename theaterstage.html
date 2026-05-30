@@ -21,6 +21,7 @@
 
     <div class="controls">
 
+      <!-- グループ選択 -->
       <select id="group-select">
         <option value="akb48">AKB48</option>
         <option value="ske48">SKE48</option>
@@ -30,27 +31,37 @@
         <option value="stu48">STU48</option>
       </select>
 
+      <!-- 演目選択（JSで動的生成） -->
+      <select id="stage-select">
+        <option value="">演目を選択</option>
+      </select>
+
     </div>
 
   </header>
 
   <main>
 
-    <!-- 演目タイトルなど -->
+    <!-- 演目タイトル・固定メンバー -->
     <div id="stage-summary" class="stage-summary"></div>
 
-    <!-- メンバー一覧（固定ポジション） -->
-    <div id="stage-member-list" class="stage-member-list"></div>
+    <!-- メンバー検索 -->
+    <div class="stage-search">
+      <input
+        type="text"
+        id="stage-search-input"
+        placeholder="メンバー名で検索"
+      >
+    </div>
 
     <!-- 日別ポジション一覧 -->
     <div id="stage-daily-list" class="stage-daily-list"></div>
 
-    <!-- 検索・分析エリア -->
+    <!-- 検索結果・分析 -->
     <div id="stage-analysis" class="stage-analysis"></div>
 
   </main>
 
-  <!-- ★重要：ES Modules対応 -->
   <script type="module" src="main.js"></script>
 
 </body>
