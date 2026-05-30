@@ -507,6 +507,12 @@ select {
   position: relative;
 }
 
+.stage-table.prediction {
+  width: max-content;
+  min-width: 100%;
+  table-layout: auto;
+}
+
 /* 共通セル */
 .stage-table th,
 .stage-table td {
