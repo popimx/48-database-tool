@@ -1180,6 +1180,52 @@ function renderStageTable(stageData) {
 }
 
 /* =========================
+   THEATER STAGE / POSITION PREDICTION
+========================= */
+
+function calculatePositionPrediction(stageData, targetName) {
+  const fixedMembers = stageData.fixedMembers || [];
+  const positions = stageData.positions || [];
+
+  // 固定ポジションごとの出現回数
+  const positionStats = {};
+
+  positions.forEach(day => {
+    day.members.forEach((member, index) => {
+      const fixed = fixedMembers[index];
+      if (!fixed) return;
+
+      if (!positionStats[fixed]) {
+        positionStats[fixed] = {};
+      }
+
+      positionStats[fixed][member] =
+        (positionStats[fixed][member] || 0) + 1;
+    });
+  });
+
+  // ★ ポジション比較表用に変換
+  const result = Object.entries(positionStats).map(([fixed, members]) => {
+    const sortedMembers = Object.entries(members)
+      .sort((a, b) => b[1] - a[1]); // 出現回数順
+
+    // targetNameの位置を探す（優先表示用）
+    const targetIndex = sortedMembers.findIndex(
+      ([name]) => name === targetName
+    );
+
+    return {
+      fixed,
+      topMembers: sortedMembers.slice(0, 2).map(m => m[0]),
+      targetIndex: targetIndex === -1 ? null : targetIndex + 1
+    };
+  });
+
+  // 並び（固定ポジション順）
+  return result;
+}
+
+/* =========================
    THEATER STAGE SEARCH + ANALYSIS
 ========================= */
 
