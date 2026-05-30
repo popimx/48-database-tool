@@ -1235,44 +1235,51 @@ function calculatePositionPrediction(stageData, inputText) {
 // THEATER STAGE POSITION grouping（完全安定版）
 // =========================
 
-// 位置予測テーブル描画
+// 位置予測テーブル描画（stage-table形式）
 function renderPredictionTable(prediction) {
   const el = document.getElementById("result");
   if (!el) return;
 
-  let html = `<table class="predict-table">`;
+  const fixedMembers = prediction.map(p => p.fixed);
 
-  // ヘッダー
-  html += `
-    <thead>
-      <tr>
-        ${prediction.map(p => `<th>${p.fixed}</th>`).join("")}
-      </tr>
-    </thead>
-  `;
-
-  // 最大行数（ランキング深さ）
+  // 最大ランキング深さ
   const maxRows = Math.max(
     ...prediction.map(p => p.candidates.length)
   );
 
-  html += `<tbody>`;
+  let html = `
+    <table class="stage-table">
+      <thead>
+        <tr>
+          <th>順位</th>
+          ${fixedMembers.map(m => `<th>${m}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>
+  `;
 
   for (let i = 0; i < maxRows; i++) {
-    html += `<tr>`;
-
-    prediction.forEach(p => {
-      const candidate = p.candidates[i];
-
-      html += `<td>${
-        candidate ? `${candidate.name} (${candidate.count})` : "-"
-      }</td>`;
-    });
-
-    html += `</tr>`;
+    html += `
+      <tr>
+        <td>${i + 1}</td>
+        ${prediction.map(p => {
+          const c = p.candidates[i];
+          return `
+            <td>
+              <span class="member">
+                ${c ? c.name : ""}
+              </span>
+            </td>
+          `;
+        }).join("")}
+      </tr>
+    `;
   }
 
-  html += `</tbody></table>`;
+  html += `
+      </tbody>
+    </table>
+  `;
 
   el.innerHTML = html;
 }
