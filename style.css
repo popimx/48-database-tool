@@ -614,6 +614,29 @@ select {
   white-space: nowrap;
 }
 
+/* 説明文 */
+.description {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+/* 入力欄 */
+#member-input {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+
+  border: 1px solid #ccc;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+
+  resize: vertical;
+  min-height: 180px;
+}
+
 /* ヘッダー */
 .stage-table thead th {
   background: #111;
