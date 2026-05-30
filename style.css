@@ -434,13 +434,14 @@ select {
   .generation-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
-/* =========================
+
+  }
+
+  /* =========================
    theater stage
-========================= */
+  ========================= */
 
 .stage-summary,
-.stage-daily-list,
 .stage-analysis {
   background: #fff;
   border-radius: 14px;
@@ -467,7 +468,6 @@ select {
 #stage-search-input {
   width: 100%;
   padding: 10px 12px;
-
   font-size: 16px;
 
   border: 1px solid #ccc;
@@ -476,37 +476,8 @@ select {
   box-sizing: border-box;
 }
 
-.stage-day {
-  padding: 16px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.stage-day:last-child {
-  border-bottom: none;
-}
-
-.stage-date {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.stage-members {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  line-height: 1.8;
-}
-
 .member {
   display: inline-block;
-
-  padding: 4px 10px;
-
-  background: #f5f5f5;
-  border-radius: 999px;
-
-  font-size: 14px;
 }
 
 .member.highlight {
@@ -526,14 +497,11 @@ select {
     font-size: 20px;
   }
 
-  .stage-date {
-    font-size: 15px;
+  #stage-search-input {
+    font-size: 14px;
   }
 
-  .member {
-    font-size: 13px;
-    padding: 4px 8px;
-  }
+}
 
 /* =========================
    theater stage table
@@ -552,9 +520,7 @@ select {
 .stage-table {
   width: 100%;
   border-collapse: collapse;
-
   font-size: 14px;
-
   white-space: nowrap;
 }
 
@@ -570,8 +536,8 @@ select {
   top: 0;
 
   background: #fafafa;
-
   font-weight: 700;
+
   z-index: 1;
 }
 
@@ -581,8 +547,8 @@ select {
   left: 0;
 
   background: #fafafa;
-
   font-weight: 700;
+
   z-index: 2;
 }
 
@@ -596,6 +562,7 @@ select {
 
 .stage-table .highlight {
   background: #ffeb3b;
+  color: #111;
   font-weight: 700;
 }
 
@@ -620,5 +587,6 @@ select {
   }
 
 }
+
   
 
