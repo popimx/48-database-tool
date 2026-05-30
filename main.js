@@ -1231,6 +1231,71 @@ function calculatePositionPrediction(stageData, inputText) {
   return result;
 }
 
+// =========================
+// THEATER STAGE POSITION grouping（完全安定版）
+// =========================
+
+// 位置予測テーブル描画
+function renderPredictionTable(prediction) {
+  const el = document.getElementById("stage-prediction");
+  if (!el) return;
+
+  let html = `<table class="predict-table">`;
+
+  // ヘッダー
+  html += `
+    <thead>
+      <tr>
+        ${prediction.map(p => `<th>${p.fixed}</th>`).join("")}
+      </tr>
+    </thead>
+  `;
+
+  // 最大行数（ランキング深さ）
+  const maxRows = Math.max(
+    ...prediction.map(p => p.candidates.length)
+  );
+
+  html += `<tbody>`;
+
+  for (let i = 0; i < maxRows; i++) {
+    html += `<tr>`;
+
+    prediction.forEach(p => {
+      const candidate = p.candidates[i];
+
+      html += `<td>${
+        candidate ? `${candidate.name} (${candidate.count})` : "-"
+      }</td>`;
+    });
+
+    html += `</tr>`;
+  }
+
+  html += `</tbody></table>`;
+
+  el.innerHTML = html;
+}
+
+
+// 予測ボタンイベント
+document.getElementById("assign-btn")?.addEventListener("click", async () => {
+  const text = document.getElementById("member-input").value;
+
+  const group = document.getElementById("group-select")?.value;
+  const file = document.getElementById("stage-select")?.value;
+
+  if (!file) return;
+
+  const stageData = await loadStageData(file);
+
+  // ★統一関数に変更
+  const prediction = calculatePositionPrediction(stageData, text);
+
+  renderPredictionTable(prediction);
+});
+
+
 /* =========================
    THEATER STAGE SEARCH + ANALYSIS
 ========================= */
