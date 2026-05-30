@@ -498,14 +498,13 @@ select {
 ========================= */
 
 .stage-table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;
   white-space: nowrap;
   position: relative;
-
-  table-layout: fixed; /* 追加：列幅固定の前提 */
 }
 
 /* 共通セル */
@@ -641,7 +640,7 @@ select {
   box-sizing: border-box;
 
   resize: vertical;
-  min-height: 120px;
+  min-height: 90px;
 }
 
 /* ボタン */
@@ -670,7 +669,7 @@ select {
 #result {
   margin-top: 16px;
   line-height: 1.8;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* 予想1行表示用（JS用） */
