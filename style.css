@@ -499,21 +499,35 @@ select {
 
 .stage-table {
   width: 100%;
-
   border-collapse: separate;
   border-spacing: 0;
-
   font-size: 14px;
   white-space: nowrap;
-
   position: relative;
+
+  table-layout: fixed; /* 追加：列幅固定の前提 */
 }
 
+/* 共通セル */
 .stage-table th,
 .stage-table td {
   border: 1px solid #e0e0e0;
   padding: 8px 10px;
   text-align: center;
+}
+
+/* 1列目（日時など）はそのまま or 必要なら固定幅 */
+.stage-table th:first-child,
+.stage-table td:first-child {
+  width: 140px; /* 任意 */
+}
+
+/* メンバー列（2列目以降）を120px固定 */
+.stage-table th:not(:first-child),
+.stage-table td:not(:first-child) {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
 }
 
 /* =========================
