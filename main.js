@@ -1285,17 +1285,19 @@ document.addEventListener("DOMContentLoaded", () => {
   btn?.addEventListener("click", async () => {
     const text = document.getElementById("member-input").value;
 
+    const group = document.getElementById("group-select")?.value;
     const file = document.getElementById("stage-select")?.value;
-    if (!file) return;
 
-    const stageData = await loadStageData(file);
+    if (!group || !file) return;
+
+    // ★ここが変更ポイント（グループ付きファイル名）
+    const stageData = await loadStageData(`${group}_${file}`);
 
     const prediction = calculatePositionPrediction(stageData, text);
 
     renderPredictionTable(prediction);
   });
 });
-
 
 /* =========================
    THEATER STAGE SEARCH + ANALYSIS
