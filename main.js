@@ -1279,20 +1279,21 @@ function renderPredictionTable(prediction) {
 
 
 // 予測ボタンイベント
-document.getElementById("assign-btn")?.addEventListener("click", async () => {
-  const text = document.getElementById("member-input").value;
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("assign-btn");
 
-  const group = document.getElementById("group-select")?.value;
-  const file = document.getElementById("stage-select")?.value;
+  btn?.addEventListener("click", async () => {
+    const text = document.getElementById("member-input").value;
 
-  if (!file) return;
+    const file = document.getElementById("stage-select")?.value;
+    if (!file) return;
 
-  const stageData = await loadStageData(file);
+    const stageData = await loadStageData(file);
 
-  // ★統一関数に変更
-  const prediction = calculatePositionPrediction(stageData, text);
+    const prediction = calculatePositionPrediction(stageData, text);
 
-  renderPredictionTable(prediction);
+    renderPredictionTable(prediction);
+  });
 });
 
 
