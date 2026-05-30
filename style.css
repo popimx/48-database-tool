@@ -498,13 +498,12 @@ select {
 ========================= */
 
 .stage-table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;
   white-space: nowrap;
-  position: relative;
 }
 
 .stage-table.prediction {
