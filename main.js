@@ -1248,14 +1248,15 @@ function renderPredictionTable(prediction) {
   );
 
   let html = `
-    <table class="stage-table">
-      <thead>
-        <tr>
-          <th>順位</th>
-          ${fixedMembers.map(m => `<th>${m}</th>`).join("")}
-        </tr>
-      </thead>
-      <tbody>
+    <div class="prediction-scroll">
+      <table class="stage-table prediction">
+        <thead>
+          <tr>
+            <th>順位</th>
+            ${fixedMembers.map(m => `<th>${m}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
   `;
 
   for (let i = 0; i < maxRows; i++) {
@@ -1277,8 +1278,9 @@ function renderPredictionTable(prediction) {
   }
 
   html += `
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   `;
 
   el.innerHTML = html;
