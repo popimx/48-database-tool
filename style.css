@@ -519,39 +519,20 @@ select {
 }
 
 /* =========================
-   ヘッダー（上固定）
+   ヘッダー
 ========================= */
 
 .stage-table th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   background: #fafafa;
   font-weight: 700;
 }
 
 /* =========================
-   日付列（左固定・ボディ）
+   日付列
 ========================= */
 
-.stage-table td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 20;
-  background: #fafafa;
-  font-weight: 700;
-  border-right: 2px solid #d0d0d0;
-}
-
-/* =========================
-   日付列（左固定・ヘッダー）
-========================= */
-
+.stage-table td:first-child,
 .stage-table th:first-child {
-  position: sticky;
-  left: 0;
-  top: 0;
-  z-index: 30;
   background: #fafafa;
   font-weight: 700;
   border-right: 2px solid #d0d0d0;
