@@ -1183,11 +1183,17 @@ function renderStageTable(stageData) {
    THEATER STAGE / POSITION PREDICTION
 ========================= */
 
-function calculatePositionPrediction(stageData, targetName) {
+function calculatePositionPrediction(stageData, inputText) {
   const fixedMembers = stageData.fixedMembers || [];
   const positions = stageData.positions || [];
 
-  // 固定ポジションごとの出現回数
+  // ① 入力メンバーを配列化
+  const inputMembers = inputText
+    .split(/[・、\n\s]+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  // ② ポジション別統計
   const positionStats = {};
 
   positions.forEach(day => {
@@ -1204,24 +1210,24 @@ function calculatePositionPrediction(stageData, targetName) {
     });
   });
 
-  // ★ ポジション比較表用に変換
-  const result = Object.entries(positionStats).map(([fixed, members]) => {
-    const sortedMembers = Object.entries(members)
-      .sort((a, b) => b[1] - a[1]); // 出現回数順
+  // ③ 表形式用データ生成
+  const result = fixedMembers.map(fixed => {
+    const members = positionStats[fixed] || {};
 
-    // targetNameの位置を探す（優先表示用）
-    const targetIndex = sortedMembers.findIndex(
-      ([name]) => name === targetName
-    );
+    // 入力メンバーだけ抽出
+    const filtered = Object.entries(members)
+      .filter(([name]) => inputMembers.includes(name))
+      .sort((a, b) => b[1] - a[1]);
 
     return {
       fixed,
-      topMembers: sortedMembers.slice(0, 2).map(m => m[0]),
-      targetIndex: targetIndex === -1 ? null : targetIndex + 1
+      candidates: filtered.map(([name, count]) => ({
+        name,
+        count
+      }))
     };
   });
 
-  // 並び（固定ポジション順）
   return result;
 }
 
