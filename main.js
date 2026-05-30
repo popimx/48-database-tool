@@ -1184,9 +1184,6 @@ function renderStageTable(stageData) {
   container.innerHTML = html;
 }
 
-
-}
-
 /* =========================
    THEATER STAGE / POSITION PREDICTION (ENHANCED - FIXED DFS)
 ========================= */
