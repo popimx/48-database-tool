@@ -610,6 +610,8 @@ select {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
+  table-layout: fixed;
+  white-space: nowrap;
 }
 
 /* ヘッダー */
@@ -619,7 +621,6 @@ select {
   font-size: 13px;
   padding: 10px;
   text-align: center;
-  white-space: nowrap;
 }
 
 /* セル */
@@ -636,7 +637,7 @@ select {
 .stage-table td:first-child,
 .stage-table th:first-child {
   background: #fafafa;
-  font-weight: bold;
+  font-weight: 700;
   width: 60px;
 }
 
@@ -648,6 +649,7 @@ select {
   background: #f5f5f5;
   font-size: 12px;
   line-height: 1.4;
+  font-weight: 400;
 }
 
 /* hover */
