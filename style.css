@@ -526,7 +526,7 @@ select {
   z-index: 50;
 }
 
-/* 日付列固定 */
+/* 日付列固定（完全版） */
 
 .stage-table td:first-child,
 .stage-table th:first-child {
@@ -536,15 +536,14 @@ select {
   background: #fafafa;
   font-weight: 700;
 
-  z-index: 100;
+  z-index: 200; /* ← ここ上げる */
 
   border-right: 2px solid #d0d0d0;
 }
 
-/* 左上セル */
-
+/* 左上セル（ヘッダー優先） */
 .stage-table th:first-child {
-  z-index: 150;
+  z-index: 300; /* ← さらに上 */
 }
 
 /* hover */
