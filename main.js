@@ -1,5 +1,6 @@
 import { GENERATION_ORDER_MAP } from "./config/generationOrder.js";
 import { GENERATION_MEMBER_ORDER } from "./config/generationMemberOrder.js";
+import { STAGE_LIST } from "./config/stageList.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
