@@ -1359,7 +1359,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const prediction = calculatePositionPrediction(stageData, text);
 
-    renderPredictionTable(prediction);
+    renderPredictionTable(prediction.table);
   });
 });
 
