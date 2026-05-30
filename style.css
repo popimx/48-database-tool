@@ -497,7 +497,11 @@ select {
 
 .stage-table {
   width: 100%;
-  border-collapse: collapse;
+
+  /* sticky対策 */
+  border-collapse: separate;
+  border-spacing: 0;
+
   font-size: 14px;
   white-space: nowrap;
 }
@@ -507,7 +511,10 @@ select {
   border: 1px solid #e0e0e0;
   padding: 8px 10px;
   text-align: center;
+  background: #fff;
 }
+
+/* 上部ヘッダー固定 */
 
 .stage-table th {
   position: sticky;
@@ -516,8 +523,10 @@ select {
   background: #fafafa;
   font-weight: 700;
 
-  z-index: 1;
+  z-index: 50;
 }
+
+/* 日付列固定 */
 
 .stage-table td:first-child,
 .stage-table th:first-child {
@@ -527,16 +536,20 @@ select {
   background: #fafafa;
   font-weight: 700;
 
-  z-index: 10;
+  z-index: 100;
 
   border-right: 2px solid #d0d0d0;
 }
 
+/* 左上セル */
+
 .stage-table th:first-child {
-  z-index: 11;
+  z-index: 150;
 }
 
-.stage-table tr:hover td:not(.highlight) {
+/* hover */
+
+.stage-table tr:hover td:not(.highlight):not(:first-child) {
   background: #f9f9f9;
 }
 
@@ -550,6 +563,14 @@ select {
   color: #111;
   font-weight: 700;
 }
+
+/* 日付列は常に固定色 */
+
+.stage-table td:first-child {
+  background: #fafafa;
+}
+
+/* アンダー */
 
 .stage-table .substitute {
   color: #d32f2f;
