@@ -1044,31 +1044,36 @@ async function initTheaterStagePage() {
 
   if (!groupSelect || !stageSelect) return;
 
-  populateStageSelect(groupSelect.value);
+  const initGroup = groupSelect.value;
 
-  const firstStage = STAGE_LIST[groupSelect.value]?.[0];
+  populateStageSelect(initGroup);
+
+  const firstStage = STAGE_LIST[initGroup]?.[0];
 
   if (firstStage) {
-    stageSelect.value = firstStage.file;
-    await updateTheaterStagePage(firstStage.file);
+    requestAnimationFrame(() => {
+      stageSelect.value = firstStage.file;
+      updateTheaterStagePage(firstStage.file);
+    });
   }
 
-  groupSelect.addEventListener("change", async (e) => {
+  groupSelect.addEventListener("change", (e) => {
     const group = e.target.value;
 
     populateStageSelect(group);
 
-    const firstStage = STAGE_LIST[group]?.[0];
+    const first = STAGE_LIST[group]?.[0];
 
-    if (!firstStage) return;
+    if (!first) return;
 
-    stageSelect.value = firstStage.file;
-
-    await updateTheaterStagePage(firstStage.file);
+    requestAnimationFrame(() => {
+      stageSelect.value = first.file;
+      updateTheaterStagePage(first.file);
+    });
   });
 
-  stageSelect.addEventListener("change", async (e) => {
-    await updateTheaterStagePage(e.target.value);
+  stageSelect.addEventListener("change", (e) => {
+    updateTheaterStagePage(e.target.value);
   });
 }
 
