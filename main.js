@@ -1179,8 +1179,11 @@ function renderStageTable(stageData) {
   container.innerHTML = html;
 }
 
+
+}
+
 /* =========================
-   THEATER STAGE / POSITION PREDICTION (ENHANCED)
+   THEATER STAGE / POSITION PREDICTION (ENHANCED - FIXED DFS)
 ========================= */
 
 function calculatePositionPrediction(stageData, inputText) {
@@ -1195,8 +1198,6 @@ function calculatePositionPrediction(stageData, inputText) {
 
   // ② ポジション別統計
   const positionStats = {};
-
-  // 全体出現回数（未経験検出用）
   const globalStats = {};
 
   positions.forEach(day => {
@@ -1216,72 +1217,137 @@ function calculatePositionPrediction(stageData, inputText) {
     });
   });
 
-  // ③ 未経験メンバー検出
+  // ③ 未経験メンバー
   const unknownMembers = inputMembers.filter(m => !globalStats[m]);
 
-  // ④ ポジションごとの「空き度・経験多様性」分析
+  // ④ 各ポジション候補生成
   const positionAnalysis = fixedMembers.map(fixed => {
     const members = positionStats[fixed] || {};
-    const total = Object.values(members).reduce((a, b) => a + b, 0);
 
-    const uniqueMembers = Object.keys(members);
-
-    const inputHits = uniqueMembers.filter(m =>
-      inputMembers.includes(m)
-    );
-
-    const diversity = uniqueMembers.length;
+    const candidates = Object.entries(members)
+      .filter(([name]) => inputMembers.includes(name))
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, count]) => ({
+        name,
+        count
+      }));
 
     return {
       fixed,
-      diversity,                     // 何人経験しているか
-      totalAppearances: total,       // 総出演回数
-      inputCoverage: inputHits.length, // 入力メンバーがどれだけ入ってるか
-      opennessScore: 1 / (diversity + 1), // 空き度（小さいほど激戦）
-      isVacant: diversity <= 1,      // ほぼ固定 or 空き枠
-      topCandidates: Object.entries(members)
-        .filter(([name]) => inputMembers.includes(name))
-        .sort((a, b) => b[1] - a[1])
-        .map(([name, count]) => ({
-          name,
-          count
-        }))
+      candidates
     };
   });
 
-  // ⑤ 未経験でも入りやすいポジションランキング
-  const openPositionRanking = [...positionAnalysis]
-    .sort((a, b) => {
-      if (a.isVacant !== b.isVacant) return b.isVacant - a.isVacant;
-      return b.opennessScore - a.opennessScore;
+  // =========================
+  // ⑤ DFSバックトラッキング
+  // =========================
+
+  const results = [];
+
+  function dfs(index, used, current) {
+    if (index === fixedMembers.length) {
+      results.push({ ...current });
+      return;
+    }
+
+    const { fixed, candidates } = positionAnalysis[index];
+
+    // 候補がない場合はダミー
+    const safeCandidates =
+      candidates.length > 0 ? candidates : [{ name: "―", count: 0 }];
+
+    for (const c of safeCandidates) {
+      const name = c.name;
+
+      // 「―」は重複扱いしない
+      if (name !== "―" && used.has(name)) continue;
+
+      used.add(name);
+      current[fixed] = name;
+
+      dfs(index + 1, used, current);
+
+      used.delete(name);
+      delete current[fixed];
+    }
+  }
+
+  // =========================
+  // ⑥ 単一候補を先に固定
+  // =========================
+
+  const forced = {};
+  const used = new Set();
+
+  positionAnalysis.forEach(({ fixed, candidates }) => {
+    if (candidates.length === 1) {
+      const name = candidates[0].name;
+      forced[fixed] = name;
+      if (name !== "―") used.add(name);
+    }
+  });
+
+  // 初期状態セット
+  const start = { ...forced };
+
+  dfs(0, used, start);
+
+  // =========================
+  // ⑦ fallback（全滅時）
+  // =========================
+
+  if (results.length === 0) {
+    const fallback = {};
+    const used2 = new Set();
+
+    positionAnalysis.forEach(({ fixed, candidates }) => {
+      const pick = candidates.find(c => !used2.has(c.name)) || candidates[0];
+
+      fallback[fixed] = pick ? pick.name : "―";
+      if (pick && pick.name !== "―") used2.add(pick.name);
     });
 
-  // ⑥ 表データ（従来互換 + 拡張情報）
-  const result = fixedMembers.map(fixed => {
+    results.push(fallback);
+  }
+
+  // =========================
+  // ⑧ 表データ（UI用）
+  // =========================
+
+  const table = fixedMembers.map(fixed => {
     const analysis = positionAnalysis.find(p => p.fixed === fixed);
 
     return {
       fixed,
-      candidates: analysis.topCandidates,
+      candidates: analysis.candidates,
       stats: {
-        diversity: analysis.diversity,
-        totalAppearances: analysis.totalAppearances,
-        opennessScore: analysis.opennessScore,
-        isVacant: analysis.isVacant
+        count: analysis.candidates.length
       }
     };
   });
 
-  // ⑦ 最終返却（全部入り）
+  // =========================
+  // ⑨ open position ranking
+  // =========================
+
+  const openPositionRanking = positionAnalysis
+    .map(p => ({
+      fixed: p.fixed,
+      openness: 1 / (p.candidates.length + 1)
+    }))
+    .sort((a, b) => b.openness - a.openness);
+
+  // =========================
+  // ⑩ return
+  // =========================
+
   return {
-    table: result,
+    table,
+    patterns: results,
     analysis: {
       openPositionRanking,
       unknownMembers,
-      mostOpenPositions: openPositionRanking.slice(0, 3),
-      mostCompetitivePositions: [...openPositionRanking]
-        .sort((a, b) => a.opennessScore - b.opennessScore)
-        .slice(0, 3)
+      mostOpenPositions: openPositionRanking.slice(0, 3)
     }
   };
 }
