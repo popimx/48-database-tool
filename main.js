@@ -1180,14 +1180,14 @@ function renderStageTable(stageData) {
 }
 
 /* =========================
-   THEATER STAGE / POSITION PREDICTION
+   THEATER STAGE / POSITION PREDICTION (ENHANCED)
 ========================= */
 
 function calculatePositionPrediction(stageData, inputText) {
   const fixedMembers = stageData.fixedMembers || [];
   const positions = stageData.positions || [];
 
-  // ① 入力メンバーを配列化
+  // ① 入力メンバー配列化
   const inputMembers = inputText
     .split(/[・、\n\s]+/)
     .map(s => s.trim())
@@ -1195,6 +1195,9 @@ function calculatePositionPrediction(stageData, inputText) {
 
   // ② ポジション別統計
   const positionStats = {};
+
+  // 全体出現回数（未経験検出用）
+  const globalStats = {};
 
   positions.forEach(day => {
     day.members.forEach((member, index) => {
@@ -1207,28 +1210,80 @@ function calculatePositionPrediction(stageData, inputText) {
 
       positionStats[fixed][member] =
         (positionStats[fixed][member] || 0) + 1;
+
+      globalStats[member] =
+        (globalStats[member] || 0) + 1;
     });
   });
 
-  // ③ 表形式用データ生成
-  const result = fixedMembers.map(fixed => {
-    const members = positionStats[fixed] || {};
+  // ③ 未経験メンバー検出
+  const unknownMembers = inputMembers.filter(m => !globalStats[m]);
 
-    // 入力メンバーだけ抽出
-    const filtered = Object.entries(members)
-      .filter(([name]) => inputMembers.includes(name))
-      .sort((a, b) => b[1] - a[1]);
+  // ④ ポジションごとの「空き度・経験多様性」分析
+  const positionAnalysis = fixedMembers.map(fixed => {
+    const members = positionStats[fixed] || {};
+    const total = Object.values(members).reduce((a, b) => a + b, 0);
+
+    const uniqueMembers = Object.keys(members);
+
+    const inputHits = uniqueMembers.filter(m =>
+      inputMembers.includes(m)
+    );
+
+    const diversity = uniqueMembers.length;
 
     return {
       fixed,
-      candidates: filtered.map(([name, count]) => ({
-        name,
-        count
-      }))
+      diversity,                     // 何人経験しているか
+      totalAppearances: total,       // 総出演回数
+      inputCoverage: inputHits.length, // 入力メンバーがどれだけ入ってるか
+      opennessScore: 1 / (diversity + 1), // 空き度（小さいほど激戦）
+      isVacant: diversity <= 1,      // ほぼ固定 or 空き枠
+      topCandidates: Object.entries(members)
+        .filter(([name]) => inputMembers.includes(name))
+        .sort((a, b) => b[1] - a[1])
+        .map(([name, count]) => ({
+          name,
+          count
+        }))
     };
   });
 
-  return result;
+  // ⑤ 未経験でも入りやすいポジションランキング
+  const openPositionRanking = [...positionAnalysis]
+    .sort((a, b) => {
+      if (a.isVacant !== b.isVacant) return b.isVacant - a.isVacant;
+      return b.opennessScore - a.opennessScore;
+    });
+
+  // ⑥ 表データ（従来互換 + 拡張情報）
+  const result = fixedMembers.map(fixed => {
+    const analysis = positionAnalysis.find(p => p.fixed === fixed);
+
+    return {
+      fixed,
+      candidates: analysis.topCandidates,
+      stats: {
+        diversity: analysis.diversity,
+        totalAppearances: analysis.totalAppearances,
+        opennessScore: analysis.opennessScore,
+        isVacant: analysis.isVacant
+      }
+    };
+  });
+
+  // ⑦ 最終返却（全部入り）
+  return {
+    table: result,
+    analysis: {
+      openPositionRanking,
+      unknownMembers,
+      mostOpenPositions: openPositionRanking.slice(0, 3),
+      mostCompetitivePositions: [...openPositionRanking]
+        .sort((a, b) => a.opennessScore - b.opennessScore)
+        .slice(0, 3)
+    }
+  };
 }
 
 // =========================
