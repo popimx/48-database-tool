@@ -493,6 +493,11 @@ select {
   overflow-x: auto;
 }
 
+.prediction-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
 /* =========================
    table base
 ========================= */
@@ -532,6 +537,14 @@ select {
   width: 80px;
   min-width: 80px;
   max-width: 80px;
+}
+
+/* predictionだけ解除 */
+.stage-table.prediction th:not(:first-child),
+.stage-table.prediction td:not(:first-child) {
+  width: auto;
+  min-width: 80px;
+  max-width: none;
 }
 
 /* =========================
