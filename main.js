@@ -1098,46 +1098,33 @@ function populateStageSelect(group) {
 ========================= */
 
 async function updateTheaterStagePage(file) {
-  const elSummary = document.getElementById("stage-summary");
-  const elList = document.getElementById("stage-daily-list");
 
-  if (!elSummary || !elList) return;
+  const elSummary = document.getElementById("stage-summary");
+
+  const elTable = document.getElementById("stage-table-container");
+
+  if (!elSummary || !elTable) return;
 
   const stageData = await loadStageData(file);
 
   const fixedMembers = stageData.fixedMembers || [];
 
   elSummary.innerHTML = `
+
     <div class="stage-title">${stageData.stage}</div>
 
     <div class="stage-base-members">
+
       ${fixedMembers.join(" ・ ")}
+
     </div>
+
   `;
 
-  elList.innerHTML = "";
-
-  stageData.positions.forEach((day) => {
-    const div = document.createElement("div");
-
-    div.className = "stage-day";
-
-    div.innerHTML = `
-      <div class="stage-date">
-        ${formatDate(day.date)}
-      </div>
-
-      <div class="stage-members">
-        ${day.members
-          .map((m) => `<span class="member">${m}</span>`)
-          .join(" ")}
-      </div>
-    `;
-
-    elList.appendChild(div);
-  });
+  renderStageTable(stageData);
 
   setupStageSearch(stageData);
+
 }
 
 /* =========================
@@ -1158,6 +1145,54 @@ async function loadStageData(file) {
   }
 
   return await res.json();
+}
+
+/* =========================
+   FIXED POSITION TABLE
+========================= */
+
+function renderStageTable(stageData) {
+  const container = document.getElementById("stage-table-container");
+
+  if (!container) return;
+
+  const fixedMembers = stageData.fixedMembers || [];
+
+  let html = `
+    <table class="stage-table">
+      <thead>
+        <tr>
+          <th>日付</th>
+          ${fixedMembers.map(member => `
+            <th>${member}</th>
+          `).join("")}
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  stageData.positions.forEach(day => {
+    html += `
+      <tr>
+        <td>${formatDate(day.date)}</td>
+
+        ${day.members.map(member => `
+          <td>
+            <span class="member">
+              ${member}
+            </span>
+          </td>
+        `).join("")}
+      </tr>
+    `;
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  container.innerHTML = html;
 }
 
 /* =========================
@@ -1198,11 +1233,31 @@ function setupStageSearch(stageData) {
       return;
     }
 
-    const count = stageData.positions.reduce((acc, day) => {
-      return acc + (day.members.includes(name) ? 1 : 0);
-    }, 0);
+    const positionCount = {};
 
-    result.textContent = `${name}ポジ : ${count}回`;
+    stageData.positions.forEach((day) => {
+      day.members.forEach((member, index) => {
+        if (member === name) {
+          const fixedMember = stageData.fixedMembers[index];
+
+          positionCount[fixedMember] =
+            (positionCount[fixedMember] || 0) + 1;
+        }
+      });
+    });
+
+    const entries = Object.entries(positionCount);
+
+    if (!entries.length) {
+      result.textContent = "出演データがありません。";
+      return;
+    }
+
+    result.innerHTML = entries
+      .map(([fixedMember, count]) =>
+        `${fixedMember}ポジ : ${count}回`
+      )
+      .join("<br>");
   });
 }
 
