@@ -489,17 +489,13 @@ function renderMembers(members, selectedGroup, sortMode) {
     };
 
     card.innerHTML = `
-      <img class="member-image"
-        src="${img.png}"
-        onerror="this.onerror=null;this.src='${img.jpeg}'">
+  <div class="member-name-row">
+    <span class="member-name">${m.name}</span>
+    <span class="member-badge ${getBadgeClass(m)}">${label}</span>
+  </div>
 
-      <div class="member-name-row">
-        <span class="member-name">${m.name}</span>
-        <span class="member-badge ${getBadgeClass(m)}">${label}</span>
-      </div>
-
-      <div class="member-kana">${sub}</div>
-    `;
+  <div class="member-kana">${sub}</div>
+`;
 
     container.appendChild(card);
   });
@@ -939,18 +935,14 @@ function renderDaysMembers(members) {
     };
 
     card.innerHTML = `
-      <img class="member-image"
-        src="${img.png}"
-        onerror="this.onerror=null;this.src='${img.jpeg}'">
+  <div class="member-name-row">
+    <span class="member-name">${m.name}</span>
+  </div>
 
-      <div class="member-name-row">
-        <span class="member-name">${m.name}</span>
-      </div>
-
-      <div class="member-kana">
-        ${getDaysLabel(m)} / 在籍 ${calcDays(m.joinDate)}日
-      </div>
-    `;
+  <div class="member-kana">
+    ${getDaysLabel(m)} / 在籍 ${calcDays(m.joinDate)}日
+  </div>
+`;
 
     container.appendChild(card);
   });
