@@ -473,9 +473,10 @@ function renderMembers(members, selectedGroup, sortMode) {
     } else if (sortMode === "nearestBirthday") {
       const diff = getNextBirthday(m.birthday) - new Date();
       const days = Math.ceil(diff / 86400000);
+
       sub = `${formatMonthDay(m.birthday)} (あと${days}日)`;
     } else if (sortMode === "days") {
-      sub = `在籍 ${calcDays(m.joinDate)}日`;
+      sub = getMembershipText(m);
     } else {
       sub = m.kana || "";
     }
@@ -484,17 +485,46 @@ function renderMembers(members, selectedGroup, sortMode) {
     card.className = "member-card";
 
     card.innerHTML = `
-  <div class="member-name-row">
-    <span class="member-name">${m.name}</span>
-    <span class="member-badge ${getBadgeClass(m)}">${label}</span>
-  </div>
+      <div class="member-name-row">
+        <span class="member-name">${m.name}</span>
+        <span class="member-badge ${getBadgeClass(m)}">${label}</span>
+      </div>
 
-  <div class="member-kana">${sub}</div>
-`;
+      <div class="member-kana">${sub}</div>
+    `;
 
     container.appendChild(card);
   });
 }
+
+function getMembershipText(m) {
+  if (!m?.joinDate) return "-";
+
+  const start = new Date(m.joinDate);
+
+  const end =
+    m.status === "graduated" && m.graduationDate
+      ? new Date(m.graduationDate)
+      : new Date();
+
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+
+  const days =
+    Math.floor((end - start) / 86400000) + 1;
+
+  const startText = m.joinDate.replace(/-/g, "/");
+
+  if (m.status === "graduated" && m.graduationDate) {
+    const endText =
+      m.graduationDate.replace(/-/g, "/");
+
+    return `${days}日 (${startText} - ${endText})`;
+  }
+
+  return `${days}日 (${startText} -)`;
+}
+
 
 /* =========================
    DAYS PAGE
