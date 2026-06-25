@@ -8,7 +8,8 @@
     "joinDate": "2011-12-08",
     "graduationDate": "",
     "generation": "13期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "fukuoka_seina",
@@ -19,7 +20,8 @@
     "joinDate": "2013-06-05",
     "graduationDate": "",
     "generation": "15期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "oguri_yui",
@@ -30,7 +32,8 @@
     "joinDate": "2014-04-03",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "gyoten_yurina",
@@ -41,7 +44,8 @@
     "joinDate": "2014-04-03",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "kuranoo_narumi",
@@ -52,7 +56,8 @@
     "joinDate": "2014-04-03",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "sakagawa_hiyuka",
@@ -63,7 +68,8 @@
     "joinDate": "2019-12-28",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "shitao_miu",
@@ -74,7 +80,8 @@
     "joinDate": "2014-04-03",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "takahashi_ayane",
@@ -85,7 +92,8 @@
     "joinDate": "2014-04-03",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "tokunaga_remi",
@@ -96,7 +104,8 @@
     "joinDate": "2019-10-06",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "nagano_serika",
@@ -107,7 +116,8 @@
     "joinDate": "2014-04-03",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "hashimoto_haruna",
@@ -118,7 +128,8 @@
     "joinDate": "2014-04-03",
     "graduationDate": "",
     "generation": "チーム8",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "chiba_erii",
@@ -129,7 +140,8 @@
     "joinDate": "2015-05-10",
     "graduationDate": "",
     "generation": "ドラフト2期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "kurosu_haruka",
@@ -140,7 +152,8 @@
     "joinDate": "2016-12-08",
     "graduationDate": "",
     "generation": "16期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "taguchi_manaka",
@@ -151,7 +164,8 @@
     "joinDate": "2016-12-08",
     "graduationDate": "2026-06-22",
     "generation": "16期",
-    "status": "graduated"
+    "status": "graduated",
+    "role": "regular"
   },
   {
     "id": "nagatomo_ayami",
@@ -162,7 +176,8 @@
     "joinDate": "2016-12-08",
     "graduationDate": "",
     "generation": "16期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "muto_orin",
@@ -173,7 +188,8 @@
     "joinDate": "2016-12-08",
     "graduationDate": "",
     "generation": "16期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "yamauchi_mizuki",
@@ -184,7 +200,8 @@
     "joinDate": "2016-12-08",
     "graduationDate": "",
     "generation": "16期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "yamane_suzuha",
@@ -195,7 +212,8 @@
     "joinDate": "2016-12-08",
     "graduationDate": "",
     "generation": "16期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "omori_maho",
@@ -206,7 +224,8 @@
     "joinDate": "2018-01-21",
     "graduationDate": "",
     "generation": "ドラフト3期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "ota_yuki",
@@ -217,7 +236,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "sato_airi",
@@ -228,7 +248,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "hashimoto_eriko",
@@ -239,7 +260,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "hatakeyama_nozomi",
@@ -250,7 +272,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "hirata_yuki",
@@ -261,7 +284,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "hotei_moka",
@@ -272,7 +296,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "masai_mayuu",
@@ -283,7 +308,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "mizushima_miyuu",
@@ -294,7 +320,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "yamazaki_sora",
@@ -305,7 +332,8 @@
     "joinDate": "2022-05-04",
     "graduationDate": "",
     "generation": "17期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "akiyama_yuna",
@@ -316,7 +344,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "arai_sae",
@@ -327,7 +356,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "kudo_kasumi",
@@ -338,7 +368,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "kubo_hinano",
@@ -349,7 +380,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "sako_yumemi",
@@ -360,7 +392,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "narita_kohina",
@@ -371,7 +404,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "yagi_azuki",
@@ -382,7 +416,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "yamaguchi_yui",
@@ -393,7 +428,8 @@
     "joinDate": "2023-04-09",
     "graduationDate": "",
     "generation": "18期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "ito_momoka",
@@ -404,7 +440,8 @@
     "joinDate": "2024-03-17",
     "graduationDate": "",
     "generation": "19期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "okumoto_kairi",
@@ -415,7 +452,8 @@
     "joinDate": "2024-03-17",
     "graduationDate": "",
     "generation": "19期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "kawamura_yui",
@@ -426,7 +464,8 @@
     "joinDate": "2024-03-17",
     "graduationDate": "",
     "generation": "19期",
-    "status": "member"
+    "status": "member",
+    "role": "regular"
   },
   {
     "id": "shiratori_sari",
@@ -437,7 +476,8 @@
     "joinDate": "2024-03-17",
     "graduationDate": "2026-05-31",
     "generation": "19期",
-    "status": "graduated"
+    "status": "graduated",
+    "role": "regular"
   },
   {
     "id": "hanada_mei",
@@ -448,7 +488,8 @@
     "joinDate": "2024-03-17",
     "graduationDate": "2026-06-23",
     "generation": "19期",
-    "status": "graduated"
+    "status": "graduated",
+    "role": "regular"
   },
 
   {
@@ -460,7 +501,8 @@
     "joinDate": "2024-12-20",
     "graduationDate": "",
     "generation": "20期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   },
   {
     "id": "kondo_saki",
@@ -471,7 +513,8 @@
     "joinDate": "2024-12-20",
     "graduationDate": "",
     "generation": "20期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   },
   {
     "id": "maruyama_hinata",
@@ -482,7 +525,8 @@
     "joinDate": "2024-12-20",
     "graduationDate": "",
     "generation": "20期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   },
 
   {
@@ -494,7 +538,8 @@
     "joinDate": "2025-12-04",
     "graduationDate": "",
     "generation": "21期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   },
   {
     "id": "tanaka_sayuri",
@@ -505,7 +550,8 @@
     "joinDate": "2025-12-04",
     "graduationDate": "",
     "generation": "21期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   },
   {
     "id": "makito_ema",
@@ -516,7 +562,8 @@
     "joinDate": "2025-12-04",
     "graduationDate": "",
     "generation": "21期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   },
   {
     "id": "morikawa_yuu",
@@ -527,7 +574,8 @@
     "joinDate": "2025-12-04",
     "graduationDate": "",
     "generation": "21期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   },
   {
     "id": "watanabe_kiko",
@@ -538,6 +586,7 @@
     "joinDate": "2025-12-04",
     "graduationDate": "",
     "generation": "21期",
-    "status": "member"
+    "status": "member",
+    "role": "kenkyuusei"
   }
 ]
