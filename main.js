@@ -522,16 +522,10 @@ function renderMember(m) {
   const el = document.getElementById("member-detail");
   if (!el) return;
 
-  const img = getImagePath(m);
-
   el.innerHTML = `
     <a href="members.html" class="back-button">← 一覧</a>
 
     <div class="member-detail">
-      <img class="detail-image"
-        src="${img.png}"
-        onerror="this.onerror=null;this.src='${img.jpeg}'">
-
       <div class="detail-name">${m.name}</div>
       <div class="detail-kana">${m.kana || ""}</div>
 
