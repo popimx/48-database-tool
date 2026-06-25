@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const path = location.pathname;
 
   if (path.includes("members.html")) initMembersPage();
-  if (path.includes("member.html")) initMemberPage();
   if (path.includes("birthdays.html")) initBirthdaysPage();
   if (path.includes("days.html")) initDaysPage();
   if (path.includes("timeline.html")) initTimelinePage();
@@ -484,10 +483,6 @@ function renderMembers(members, selectedGroup, sortMode) {
     const card = document.createElement("div");
     card.className = "member-card";
 
-    card.onclick = () => {
-      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
-    };
-
     card.innerHTML = `
   <div class="member-name-row">
     <span class="member-name">${m.name}</span>
@@ -499,46 +494,6 @@ function renderMembers(members, selectedGroup, sortMode) {
 
     container.appendChild(card);
   });
-}
-
-/* =========================
-   MEMBER PAGE
-========================= */
-
-async function initMemberPage() {
-  const params = new URLSearchParams(location.search);
-  const id = params.get("id");
-  const group = params.get("group");
-
-  if (!id || !group) return;
-
-  const members = await loadMembers(group);
-  const member = members.find(m => m.id === id);
-
-  if (member) renderMember(member);
-}
-
-function renderMember(m) {
-  const el = document.getElementById("member-detail");
-  if (!el) return;
-
-  el.innerHTML = `
-    <a href="members.html" class="back-button">← 一覧</a>
-
-    <div class="member-detail">
-      <div class="detail-name">${m.name}</div>
-      <div class="detail-kana">${m.kana || ""}</div>
-
-      <div class="detail-info">
-        <div>ニックネーム: ${m.nickname || "-"}</div>
-        <div>生年月日: ${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)</div>
-        <div>出身地: ${m.prefecture || "-"}</div>
-        <div>加入日: ${formatDate(m.joinDate)}</div>
-        <div>在籍日数: ${calcDays(m.joinDate)}日</div>
-        <div>期生: ${formatGenerationClean(m)}</div>
-      </div>
-    </div>
-  `;
 }
 
 /* =========================
@@ -923,10 +878,6 @@ function renderDaysMembers(members) {
 
     const card = document.createElement("div");
     card.className = "member-card";
-
-    card.onclick = () => {
-      location.href = `member.html?id=${m.id}&group=${m.groupId}`;
-    };
 
     card.innerHTML = `
   <div class="member-name-row">
