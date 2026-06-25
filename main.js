@@ -519,10 +519,10 @@ function getMembershipText(m) {
     const endText =
       m.graduationDate.replace(/-/g, "/");
 
-    return `${days}日 (${startText} - ${endText})`;
+    return `${days}日<br>(${startText} 〜 ${endText})`;
   }
 
-  return `${days}日 (${startText} -)`;
+  return `${days}日<br>(${startText} 〜)`;
 }
 
 
