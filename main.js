@@ -1155,247 +1155,924 @@ function renderStageTable(stageData) {
    THEATER STAGE / POSITION PREDICTION (ENHANCED - FIXED DFS)
 ========================= */
 
+/* =========================
+   THEATER STAGE POSITION PREDICTION
+   五十音順出演者 → ポジション自動予測
+========================= */
+
 function calculatePositionPrediction(stageData, inputText) {
+
   const fixedMembers = stageData.fixedMembers || [];
   const positions = stageData.positions || [];
 
-  // ① 入力メンバー配列化
+  /*
+   * ---------------------------------
+   * ① 五十音順で入力された出演者
+   * ---------------------------------
+   *
+   * 五十音順そのものはポジション予測には使用しない。
+   */
   const inputMembers = inputText
-    .split(/[・、\n\s]+/)
-    .map(s => s.trim())
+    .split(/[・、,\n\r\s]+/)
+    .map(name => name.trim())
     .filter(Boolean);
 
-  // ② ポジション別統計
-  const positionStats = {};
-  const globalStats = {};
+  /*
+   * 重複削除
+   */
+  const uniqueMembers = [...new Set(inputMembers)];
+
+
+  /*
+   * ---------------------------------
+   * ② 過去データからポジション履歴を作る
+   *
+   * positionHistory[position][member]
+   *
+   * 例：
+   *
+   * positionHistory["坂下真心"]["池田典愛"] = 3
+   *
+   * → 池田典愛は坂下真心ポジに3回入った
+   * ---------------------------------
+   */
+
+  const positionHistory = {};
+
+  fixedMembers.forEach(fixed => {
+    positionHistory[fixed] = {};
+  });
+
 
   positions.forEach(day => {
-    day.members.forEach((member, index) => {
-      const fixed = fixedMembers[index];
-      if (!fixed) return;
 
-      if (!positionStats[fixed]) {
-        positionStats[fixed] = {};
+    if (!Array.isArray(day.members)) return;
+
+    day.members.forEach((member, index) => {
+
+      const fixed = fixedMembers[index];
+
+      if (!fixed || !member) return;
+
+      if (!positionHistory[fixed]) {
+        positionHistory[fixed] = {};
       }
 
-      positionStats[fixed][member] =
-        (positionStats[fixed][member] || 0) + 1;
-
-      globalStats[member] =
-        (globalStats[member] || 0) + 1;
+      positionHistory[fixed][member] =
+        (positionHistory[fixed][member] || 0) + 1;
     });
+
   });
 
-  // ③ 未経験メンバー
-  const unknownMembers = inputMembers.filter(m => !globalStats[m]);
 
-  // ④ 各ポジション候補生成
-  const positionAnalysis = fixedMembers.map(fixed => {
-    const members = positionStats[fixed] || {};
+  /*
+   * ---------------------------------
+   * ③ メンバー → 入ったことのあるポジション
+   * ---------------------------------
+   */
 
-    const candidates = Object.entries(members)
-      .filter(([name]) => inputMembers.includes(name))
-      .sort((a, b) => b[1] - a[1])
-      .map(([name, count]) => ({
-        name,
-        count
-      }));
+  const memberPositionHistory = {};
 
-    return {
-      fixed,
-      candidates
-    };
+  Object.entries(positionHistory).forEach(
+    ([fixed, members]) => {
+
+      Object.entries(members).forEach(
+        ([member, count]) => {
+
+          if (!memberPositionHistory[member]) {
+            memberPositionHistory[member] = {};
+          }
+
+          memberPositionHistory[member][fixed] = count;
+
+        }
+      );
+
+    }
+  );
+
+
+  /*
+   * ---------------------------------
+   * ④ 初日ポジション
+   *
+   * fixedMembersそのものが初日ポジション
+   * ---------------------------------
+   */
+
+  const debutPosition = {};
+
+  fixedMembers.forEach((member, index) => {
+    debutPosition[member] = fixedMembers[index];
   });
 
-  // =========================
-  // ⑤ DFSバックトラッキング
-  // =========================
 
-  const results = [];
+  /*
+   * ---------------------------------
+   * ⑤ ポジション継承関係を推定
+   *
+   * 例：
+   *
+   * 坂下真心 → 池田典愛
+   * 坂下真心 → 西田帆花
+   *
+   * のような履歴を取得
+   * ---------------------------------
+   */
 
-  function dfs(index, used, current) {
-    if (index === fixedMembers.length) {
-      results.push({ ...current });
+  const positionSuccessors = {};
+
+  fixedMembers.forEach(fixed => {
+
+    positionSuccessors[fixed] = {};
+
+    const history = positionHistory[fixed] || {};
+
+    Object.entries(history).forEach(
+      ([member, count]) => {
+
+        if (member === fixed) return;
+
+        positionSuccessors[fixed][member] = count;
+
+      }
+    );
+
+  });
+
+
+  /*
+   * ---------------------------------
+   * ⑥ 各メンバーが各ポジションに入る
+   * 基本スコアを計算
+   * ---------------------------------
+   */
+
+  const candidateMap = {};
+
+  uniqueMembers.forEach(member => {
+
+    candidateMap[member] = [];
+
+    fixedMembers.forEach(position => {
+
+      let score = 0;
+      const reasons = [];
+
+      /*
+       * A.
+       * 初日ポジション
+       *
+       * 初日メンバーだった場合は強く加点
+       */
+      if (debutPosition[member] === position) {
+
+        score += 100;
+
+        reasons.push("初日ポジション");
+
+      }
+
+
+      /*
+       * B.
+       * 直接そのポジションに入った実績
+       */
+      const directCount =
+        memberPositionHistory[member]?.[position] || 0;
+
+      if (directCount > 0) {
+
+        score += directCount * 30;
+
+        reasons.push(
+          `過去${directCount}回`
+        );
+
+      }
+
+
+      /*
+       * C.
+       * ポジションの代役実績
+       *
+       * そのポジションに何人か入っている場合、
+       * そのポジション自体の「可動性」を加味
+       */
+      const positionHistoryCount =
+        Object.keys(positionHistory[position] || {}).length;
+
+      if (positionHistoryCount > 1) {
+
+        score += Math.min(
+          positionHistoryCount * 2,
+          10
+        );
+
+      }
+
+
+      /*
+       * D.
+       * そのポジションにほとんど固定されている場合
+       *
+       * 過去の直接実績をさらに少し評価
+       */
+      if (directCount >= 2) {
+        score += 10;
+      }
+
+
+      /*
+       * E.
+       * 初日メンバー以外でも
+       * 過去にどこかのポジションに入ったことがある
+       */
+      const memberHistory =
+        memberPositionHistory[member] || {};
+
+      const totalHistory =
+        Object.values(memberHistory)
+          .reduce((sum, count) => sum + count, 0);
+
+      if (totalHistory > 0 && directCount === 0) {
+
+        /*
+         * 「経験者だが、このポジションには未経験」
+         *
+         * 完全な未経験者より少し優先
+         */
+        score += Math.min(
+          totalHistory * 2,
+          10
+        );
+
+        reasons.push("過去出演経験あり");
+
+      }
+
+
+      /*
+       * 候補として登録
+       */
+      candidateMap[member].push({
+        position,
+        score,
+        reasons,
+        directCount
+      });
+
+    });
+
+
+    /*
+     * スコア順
+     */
+    candidateMap[member].sort(
+      (a, b) => b.score - a.score
+    );
+
+  });
+
+
+  /*
+   * ---------------------------------
+   * ⑦ ポジション側からも候補を見る
+   *
+   * positionCandidates[position]
+   * ---------------------------------
+   */
+
+  const positionCandidates = {};
+
+  fixedMembers.forEach(position => {
+
+    positionCandidates[position] =
+      uniqueMembers
+        .map(member => {
+
+          const candidate =
+            candidateMap[member]
+              .find(c => c.position === position);
+
+          return {
+            member,
+            ...(candidate || {
+              position,
+              score: 0,
+              reasons: [],
+              directCount: 0
+            })
+          };
+
+        })
+        .sort((a, b) => b.score - a.score);
+
+  });
+
+
+  /*
+   * ---------------------------------
+   * ⑧ まず「このポジションにしか
+   *     強い候補がいない人」を優先
+   * ---------------------------------
+   */
+
+  const memberPriority = [...uniqueMembers].sort(
+    (a, b) => {
+
+      const aBest =
+        candidateMap[a]?.[0]?.score || 0;
+
+      const bBest =
+        candidateMap[b]?.[0]?.score || 0;
+
+      return bBest - aBest;
+
+    }
+  );
+
+
+  /*
+   * ---------------------------------
+   * ⑨ 最適な16人の割り当てを探索
+   * ---------------------------------
+   */
+
+  let bestResult = null;
+  let bestScore = -Infinity;
+
+
+  function search(index, usedPositions, current, totalScore) {
+
+    if (index >= memberPriority.length) {
+
+      if (totalScore > bestScore) {
+
+        bestScore = totalScore;
+
+        bestResult = {
+          ...current
+        };
+
+      }
+
       return;
     }
 
-    const { fixed, candidates } = positionAnalysis[index];
 
-    // 候補がない場合はダミー
-    const safeCandidates =
-      candidates.length > 0 ? candidates : [{ name: "―", count: 0 }];
+    const member = memberPriority[index];
 
-    for (const c of safeCandidates) {
-      const name = c.name;
+    const candidates =
+      candidateMap[member] || [];
 
-      // 「―」は重複扱いしない
-      if (name !== "―" && used.has(name)) continue;
 
-      used.add(name);
-      current[fixed] = name;
+    /*
+     * 候補を順番に試す
+     */
+    for (const candidate of candidates) {
 
-      dfs(index + 1, used, current);
+      const position = candidate.position;
 
-      used.delete(name);
-      delete current[fixed];
+      if (usedPositions.has(position)) {
+        continue;
+      }
+
+
+      /*
+       * 少しずつ減点
+       *
+       * 未経験ポジションを無理に使うことを抑える
+       */
+      let adjustedScore = candidate.score;
+
+
+      if (
+        candidate.directCount === 0 &&
+        !candidate.reasons.includes("初日ポジション")
+      ) {
+        adjustedScore -= 5;
+      }
+
+
+      usedPositions.add(position);
+
+      current[member] = {
+        ...candidate,
+        finalScore: adjustedScore
+      };
+
+
+      search(
+        index + 1,
+        usedPositions,
+        current,
+        totalScore + adjustedScore
+      );
+
+
+      delete current[member];
+
+      usedPositions.delete(position);
+
     }
+
   }
 
-  // =========================
-  // ⑥ 単一候補を先に固定
-  // =========================
 
-  const forced = {};
-  const used = new Set();
+  search(
+    0,
+    new Set(),
+    {},
+    0
+  );
 
-  positionAnalysis.forEach(({ fixed, candidates }) => {
-    if (candidates.length === 1) {
-      const name = candidates[0].name;
-      forced[fixed] = name;
-      if (name !== "―") used.add(name);
-    }
-  });
 
-  // 初期状態セット
-  const start = { ...forced };
+  /*
+   * ---------------------------------
+   * ⑩ 結果をポジション順に変換
+   * ---------------------------------
+   */
 
-  dfs(0, used, start);
+  const assigned = {};
 
-  // =========================
-  // ⑦ fallback（全滅時）
-  // =========================
+  if (bestResult) {
 
-  if (results.length === 0) {
-    const fallback = {};
-    const used2 = new Set();
+    Object.entries(bestResult).forEach(
+      ([member, data]) => {
 
-    positionAnalysis.forEach(({ fixed, candidates }) => {
-      const pick = candidates.find(c => !used2.has(c.name)) || candidates[0];
+        assigned[data.position] = {
+          member,
+          score: data.finalScore,
+          reasons: data.reasons,
+          directCount: data.directCount
+        };
 
-      fallback[fixed] = pick ? pick.name : "―";
-      if (pick && pick.name !== "―") used2.add(pick.name);
-    });
+      }
+    );
 
-    results.push(fallback);
   }
 
-  // =========================
-  // ⑧ 表データ（UI用）
-  // =========================
 
-  const table = fixedMembers.map(fixed => {
-    const analysis = positionAnalysis.find(p => p.fixed === fixed);
+  /*
+   * ---------------------------------
+   * ⑪ ポジション別予測表
+   * ---------------------------------
+   */
+
+  const table = fixedMembers.map(position => {
+
+    const assignedData = assigned[position];
+
+    const candidates =
+      positionCandidates[position] || [];
+
 
     return {
-      fixed,
-      candidates: analysis.candidates,
+
+      fixed: position,
+
+      predicted:
+        assignedData?.member || "―",
+
+      score:
+        assignedData?.score || 0,
+
+      reasons:
+        assignedData?.reasons || [],
+
+      candidates: candidates
+        .slice(0, 5)
+        .map(c => ({
+          name: c.member,
+          score: c.score,
+          count: c.directCount,
+          reasons: c.reasons
+        })),
+
       stats: {
-        count: analysis.candidates.length
+        count: candidates.length
       }
+
     };
+
   });
 
-  // =========================
-  // ⑨ open position ranking
-  // =========================
 
-  const openPositionRanking = positionAnalysis
-    .map(p => ({
-      fixed: p.fixed,
-      openness: 1 / (p.candidates.length + 1)
-    }))
-    .sort((a, b) => b.openness - a.openness);
+  /*
+   * ---------------------------------
+   * ⑫ 未経験メンバー
+   * ---------------------------------
+   */
 
-  // =========================
-  // ⑩ return
-  // =========================
+  const unknownMembers =
+    uniqueMembers.filter(
+      member =>
+        !memberPositionHistory[member]
+    );
+
+
+  /*
+   * ---------------------------------
+   * ⑬ 未経験ポジション候補
+   * ---------------------------------
+   */
+
+  const inexperiencedAssignments =
+    table.filter(
+      p =>
+        p.score <= 0 ||
+        !p.reasons.length
+    );
+
+
+  /*
+   * ---------------------------------
+   * ⑭ ポジション継承候補
+   *
+   * 将来的にOpenAIへ渡すための情報
+   * ---------------------------------
+   */
+
+  const successionData = fixedMembers.map(
+    position => {
+
+      const history =
+        positionSuccessors[position] || {};
+
+      return {
+
+        position,
+
+        history:
+          Object.entries(history)
+            .sort((a, b) => b[1] - a[1])
+            .map(([member, count]) => ({
+              member,
+              count
+            }))
+
+      };
+
+    }
+  );
+
+
+  /*
+   * ---------------------------------
+   * ⑮ 信頼度
+   * ---------------------------------
+   */
+
+  const confidence = table.map(p => {
+
+    if (p.score >= 100) return "非常に高い";
+    if (p.score >= 60) return "高い";
+    if (p.score >= 30) return "中";
+    if (p.score > 0) return "低い";
+
+    return "不明";
+
+  });
+
+
+  /*
+   * ---------------------------------
+   * ⑯ 最終結果
+   * ---------------------------------
+   */
 
   return {
+
+    /*
+     * UI用
+     */
     table,
-    patterns: results,
+
+    /*
+     * ポジション → メンバー
+     */
+    patterns: Object.fromEntries(
+      table.map(p => [
+        p.fixed,
+        p.predicted
+      ])
+    ),
+
+    /*
+     * 入力された出演者
+     */
+    inputMembers: uniqueMembers,
+
+    /*
+     * 未経験者
+     */
     analysis: {
-      openPositionRanking,
+
       unknownMembers,
-      mostOpenPositions: openPositionRanking.slice(0, 3)
+
+      confidence,
+
+      inexperiencedAssignments,
+
+      positionHistory,
+
+      memberPositionHistory,
+
+      successionData,
+
+      bestScore
+
     }
+
   };
+
 }
 
 // =========================
 // THEATER STAGE POSITION grouping（完全安定版）
 // =========================
 
-// 位置予測テーブル描画（stage-table形式）
 function renderPredictionTable(prediction) {
+
   const el = document.getElementById("result");
+
   if (!el) return;
 
-  const fixedMembers = prediction.map(p => p.fixed);
 
-  // 最大ランキング深さ
-  const maxRows = Math.max(
-    ...prediction.map(p => p.candidates.length)
-  );
+  const table = prediction.table || [];
+
 
   let html = `
-    <div class="prediction-scroll">
-      <table class="stage-table prediction">
-        <thead>
-          <tr>
-            <th>順位</th>
-            ${fixedMembers.map(m => `<th>${m}</th>`).join("")}
-          </tr>
-        </thead>
-        <tbody>
+
+    <div class="prediction-result">
+
+      <h2>ポジション予測</h2>
+
+      <div class="prediction-note">
+        過去の初日ポジション・出演実績をもとに自動予測しています。
+      </div>
+
+      <div class="prediction-scroll">
+
+        <table class="stage-table prediction">
+
+          <thead>
+            <tr>
+              <th>ポジション</th>
+              <th>予測</th>
+              <th>信頼度</th>
+              <th>根拠</th>
+            </tr>
+          </thead>
+
+          <tbody>
   `;
 
-  for (let i = 0; i < maxRows; i++) {
+
+  table.forEach((item, index) => {
+
+    const confidence =
+      item.score >= 100
+        ? "非常に高い"
+        : item.score >= 60
+        ? "高い"
+        : item.score >= 30
+        ? "中"
+        : item.score > 0
+        ? "低い"
+        : "不明";
+
+
+    const reasons =
+      item.reasons?.length
+        ? item.reasons.join("・")
+        : "過去データなし";
+
+
     html += `
+
       <tr>
-        <td>${i + 1}</td>
-        ${prediction.map(p => {
-          const c = p.candidates[i];
-          return `
-            <td>
-              <span class="member">
-                ${c ? c.name : ""}
-              </span>
-            </td>
-          `;
-        }).join("")}
+
+        <td>
+          <strong>${index + 1}</strong><br>
+          ${item.fixed}
+        </td>
+
+        <td>
+
+          <span class="member prediction-member">
+
+            ${item.predicted || "―"}
+
+          </span>
+
+        </td>
+
+        <td>
+          ${confidence}
+        </td>
+
+        <td>
+          ${reasons}
+        </td>
+
       </tr>
+
     `;
-  }
+
+  });
+
 
   html += `
-        </tbody>
-      </table>
-    </div>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
   `;
 
+
+  /*
+   * 未経験メンバー
+   */
+
+  if (prediction.analysis?.unknownMembers?.length) {
+
+    html += `
+
+      <div class="prediction-warning">
+
+        <strong>過去データにない出演者</strong>
+
+        <div>
+          ${prediction.analysis.unknownMembers.join("・")}
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /*
+   * ポジション継承情報
+   */
+
+  html += `
+
+      <details class="prediction-details">
+
+        <summary>
+          ポジション継承・過去データを見る
+        </summary>
+
+  `;
+
+
+  (prediction.analysis?.successionData || [])
+    .forEach(data => {
+
+      if (!data.history?.length) return;
+
+
+      html += `
+
+        <div class="succession-item">
+
+          <strong>
+            ${data.position}ポジ
+          </strong>
+
+          <div>
+
+            ${data.history
+              .slice(0, 5)
+              .map(h =>
+                `${h.member} (${h.count}回)`
+              )
+              .join(" → ")}
+
+          </div>
+
+        </div>
+
+      `;
+
+    });
+
+
+  html += `
+
+      </details>
+
+    </div>
+
+  `;
+
+
   el.innerHTML = html;
+
 }
 
 
 // 予測ボタンイベント
+
+/* =========================
+   POSITION PREDICTION BUTTON
+========================= */
+
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("assign-btn");
+
+  const btn =
+    document.getElementById("assign-btn");
+
 
   btn?.addEventListener("click", async () => {
-    const text = document.getElementById("member-input").value;
 
-    const group = document.getElementById("group-select")?.value;
-    const file = document.getElementById("stage-select")?.value;
+    const input =
+      document.getElementById("member-input");
 
-    if (!group || !file) return;
 
-    // ★ここが変更ポイント（グループ付きファイル名）
-    const stageData = await loadStageData(file);
+    if (!input) return;
 
-    const prediction = calculatePositionPrediction(stageData, text);
 
-    renderPredictionTable(prediction.table);
+    const text =
+      input.value.trim();
+
+
+    if (!text) {
+
+      alert(
+        "出演メンバーを入力してください。"
+      );
+
+      return;
+
+    }
+
+
+    const file =
+      document.getElementById("stage-select")?.value;
+
+
+    if (!file) {
+
+      alert(
+        "公演を選択してください。"
+      );
+
+      return;
+
+    }
+
+
+    /*
+     * 公演データ読み込み
+     */
+    const stageData =
+      await loadStageData(file);
+
+
+    /*
+     * 五十音順出演者
+     * ↓
+     * 自動ポジション予測
+     */
+    const prediction =
+      calculatePositionPrediction(
+        stageData,
+        text
+      );
+
+
+    /*
+     * 表示
+     */
+    renderPredictionTable(
+      prediction
+    );
+
+
+    /*
+     * デバッグ用
+     *
+     * ブラウザのconsoleから
+     *
+     * prediction
+     *
+     * を確認できる
+     */
+    console.log(
+      "POSITION PREDICTION:",
+      prediction
+    );
+
   });
+
 });
 
 /* =========================
