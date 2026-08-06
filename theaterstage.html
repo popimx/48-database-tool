@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>劇場公演 | 48グループ データベース</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
 <header>
+
   <h1>劇場公演</h1>
+
   <a href="index.html" class="back-button">
     ← トップへ戻る
   </a>
+
   <div class="controls">
-    <!-- グループ -->
+
     <select id="group-select">
       <option value="akb48">AKB48</option>
       <option value="ske48">SKE48</option>
@@ -22,134 +29,221 @@
       <option value="ngt48">NGT48</option>
       <option value="stu48">STU48</option>
     </select>
-    <!-- 公演 -->
+
     <select id="stage-select">
       <option value="">演目を選択</option>
     </select>
+
   </div>
+
 </header>
+
+
 <main>
-  <!-- ==================================================
+
+  <!-- =========================
        履歴
-  ================================================== -->
+  ========================= -->
+
   <section class="block">
-    <h2>出演・ポジション履歴</h2>
-    <p class="description">
-      過去の公演で、誰がどのポジションに出演したかを確認できます。
-    </p>
-    <!-- メンバー検索 -->
+
+    <h2>履歴</h2>
+
     <div class="stage-search">
+
       <input
         type="text"
         id="stage-search-input"
         placeholder="メンバー名で検索"
-        autocomplete="off"
       >
+
     </div>
-    <!-- 履歴テーブル -->
+
     <div id="stage-table-container"></div>
-    <!-- 検索結果 -->
+
     <div
       id="stage-analysis"
-      class="stage-analysis"
-      aria-live="polite">
+      class="stage-analysis">
     </div>
+
   </section>
-  <!-- ==================================================
+
+
+  <!-- =========================
        ポジション予想
-  ================================================== -->
+  ========================= -->
+
   <section class="block">
+
     <h2>ポジション予想</h2>
+
     <p class="description">
-      発表された出演メンバーを五十音順のまま貼り付けてください。
-      ポジションは過去の出演データをもとに自動で予想します。
+      出演メンバーを五十音順で貼り付けてください。
+      「、」「・」「改行」のいずれにも対応しています。
     </p>
-    <!-- ================================================
-         出演メンバー入力
-    ================================================= -->
-    <div class="prediction-input">
-      <label for="member-input">
-        出演メンバー
-      </label>
-      <textarea
-        id="member-input"
-        rows="8"
-        placeholder="小栗有以・倉野尾成美・佐藤綺星・下尾みう・鈴木くるみ・千葉恵里・永野芹佳・水島美結・向井地美音・村山彩希・山内瑞葵・山﨑空・秋山由奈・八木愛月・山口結愛・伊藤百花"
-      ></textarea>
-      <p class="input-note">
-        ※ 公式発表の五十音順をそのまま貼り付けてください。
-        「、」「・」「改行」のいずれにも対応します。
-      </p>
-    </div>
-    <!-- ================================================
-         自動予測ボタン
-    ================================================= -->
-    <div class="prediction-actions">
+
+    <textarea
+      id="member-input"
+      placeholder="小栗有以・倉野尾成美・佐藤綺星・下尾みう・鈴木くるみ・千葉恵里・永野芹佳・水島美結・向井地美音・村山彩希・山内瑞葵・山﨑空・秋山由奈・八木愛月・山口結愛・伊藤百花"
+      rows="8"
+    ></textarea>
+
+    <div class="button-area">
+
       <button
         id="assign-btn"
         class="primary-button">
-        ポジションを自動予測
+        ポジションを予想
       </button>
+
     </div>
-    <!-- ================================================
-         予測結果
-    ================================================= -->
+
     <div
-      id="prediction-status"
-      class="prediction-status"
+      id="prediction-summary"
+      class="prediction-summary">
+    </div>
+
+    <div
+      id="result"
+      class="result-box"
       aria-live="polite">
     </div>
-    <div class="prediction-scroll">
-      <section
-        id="result"
-        aria-live="polite"
-        class="result-box">
-      </section>
-    </div>
-    <!-- ================================================
-         予測根拠
-    ================================================= -->
-    <section
-      id="prediction-analysis"
-      class="prediction-analysis">
-    </section>
-    <!-- ================================================
-         管理者用確定エリア
-    ================================================= -->
-    <section
+
+  </section>
+
+
+  <!-- =========================
+       管理者
+  ========================= -->
+
+  <section class="block admin-block">
+
+    <h2>管理者</h2>
+
+    <button
+      id="admin-edit-btn"
+      class="admin-button">
+      🔒 管理者モード
+    </button>
+
+
+    <div
       id="admin-panel"
       class="admin-panel"
       hidden>
-      <h3>管理者用</h3>
+
+      <!-- =====================
+           初日データ
+      ====================== -->
+
+      <h3>初日データ</h3>
+
       <p class="description">
-        予測結果を確認・修正して、この日のポジションとして保存できます。
+        初日出演メンバーを五十音順で貼り付けてください。
       </p>
-      <!-- 確定日 -->
-      <div class="admin-field">
-        <label for="performance-date">
-          公演日
-        </label>
-        <input
-          type="date"
-          id="performance-date"
-        >
+
+      <textarea
+        id="debut-members-input"
+        rows="8"
+        placeholder="青原優花、青原和花、池帆乃香……"
+      ></textarea>
+
+
+      <h4>初日ポジション</h4>
+
+      <p class="description">
+        左側がポジション、右側が初日の出演メンバーです。
+      </p>
+
+      <div
+        id="debut-position-editor"
+        class="position-editor">
       </div>
-      <!-- 保存 -->
-      <div class="admin-actions">
+
+
+      <!-- =====================
+           公演追加
+      ====================== -->
+
+      <h3>公演データ追加</h3>
+
+      <label>
+        公演日
+      </label>
+
+      <input
+        type="date"
+        id="performance-date"
+      >
+
+
+      <p class="description">
+        出演メンバーを五十音順で貼り付けてください。
+      </p>
+
+      <textarea
+        id="performance-members-input"
+        rows="8"
+        placeholder="青原優花、青原和花、池帆乃香……"
+      ></textarea>
+
+
+      <div class="button-area">
+
         <button
-          id="save-performance-btn"
+          id="add-performance-btn"
           class="primary-button">
-          この内容を保存
+          公演データを追加
         </button>
+
       </div>
-      <p
-        id="admin-save-status"
-        class="admin-save-status"
-        aria-live="polite">
-      </p>
-    </section>
+
+
+      <!-- =====================
+           履歴編集
+      ====================== -->
+
+      <h3>登録済み公演</h3>
+
+      <div
+        id="admin-history-list"
+        class="admin-history-list">
+      </div>
+
+
+      <!-- =====================
+           保存
+      ====================== -->
+
+      <div class="admin-save-area">
+
+        <button
+          id="save-admin-btn"
+          class="primary-button">
+          保存
+        </button>
+
+        <button
+          id="export-json-btn"
+          class="secondary-button">
+          JSONを書き出す
+        </button>
+
+      </div>
+
+      <div
+        id="admin-message"
+        class="admin-message">
+      </div>
+
+    </div>
+
   </section>
+
 </main>
+
+
 <script type="module" src="main.js"></script>
+
 </body>
 </html>
