@@ -1007,1986 +1007,881 @@ function formatGenerationClean(m) {
 ========================= */
 
 let currentStageData = null;
-
 let adminUnlocked = false;
-
 let adminDraft = null;
 
+/* =========================
+   HELPERS & DEFENSIVE CHECKS
+========================= */
+
+// 未定義関数によるクラッシュを防止
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  return dateStr;
+}
+
+// STAGE_LISTが未定義の場合のエラーを防止
+function getStageList(group) {
+  if (typeof STAGE_LIST === "undefined" || !STAGE_LIST) return [];
+  return STAGE_LIST[group] || [];
+}
 
 /* =========================
    THEATER STAGE INIT
 ========================= */
 
 async function initTheaterStagePage() {
-
-  const groupSelect =
-    document.getElementById("group-select");
-
-  const stageSelect =
-    document.getElementById("stage-select");
+  const groupSelect = document.getElementById("group-select");
+  const stageSelect = document.getElementById("stage-select");
 
   if (!groupSelect || !stageSelect) return;
 
-
   populateStageSelect(groupSelect.value);
 
-
-  const firstStage =
-    STAGE_LIST[groupSelect.value]?.[0];
-
+  const groupStages = getStageList(groupSelect.value);
+  const firstStage = groupStages[0];
 
   if (firstStage) {
-
     stageSelect.value = firstStage.file;
-
     await updateTheaterStagePage(firstStage.file);
-
   }
 
-
   groupSelect.addEventListener("change", async (e) => {
-
     const group = e.target.value;
-
     populateStageSelect(group);
 
-    const first =
-      STAGE_LIST[group]?.[0];
+    const stages = getStageList(group);
+    const first = stages[0];
 
     if (!first) return;
 
     stageSelect.value = first.file;
-
     await updateTheaterStagePage(first.file);
-
   });
-
 
   stageSelect.addEventListener("change", async (e) => {
-
     await updateTheaterStagePage(e.target.value);
-
   });
 
-
   setupAdmin();
-
 }
-
 
 /* =========================
    STAGE SELECT
 ========================= */
 
 function populateStageSelect(group) {
-
-  const stageSelect =
-    document.getElementById("stage-select");
-
+  const stageSelect = document.getElementById("stage-select");
   if (!stageSelect) return;
-
 
   stageSelect.innerHTML = "";
 
-  (STAGE_LIST[group] || []).forEach(stage => {
-
-    const option =
-      document.createElement("option");
-
+  const stages = getStageList(group);
+  stages.forEach(stage => {
+    const option = document.createElement("option");
     option.value = stage.file;
-
     option.textContent = stage.name;
-
     stageSelect.appendChild(option);
-
   });
-
 }
-
 
 /* =========================
    STAGE DATA
 ========================= */
 
 async function updateTheaterStagePage(file) {
-
   if (!file) return;
 
-  const data =
-    await loadStageData(file);
-
-  currentStageData =
-    loadLocalStageData(file, data);
+  const data = await loadStageData(file);
+  currentStageData = loadLocalStageData(file, data);
 
   renderStageTable(currentStageData);
-
   setupStageSearch(currentStageData);
-
   renderPredictionInitial();
 
   if (adminUnlocked) {
-
-    adminDraft =
-      structuredClone(currentStageData);
-
+    adminDraft = typeof structuredClone === "function" 
+      ? structuredClone(currentStageData)
+      : JSON.parse(JSON.stringify(currentStageData));
     renderAdminPanel();
-
   }
-
 }
-
 
 /* =========================
    LOAD JSON
 ========================= */
 
 async function loadStageData(file) {
-
   try {
-
-    const res =
-      await fetch(`data/stage/${file}.json?t=${Date.now()}`);
-
+    const res = await fetch(`data/stage/${file}.json?t=${Date.now()}`);
     if (!res.ok) {
-
-      throw new Error(
-        `stage load failed: ${file}`
-      );
-
+      throw new Error(`stage load failed: ${file}`);
     }
-
-    const data =
-      await res.json();
-
+    const data = await res.json();
     return normalizeStageData(data);
-
   } catch (error) {
-
     console.error(error);
-
     return normalizeStageData({
-
       group: "",
       stage: "",
-      debut: {
-        date: "",
-        members: []
-      },
+      debut: { date: "", members: [] },
       fixedMembers: [],
       positions: []
-
     });
-
   }
-
 }
-
 
 /* =========================
    NORMALIZE
 ========================= */
 
 function normalizeStageData(data) {
+  if (!data || typeof data !== "object") {
+    data = {};
+  }
 
-  const fixedMembers =
-    Array.isArray(data.fixedMembers)
-      ? [...data.fixedMembers]
-      : [];
-
-
+  const fixedMembers = Array.isArray(data.fixedMembers) ? [...data.fixedMembers] : [];
   let debut = data.debut || null;
 
-
-  /*
-   旧形式のJSONにも対応
-  */
-
   if (!debut && fixedMembers.length) {
-
-    const first =
-      data.positions?.[0];
-
+    const first = data.positions?.[0];
     debut = {
-
       date: first?.date || "",
-
-      members:
-        first?.members
-          ? [...first.members]
-          : [...fixedMembers]
-
+      members: Array.isArray(first?.members) ? [...first.members] : [...fixedMembers]
     };
-
   }
-
 
   if (!debut) {
-
-    debut = {
-
-      date: "",
-
-      members: []
-
-    };
-
+    debut = { date: "", members: [] };
   }
 
-
-  /*
-   fixedMembersが無い場合は
-   初日メンバーから作成
-  */
-
-  if (!fixedMembers.length &&
-      debut.members.length) {
-
-    data.fixedMembers =
-      [...debut.members];
-
+  if (!fixedMembers.length && debut.members?.length) {
+    data.fixedMembers = [...debut.members];
   }
-
 
   return {
-
     group: data.group || "",
-
     stage: data.stage || "",
-
     debut: {
-
       date: debut.date || "",
-
-      members: [...(debut.members || [])]
-
+      members: Array.isArray(debut.members) ? [...debut.members] : []
     },
-
-    fixedMembers:
-      [...(data.fixedMembers || [])],
-
-    positions:
-      [...(data.positions || [])]
-
+    fixedMembers: Array.isArray(data.fixedMembers) ? [...data.fixedMembers] : [...fixedMembers],
+    positions: Array.isArray(data.positions) ? [...data.positions] : []
   };
-
 }
-
 
 /* =========================
    LOCAL STORAGE
 ========================= */
 
 function getStageStorageKey(file) {
-
   return `theater-stage-${file}`;
-
 }
-
 
 function loadLocalStageData(file, originalData) {
-
   try {
+    const saved = localStorage.getItem(getStageStorageKey(file));
+    if (!saved) return originalData;
 
-    const saved =
-      localStorage.getItem(
-        getStageStorageKey(file)
-      );
-
-    if (!saved) {
-
-      return originalData;
-
-    }
-
-    const parsed =
-      JSON.parse(saved);
-
+    const parsed = JSON.parse(saved);
     return normalizeStageData(parsed);
-
   } catch (error) {
-
     console.error(error);
-
     return originalData;
-
   }
-
 }
-
 
 /* =========================
    HISTORY TABLE
 ========================= */
 
 function renderStageTable(stageData) {
-
-  const container =
-    document.getElementById(
-      "stage-table-container"
-    );
-
+  const container = document.getElementById("stage-table-container");
   if (!container) return;
 
-
-  const fixedMembers =
-    stageData.fixedMembers || [];
-
+  const fixedMembers = stageData.fixedMembers || [];
 
   let html = `
-
     <table class="stage-table">
-
       <thead>
-
         <tr>
-
           <th>日付</th>
-
-          ${fixedMembers.map(member => `
-            <th>${escapeHtml(member)}</th>
-          `).join("")}
-
+          ${fixedMembers.map(member => `<th>${escapeHtml(member)}</th>`).join("")}
         </tr>
-
       </thead>
-
       <tbody>
-
   `;
 
-
-  stageData.positions
+  (stageData.positions || [])
     .slice()
-    .sort((a, b) =>
-      a.date.localeCompare(b.date)
-    )
+    .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
     .forEach(day => {
-
+      const members = Array.isArray(day.members) ? day.members : [];
       html += `
-
         <tr>
-
-          <td>
-            ${formatDate(day.date)}
-          </td>
-
-          ${day.members.map(member => `
-
+          <td>${formatDate(day.date)}</td>
+          ${members.map(member => `
             <td>
-
-              <span class="member">
-
-                ${escapeHtml(member)}
-
-              </span>
-
+              <span class="member">${escapeHtml(member)}</span>
             </td>
-
           `).join("")}
-
         </tr>
-
       `;
-
     });
 
-
   html += `
-
       </tbody>
-
     </table>
-
   `;
 
-
   container.innerHTML = html;
-
 }
-
 
 /* =========================
    SEARCH
 ========================= */
 
 function setupStageSearch(stageData) {
-
-  const input =
-    document.getElementById(
-      "stage-search-input"
-    );
-
+  const input = document.getElementById("stage-search-input");
   if (!input) return;
 
+  const newInput = input.cloneNode(true);
+  input.parentNode.replaceChild(newInput, input);
 
-  const newInput =
-    input.cloneNode(true);
+  newInput.addEventListener("input", e => {
+    const name = e.target.value.trim();
 
+    document.querySelectorAll(".stage-table .member").forEach(el => {
+      const td = el.closest("td");
+      if (!name) {
+        td?.classList.remove("highlight");
+        return;
+      }
 
-  input.parentNode.replaceChild(
-    newInput,
-    input
-  );
+      if (el.textContent.includes(name)) {
+        td?.classList.add("highlight");
+      } else {
+        td?.classList.remove("highlight");
+      }
+    });
 
-
-  newInput.addEventListener(
-    "input",
-    e => {
-
-      const name =
-        e.target.value.trim();
-
-
-      document
-        .querySelectorAll(".stage-table .member")
-        .forEach(el => {
-
-          const td =
-            el.closest("td");
-
-          if (!name) {
-
-            td?.classList.remove(
-              "highlight"
-            );
-
-            return;
-
-          }
-
-
-          if (
-            el.textContent.includes(name)
-          ) {
-
-            td?.classList.add(
-              "highlight"
-            );
-
-          } else {
-
-            td?.classList.remove(
-              "highlight"
-            );
-
-          }
-
-        });
-
-
-      renderStageAnalysis(
-        stageData,
-        name
-      );
-
-    }
-  );
-
+    renderStageAnalysis(stageData, name);
+  });
 }
-
 
 /* =========================
    SEARCH ANALYSIS
 ========================= */
 
-function renderStageAnalysis(
-  stageData,
-  name
-) {
-
-  const result =
-    document.getElementById(
-      "stage-analysis"
-    );
-
+function renderStageAnalysis(stageData, name) {
+  const result = document.getElementById("stage-analysis");
   if (!result) return;
 
-
   if (!name) {
-
     result.innerHTML = "";
-
     return;
-
   }
-
 
   const positionCount = {};
 
+  (stageData.positions || []).forEach(day => {
+    (day.members || []).forEach((member, index) => {
+      if (member !== name) return;
+      const fixed = stageData.fixedMembers?.[index];
+      if (!fixed) return;
 
-  stageData.positions
-    .forEach(day => {
-
-      day.members
-        .forEach((member, index) => {
-
-          if (member !== name) return;
-
-
-          const fixed =
-            stageData.fixedMembers[index];
-
-
-          if (!fixed) return;
-
-
-          positionCount[fixed] =
-            (positionCount[fixed] || 0) + 1;
-
-        });
-
+      positionCount[fixed] = (positionCount[fixed] || 0) + 1;
     });
+  });
 
-
-  const entries =
-    Object.entries(positionCount)
-      .sort((a, b) => b[1] - a[1]);
-
+  const entries = Object.entries(positionCount).sort((a, b) => b[1] - a[1]);
 
   if (!entries.length) {
-
-    result.textContent =
-      "出演データがありません。";
-
+    result.textContent = "出演データがありません。";
     return;
-
   }
 
-
   result.innerHTML = `
-
-    <strong>
-      ${escapeHtml(name)}のポジション履歴
-    </strong>
-
+    <strong>${escapeHtml(name)}のポジション履歴</strong>
     <br><br>
-
     ${entries.map(([position, count]) => `
-
-      ${escapeHtml(position)}ポジ：
-      ${count}回
-
+      ${escapeHtml(position)}ポジ：${count}回
     `).join("<br>")}
-
   `;
-
 }
-
 
 /* =========================
    INPUT MEMBER PARSER
 ========================= */
 
 function parseMembers(text) {
-
+  if (!text) return [];
   return [
     ...new Set(
-
       text
         .split(/[、,・\n\r\t ]+/)
         .map(name => name.trim())
         .filter(Boolean)
-
     )
   ];
-
 }
-
 
 /* =========================
    POSITION STATISTICS
 ========================= */
 
 function buildPositionStatistics(stageData) {
-
   const stats = {};
-
-  const fixed =
-    stageData.fixedMembers || [];
-
+  const fixed = stageData.fixedMembers || [];
 
   fixed.forEach(position => {
-
     stats[position] = {};
-
   });
 
-
-  /*
-   初日データを最重要データとして登録
-  */
-
-  const debut =
-    stageData.debut?.members || [];
-
-
+  const debut = stageData.debut?.members || [];
   debut.forEach((member, index) => {
-
-    const position =
-      fixed[index];
-
+    const position = fixed[index];
     if (!position || !member) return;
 
-
     if (!stats[position][member]) {
-
       stats[position][member] = 0;
-
     }
-
     stats[position][member] += 100;
-
   });
 
+  (stageData.positions || []).forEach(day => {
+    (day.members || []).forEach((member, index) => {
+      const position = fixed[index];
+      if (!position || !member) return;
 
-  /*
-   過去公演
-  */
-
-  stageData.positions
-    .forEach(day => {
-
-      day.members.forEach(
-        (member, index) => {
-
-          const position =
-            fixed[index];
-
-          if (!position || !member) return;
-
-
-          if (!stats[position][member]) {
-
-            stats[position][member] = 0;
-
-          }
-
-          stats[position][member] += 1;
-
-        }
-      );
-
+      if (!stats[position][member]) {
+        stats[position][member] = 0;
+      }
+      stats[position][member] += 1;
     });
-
+  });
 
   return stats;
-
 }
-
 
 /* =========================
    MEMBER → POSITION
 ========================= */
 
-function buildMemberPositionStats(
-  stageData
-) {
-
+function buildMemberPositionStats(stageData) {
   const result = {};
-
-  const fixed =
-    stageData.fixedMembers || [];
-
+  const fixed = stageData.fixedMembers || [];
 
   function add(member, position, score) {
-
     if (!member || !position) return;
-
-
-    if (!result[member]) {
-
-      result[member] = {};
-
-    }
-
-
-    result[member][position] =
-      (result[member][position] || 0)
-      + score;
-
+    if (!result[member]) result[member] = {};
+    result[member][position] = (result[member][position] || 0) + score;
   }
 
-
-  /*
-   初日
-  */
-
-  const debut =
-    stageData.debut?.members || [];
-
-
+  const debut = stageData.debut?.members || [];
   debut.forEach((member, index) => {
-
-    add(
-      member,
-      fixed[index],
-      100
-    );
-
+    add(member, fixed[index], 100);
   });
 
-
-  /*
-   過去公演
-  */
-
-  stageData.positions
-    .forEach(day => {
-
-      day.members.forEach(
-        (member, index) => {
-
-          add(
-            member,
-            fixed[index],
-            1
-          );
-
-        }
-      );
-
+  (stageData.positions || []).forEach(day => {
+    (day.members || []).forEach((member, index) => {
+      add(member, fixed[index], 1);
     });
-
+  });
 
   return result;
-
 }
-
 
 /* =========================
-   POSITION PREDICTION
+   POSITION PREDICTION (ブラウザ固まり防止版)
 ========================= */
 
-function calculatePositionPrediction(
-  stageData,
-  inputText
-) {
+function calculatePositionPrediction(stageData, inputText) {
+  const inputMembers = parseMembers(inputText);
+  const fixed = stageData.fixedMembers || [];
 
-  const inputMembers =
-    parseMembers(inputText);
-
-
-  const fixed =
-    stageData.fixedMembers || [];
-
-
-  if (
-    inputMembers.length !== fixed.length
-  ) {
-
+  if (inputMembers.length !== fixed.length) {
     return {
-
-      error:
-        `出演メンバーは${fixed.length}人必要です。現在${inputMembers.length}人です。`
-
+      error: `出演メンバーは${fixed.length}人必要です。現在${inputMembers.length}人です。`
     };
-
   }
 
+  const memberStats = buildMemberPositionStats(stageData);
 
-  const memberStats =
-    buildMemberPositionStats(
-      stageData
-    );
+  const candidates = inputMembers.map(member => {
+    const stats = memberStats[member] || {};
+    const list = fixed.map(position => ({
+      position,
+      score: Number(stats[position] || 0)
+    }));
 
+    list.sort((a, b) => b.score - a.score);
 
-  /*
-   各メンバーについて
-   入ったことのあるポジションを候補化
-  */
+    return {
+      member,
+      candidates: list
+    };
+  });
 
-  const candidates =
-    inputMembers.map(member => {
+  const sorted = [...candidates].sort((a, b) => {
+    const aCount = a.candidates.filter(x => x.score > 0).length;
+    const bCount = b.candidates.filter(x => x.score > 0).length;
+    return aCount - bCount;
+  });
 
-      const stats =
-        memberStats[member] || {};
+  let best = null;
+  let searchCount = 0;
+  const MAX_SEARCH_LIMIT = 50000; // ブラウザクラッシュを防ぐ上限
 
-
-      const list =
-        fixed.map(position => ({
-
-          position,
-
-          score:
-            Number(stats[position] || 0)
-
-        }));
-
-
-      list.sort(
-        (a, b) => b.score - a.score
-      );
-
-
-      return {
-
-        member,
-
-        candidates: list
-
-      };
-
-    });
-
-
-  /*
-   DFS
-   16人を重複なしで割り当て
-  */
-
-  const results = [];
-
-
-  /*
-   候補数が少ないメンバーから処理
-  */
-
-  const sorted =
-    [...candidates].sort(
-      (a, b) => {
-
-        const aCount =
-          a.candidates.filter(
-            x => x.score > 0
-          ).length;
-
-        const bCount =
-          b.candidates.filter(
-            x => x.score > 0
-          ).length;
-
-        return aCount - bCount;
-
-      }
-    );
-
-
-  function dfs(
-    index,
-    used,
-    assignment,
-    score
-  ) {
+  function dfs(index, used, assignment, score) {
+    if (searchCount > MAX_SEARCH_LIMIT) return;
+    searchCount++;
 
     if (index === sorted.length) {
-
-      results.push({
-
-        assignment: {
-          ...assignment
-        },
-
-        score
-
-      });
-
+      if (!best || score > best.score) {
+        best = {
+          assignment: { ...assignment },
+          score
+        };
+      }
       return;
-
     }
 
+    const item = sorted[index];
+    const possible = item.candidates.filter(c => !used.has(c.position));
+    const positive = possible.filter(c => c.score > 0);
+    const choices = positive.length ? positive : possible;
 
-    const item =
-      sorted[index];
+    for (const candidate of choices) {
+      used.add(candidate.position);
+      assignment[candidate.position] = item.member;
 
+      dfs(index + 1, used, assignment, score + candidate.score);
 
-    const possible =
-      item.candidates
-        .filter(
-          candidate =>
-            !used.has(candidate.position)
-        );
+      delete assignment[candidate.position];
+      used.delete(candidate.position);
 
-
-    /*
-     過去データがある候補を優先
-    */
-
-    const positive =
-      possible.filter(
-        c => c.score > 0
-      );
-
-
-    const choices =
-      positive.length
-        ? positive
-        : possible;
-
-
-    for (
-      const candidate of choices
-    ) {
-
-      used.add(
-        candidate.position
-      );
-
-
-      assignment[
-        candidate.position
-      ] = item.member;
-
-
-      dfs(
-        index + 1,
-        used,
-        assignment,
-        score + candidate.score
-      );
-
-
-      delete assignment[
-        candidate.position
-      ];
-
-
-      used.delete(
-        candidate.position
-      );
-
+      // 完全一致等の最適解が見つかった場合は打ち切りも可能
     }
-
   }
 
-
-  dfs(
-    0,
-    new Set(),
-    {},
-    0
-  );
-
-
-  /*
-   結果があれば最高得点
-  */
-
-  results.sort(
-    (a, b) => b.score - a.score
-  );
-
-
-  const best =
-    results[0];
-
-
-  /*
-   初めて出演するメンバー等で
-   候補が足りない場合の処理
-  */
+  dfs(0, new Set(), {}, 0);
 
   if (!best) {
-
     return {
-
-      error:
-        "ポジションを割り当てられる組み合わせがありませんでした。"
-
+      error: "ポジションを割り当てられる組み合わせが見つかりませんでした。"
     };
-
   }
 
+  const rows = fixed.map(position => {
+    const member = best.assignment[position];
+    const stats = memberStats[member] || {};
+    const ranking = Object.entries(stats).sort((a, b) => b[1] - a[1]);
 
-  /*
-   表示用
-  */
-
-  const rows =
-    fixed.map(position => {
-
-      const member =
-        best.assignment[position];
-
-
-      const stats =
-        memberStats[member] || {};
-
-
-      const ranking =
-        Object.entries(stats)
-          .sort(
-            (a, b) => b[1] - a[1]
-          );
-
-
-      return {
-
-        position,
-
-        member,
-
-        candidates:
-          ranking.map(
-            ([position, score]) => ({
-              position,
-              score
-            })
-          )
-
-      };
-
-    });
-
+    return {
+      position,
+      member,
+      candidates: ranking.map(([pos, score]) => ({ position: pos, score }))
+    };
+  });
 
   return {
-
     inputMembers,
-
     rows,
-
     score: best.score
-
   };
-
 }
-
 
 /* =========================
    PREDICTION RENDER
 ========================= */
 
-function renderPrediction(
-  prediction
-) {
-
-  const result =
-    document.getElementById(
-      "result"
-    );
-
-  const summary =
-    document.getElementById(
-      "prediction-summary"
-    );
-
+function renderPrediction(prediction) {
+  const result = document.getElementById("result");
+  const summary = document.getElementById("prediction-summary");
 
   if (!result) return;
 
-
   if (prediction.error) {
-
     result.innerHTML = `
-
       <div class="prediction-error">
-
-        ${escapeHtml(
-          prediction.error
-        )}
-
+        ${escapeHtml(prediction.error)}
       </div>
-
     `;
-
-    if (summary) {
-      summary.innerHTML = "";
-    }
-
+    if (summary) summary.innerHTML = "";
     return;
-
   }
-
 
   if (summary) {
-
     summary.innerHTML = `
-
       <div class="prediction-summary-box">
-
-        <strong>
-          予想結果
-        </strong>
-
-        <span>
-          過去データに基づいて
-          自動割り当てしました
-        </span>
-
+        <strong>予想結果</strong>
+        <span>過去データに基づいて自動割り当てしました</span>
       </div>
-
     `;
-
   }
 
-
   let html = `
-
     <div class="prediction-scroll">
-
       <table class="stage-table prediction">
-
         <thead>
-
           <tr>
-
             <th>ポジション</th>
-
             <th>予想メンバー</th>
-
           </tr>
-
         </thead>
-
         <tbody>
-
   `;
 
-
-  prediction.rows
-    .forEach(row => {
-
-      html += `
-
-        <tr>
-
-          <td>
-            ${escapeHtml(row.position)}
-          </td>
-
-          <td>
-
-            <span class="member prediction-member">
-
-              ${escapeHtml(row.member)}
-
-            </span>
-
-          </td>
-
-        </tr>
-
-      `;
-
-    });
-
+  (prediction.rows || []).forEach(row => {
+    html += `
+      <tr>
+        <td>${escapeHtml(row.position)}</td>
+        <td>
+          <span class="member prediction-member">
+            ${escapeHtml(row.member)}
+          </span>
+        </td>
+      </tr>
+    `;
+  });
 
   html += `
-
         </tbody>
-
       </table>
-
     </div>
-
   `;
 
-
   result.innerHTML = html;
-
 }
-
 
 /* =========================
    PREDICTION INITIAL
 ========================= */
 
 function renderPredictionInitial() {
-
-  const result =
-    document.getElementById(
-      "result"
-    );
-
-  const summary =
-    document.getElementById(
-      "prediction-summary"
-    );
-
+  const result = document.getElementById("result");
+  const summary = document.getElementById("prediction-summary");
 
   if (result) {
-
     result.innerHTML = `
-
       <div class="prediction-placeholder">
-
-        出演メンバーを入力すると、
-        過去のポジションデータから予想します。
-
+        出演メンバーを入力すると、過去のポジションデータから予想します。
       </div>
-
     `;
-
   }
-
 
   if (summary) {
-
     summary.innerHTML = "";
-
   }
-
 }
-
 
 /* =========================
    ADMIN
 ========================= */
 
 function setupAdmin() {
-
-  const button =
-    document.getElementById(
-      "admin-edit-btn"
-    );
-
-
+  const button = document.getElementById("admin-edit-btn");
   if (!button) return;
 
-
-  button.addEventListener(
-    "click",
-    () => {
-
-      if (!adminUnlocked) {
-
-        /*
-         仮の管理者認証
-
-         本当の管理者専用化をする場合は
-         GitHub Pages側ではなく
-         サーバー認証へ移行してください。
-        */
-
-        const password =
-          prompt(
-            "管理者パスワードを入力してください"
-          );
-
-
-        if (
-          password !==
-          "CHANGE_THIS_PASSWORD"
-        ) {
-
-          alert(
-            "パスワードが違います。"
-          );
-
-          return;
-
-        }
-
-
-        adminUnlocked = true;
-
-        button.textContent =
-          "🔓 管理者モード ON";
-
+  button.addEventListener("click", () => {
+    if (!adminUnlocked) {
+      const password = prompt("管理者パスワードを入力してください");
+      if (password !== "CHANGE_THIS_PASSWORD") {
+        alert("パスワードが違います。");
+        return;
       }
-
-
-      const panel =
-        document.getElementById(
-          "admin-panel"
-        );
-
-
-      if (!panel) return;
-
-
-      panel.hidden =
-        !panel.hidden;
-
-
-      if (!panel.hidden) {
-
-        adminDraft =
-          structuredClone(
-            currentStageData
-          );
-
-        renderAdminPanel();
-
-      }
-
+      adminUnlocked = true;
+      button.textContent = "🔓 管理者モード ON";
     }
-  );
 
+    const panel = document.getElementById("admin-panel");
+    if (!panel) return;
 
-  document
-    .getElementById(
-      "save-admin-btn"
-    )
-    ?.addEventListener(
-      "click",
-      saveAdminData
-    );
+    panel.hidden = !panel.hidden;
 
+    if (!panel.hidden && currentStageData) {
+      adminDraft = typeof structuredClone === "function" 
+        ? structuredClone(currentStageData)
+        : JSON.parse(JSON.stringify(currentStageData));
+      renderAdminPanel();
+    }
+  });
 
-  document
-    .getElementById(
-      "export-json-btn"
-    )
-    ?.addEventListener(
-      "click",
-      exportStageJson
-    );
-
-
-  document
-    .getElementById(
-      "add-performance-btn"
-    )
-    ?.addEventListener(
-      "click",
-      addPerformance
-    );
-
+  document.getElementById("save-admin-btn")?.addEventListener("click", saveAdminData);
+  document.getElementById("export-json-btn")?.addEventListener("click", exportStageJson);
+  document.getElementById("add-performance-btn")?.addEventListener("click", addPerformance);
 }
-
 
 /* =========================
    ADMIN PANEL
 ========================= */
 
 function renderAdminPanel() {
-
   if (!adminDraft) return;
 
-
-  const debutInput =
-    document.getElementById(
-      "debut-members-input"
-    );
-
-
+  const debutInput = document.getElementById("debut-members-input");
   if (debutInput) {
-
-    debutInput.value =
-      adminDraft.debut?.members
-        ?.join("、") || "";
-
+    debutInput.value = adminDraft.debut?.members?.join("、") || "";
   }
 
-
   renderDebutPositionEditor();
-
   renderAdminHistory();
-
 }
-
 
 /* =========================
    DEBUT POSITION EDITOR
 ========================= */
 
 function renderDebutPositionEditor() {
+  const container = document.getElementById("debut-position-editor");
+  if (!container || !adminDraft) return;
 
-  const container =
-    document.getElementById(
-      "debut-position-editor"
-    );
+  if (!adminDraft.debut) adminDraft.debut = { date: "", members: [] };
 
-
-  if (!container || !adminDraft)
-    return;
-
-
-  const fixed =
-    adminDraft.fixedMembers || [];
-
-
-  const debut =
-    adminDraft.debut?.members || [];
-
+  const fixed = adminDraft.fixedMembers || [];
+  const debut = adminDraft.debut.members || [];
 
   let html = "";
 
-
-  fixed.forEach(
-    (position, index) => {
-
-      const selected =
-        debut[index] || "";
-
-
-      html += `
-
-        <div class="position-editor-row">
-
-          <span class="position-number">
-
-            ${index + 1}
-
-          </span>
-
-          <span class="position-name">
-
-            ${escapeHtml(position)}
-
-          </span>
-
-          <select
-            class="debut-member-select"
-            data-index="${index}"
-          >
-
-            ${debut
-              .map(member => `
-
-                <option
-                  value="${escapeAttr(member)}"
-                  ${member === selected ? "selected" : ""}
-                >
-
-                  ${escapeHtml(member)}
-
-                </option>
-
-              `)
-              .join("")}
-
-          </select>
-
-        </div>
-
-      `;
-
-    }
-  );
-
+  fixed.forEach((position, index) => {
+    const selected = debut[index] || "";
+    html += `
+      <div class="position-editor-row">
+        <span class="position-number">${index + 1}</span>
+        <span class="position-name">${escapeHtml(position)}</span>
+        <select class="debut-member-select" data-index="${index}">
+          ${debut.map(member => `
+            <option value="${escapeAttr(member)}" ${member === selected ? "selected" : ""}>
+              ${escapeHtml(member)}
+            </option>
+          `).join("")}
+        </select>
+      </div>
+    `;
+  });
 
   container.innerHTML = html;
 
-
-  container
-    .querySelectorAll(
-      ".debut-member-select"
-    )
-    .forEach(select => {
-
-      select.addEventListener(
-        "change",
-        e => {
-
-          const index =
-            Number(
-              e.target.dataset.index
-            );
-
-
-          adminDraft.debut.members[
-            index
-          ] = e.target.value;
-
-        }
-      );
-
+  container.querySelectorAll(".debut-member-select").forEach(select => {
+    select.addEventListener("change", e => {
+      const index = Number(e.target.dataset.index);
+      if (adminDraft.debut.members) {
+        adminDraft.debut.members[index] = e.target.value;
+      }
     });
-
+  });
 }
-
 
 /* =========================
    ADMIN HISTORY
 ========================= */
 
 function renderAdminHistory() {
+  const container = document.getElementById("admin-history-list");
+  if (!container || !adminDraft) return;
 
-  const container =
-    document.getElementById(
-      "admin-history-list"
-    );
-
-
-  if (!container || !adminDraft)
-    return;
-
-
-  const positions =
-    adminDraft.positions || [];
-
+  const positions = adminDraft.positions || [];
 
   if (!positions.length) {
-
-    container.innerHTML =
-      "<p>登録された公演はありません。</p>";
-
+    container.innerHTML = "<p>登録された公演はありません。</p>";
     return;
-
   }
 
+  container.innerHTML = positions
+    .slice()
+    .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
+    .map(day => `
+      <div class="admin-history-item">
+        <strong>${formatDate(day.date)}</strong>
+        <span>${Array.isArray(day.members) ? day.members.length : 0}人</span>
+        <button class="delete-performance" data-date="${escapeAttr(day.date)}">削除</button>
+      </div>
+    `)
+    .join("");
 
-  container.innerHTML =
-    positions
-      .slice()
-      .sort(
-        (a, b) =>
-          b.date.localeCompare(a.date)
-      )
-      .map((day, index) => `
+  container.querySelectorAll(".delete-performance").forEach(button => {
+    button.addEventListener("click", () => {
+      const date = button.dataset.date;
+      if (!confirm(`${date}の公演データを削除しますか？`)) return;
 
-        <div
-          class="admin-history-item"
-        >
-
-          <strong>
-            ${formatDate(day.date)}
-          </strong>
-
-          <span>
-            ${day.members.length}人
-          </span>
-
-          <button
-            class="delete-performance"
-            data-date="${escapeAttr(day.date)}"
-          >
-            削除
-          </button>
-
-        </div>
-
-      `)
-      .join("");
-
-
-  container
-    .querySelectorAll(
-      ".delete-performance"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          const date =
-            button.dataset.date;
-
-
-          if (
-            !confirm(
-              `${date}の公演データを削除しますか？`
-            )
-          ) {
-
-            return;
-
-          }
-
-
-          adminDraft.positions =
-            adminDraft.positions
-              .filter(
-                day =>
-                  day.date !== date
-              );
-
-
-          renderAdminHistory();
-
-        }
-      );
-
+      adminDraft.positions = (adminDraft.positions || []).filter(day => day.date !== date);
+      renderAdminHistory();
     });
-
+  });
 }
-
 
 /* =========================
    ADD PERFORMANCE
 ========================= */
 
 function addPerformance() {
-
   if (!adminDraft) return;
 
+  const dateInput = document.getElementById("performance-date");
+  const membersInput = document.getElementById("performance-members-input");
 
-  const date =
-    document.getElementById(
-      "performance-date"
-    )?.value;
+  const date = dateInput?.value;
+  const text = membersInput?.value || "";
 
-
-  const text =
-    document.getElementById(
-      "performance-members-input"
-    )?.value || "";
-
-
-  const members =
-    parseMembers(text);
-
-
-  const required =
-    adminDraft.fixedMembers.length;
-
+  const members = parseMembers(text);
+  const required = (adminDraft.fixedMembers || []).length;
 
   if (!date) {
-
-    alert(
-      "公演日を入力してください。"
-    );
-
+    alert("公演日を入力してください。");
     return;
-
   }
-
 
   if (members.length !== required) {
-
-    alert(
-      `${required}人入力してください。\n現在${members.length}人です。`
-    );
-
+    alert(`${required}人入力してください。\n現在${members.length}人です。`);
     return;
-
   }
 
+  if (!Array.isArray(adminDraft.positions)) {
+    adminDraft.positions = [];
+  }
 
-  /*
-   同じ日付があれば上書き
-  */
-
-  const existing =
-    adminDraft.positions
-      .find(
-        day => day.date === date
-      );
-
+  const existing = adminDraft.positions.find(day => day.date === date);
 
   if (existing) {
-
-    if (
-      !confirm(
-        "同じ日付の公演が存在します。上書きしますか？"
-      )
-    ) {
-
-      return;
-
-    }
-
-
-    existing.members =
-      members;
-
+    if (!confirm("同じ日付の公演が存在します。上書きしますか？")) return;
+    existing.members = members;
   } else {
-
-    adminDraft.positions.push({
-
-      date,
-
-      members
-
-    });
-
+    adminDraft.positions.push({ date, members });
   }
 
+  adminDraft.positions.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
 
-  adminDraft.positions
-    .sort(
-      (a, b) =>
-        a.date.localeCompare(b.date)
-    );
-
-
-  document.getElementById(
-    "performance-date"
-  ).value = "";
-
-
-  document.getElementById(
-    "performance-members-input"
-  ).value = "";
-
+  if (dateInput) dateInput.value = "";
+  if (membersInput) membersInput.value = "";
 
   renderAdminHistory();
-
-
-  showAdminMessage(
-    "公演データを追加しました。"
-  );
-
+  showAdminMessage("公演データを追加しました。");
 }
-
 
 /* =========================
    SAVE ADMIN DATA
 ========================= */
 
 function saveAdminData() {
-
   if (!adminDraft) return;
 
-
-  const debutText =
-    document.getElementById(
-      "debut-members-input"
-    )?.value || "";
-
-
-  const debutMembers =
-    parseMembers(debutText);
-
-
-  const required =
-    adminDraft.fixedMembers.length;
-
+  const debutText = document.getElementById("debut-members-input")?.value || "";
+  const debutMembers = parseMembers(debutText);
+  const required = (adminDraft.fixedMembers || []).length;
 
   if (debutMembers.length !== required) {
-
-    alert(
-      `初日メンバーは${required}人必要です。\n現在${debutMembers.length}人です。`
-    );
-
+    alert(`初日メンバーは${required}人必要です。\n現在${debutMembers.length}人です。`);
     return;
-
   }
 
+  if (!adminDraft.debut) adminDraft.debut = { date: "", members: [] };
+  adminDraft.debut.members = debutMembers;
 
-  adminDraft.debut.members =
-    debutMembers;
-
-
-  /*
-   初日のポジションを
-   positionsにも反映
-  */
-
-  const debutDate =
-    adminDraft.debut.date;
-
+  const debutDate = adminDraft.debut.date;
+  if (!Array.isArray(adminDraft.positions)) adminDraft.positions = [];
 
   if (debutDate) {
-
-    const existing =
-      adminDraft.positions
-        .find(
-          day =>
-            day.date === debutDate
-        );
-
-
+    const existing = adminDraft.positions.find(day => day.date === debutDate);
     if (existing) {
-
-      existing.members =
-        [...debutMembers];
-
+      existing.members = [...debutMembers];
     } else {
-
       adminDraft.positions.unshift({
-
         date: debutDate,
-
-        members:
-          [...debutMembers]
-
+        members: [...debutMembers]
       });
-
     }
-
   }
 
+  currentStageData = normalizeStageData(adminDraft);
 
-  currentStageData =
-    normalizeStageData(
-      adminDraft
-    );
-
-
-  const file =
-    document.getElementById(
-      "stage-select"
-    )?.value;
-
-
+  const file = document.getElementById("stage-select")?.value;
   if (!file) return;
 
-
   localStorage.setItem(
-
     getStageStorageKey(file),
-
-    JSON.stringify(
-      currentStageData,
-      null,
-      2
-    )
-
+    JSON.stringify(currentStageData, null, 2)
   );
 
-
-  renderStageTable(
-    currentStageData
-  );
-
-
-  setupStageSearch(
-    currentStageData
-  );
-
-
-  showAdminMessage(
-    "保存しました。この端末のブラウザに保存されています。"
-  );
-
+  renderStageTable(currentStageData);
+  setupStageSearch(currentStageData);
+  showAdminMessage("保存しました。この端末のブラウザに保存されています。");
 }
-
 
 /* =========================
    EXPORT JSON
 ========================= */
 
 function exportStageJson() {
-
   if (!currentStageData) return;
 
+  const file = document.getElementById("stage-select")?.value || "stage-data";
+  const blob = new Blob([JSON.stringify(currentStageData, null, 2)], {
+    type: "application/json"
+  });
 
-  const file =
-    document.getElementById(
-      "stage-select"
-    )?.value ||
-    "stage-data";
-
-
-  const blob =
-    new Blob(
-      [
-        JSON.stringify(
-          currentStageData,
-          null,
-          2
-        )
-      ],
-      {
-        type:
-          "application/json"
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a =
-    document.createElement("a");
-
-
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
   a.href = url;
-
-  a.download =
-    `${file}.json`;
-
-
+  a.download = `${file}.json`;
   a.click();
-
-
   URL.revokeObjectURL(url);
 
-
-  showAdminMessage(
-    "JSONを書き出しました。"
-  );
-
+  showAdminMessage("JSONを書き出しました。");
 }
-
 
 /* =========================
    ADMIN MESSAGE
 ========================= */
 
 function showAdminMessage(message) {
-
-  const el =
-    document.getElementById(
-      "admin-message"
-    );
-
-
+  const el = document.getElementById("admin-message");
   if (!el) return;
 
-
-  el.textContent =
-    message;
-
-
+  el.textContent = message;
   setTimeout(() => {
-
     el.textContent = "";
-
   }, 4000);
-
 }
-
 
 /* =========================
    PREDICTION BUTTON
 ========================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("assign-btn");
 
-    const btn =
-      document.getElementById(
-        "assign-btn"
-      );
+  btn?.addEventListener("click", () => {
+    if (!currentStageData) {
+      alert("演目を選択してください。");
+      return;
+    }
 
+    const text = document.getElementById("member-input")?.value || "";
+    const prediction = calculatePositionPrediction(currentStageData, text);
 
-    btn?.addEventListener(
-      "click",
-      () => {
-
-        if (!currentStageData) {
-
-          alert(
-            "演目を選択してください。"
-          );
-
-          return;
-
-        }
-
-
-        const text =
-          document.getElementById(
-            "member-input"
-          )?.value || "";
-
-
-        const prediction =
-          calculatePositionPrediction(
-            currentStageData,
-            text
-          );
-
-
-        renderPrediction(
-          prediction
-        );
-
-      }
-    );
-
-  }
-);
-
+    renderPrediction(prediction);
+  });
+});
 
 /* =========================
    ESCAPE
 ========================= */
 
 function escapeHtml(value) {
-
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-
 }
-
 
 function escapeAttr(value) {
-
   return escapeHtml(value);
-
 }
+
 
 /* =========================
    BIRTHDAYS
