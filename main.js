@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (path.includes("days.html")) initDaysPage();
   if (path.includes("timeline.html")) initTimelinePage();
   if (path.includes("theaterstage.html")) initTheaterStagePage();
-  
+
   scheduleMidnightUpdate();
 });
 
@@ -80,17 +80,19 @@ async function loadMembers(group) {
 
   const url = `data/members/${group}.json?t=${Date.now()}`;
 
-  const res = await fetch(url, { cache: "no-store" });
-
-  if (!res.ok) {
-    console.error("LOAD FAILED:", group);
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) {
+      console.error("LOAD FAILED:", group);
+      return [];
+    }
+    const data = await res.json();
+    memberCache[group] = data;
+    return data;
+  } catch (e) {
+    console.error("LOAD ERROR:", group, e);
     return [];
   }
-
-  const data = await res.json();
-  memberCache[group] = data;
-
-  return data;
 }
 
 async function loadAllMembers() {
@@ -105,20 +107,22 @@ async function loadAllMembers() {
 async function loadTimeline(group) {
   if (timelineCache[group]) return timelineCache[group];
 
-  const res = await fetch(
-    `data/members/${group}_timeline.json?t=${Date.now()}`,
-    { cache: "no-store" }
-  );
-
-  if (!res.ok) {
-    console.error("TIMELINE LOAD FAILED:", group);
+  try {
+    const res = await fetch(
+      `data/members/${group}_timeline.json?t=${Date.now()}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) {
+      console.error("TIMELINE LOAD FAILED:", group);
+      return [];
+    }
+    const data = await res.json();
+    timelineCache[group] = data;
+    return data;
+  } catch (e) {
+    console.error("TIMELINE LOAD ERROR:", group, e);
     return [];
   }
-
-  const data = await res.json();
-  timelineCache[group] = data;
-
-  return data;
 }
 
 /* =========================
@@ -128,20 +132,22 @@ async function loadTimeline(group) {
 async function loadMemberState(group) {
   if (memberStateCache[group]) return memberStateCache[group];
 
-  const res = await fetch(
-    `data/members/${group}_member_state.json?t=${Date.now()}`,
-    { cache: "no-store" }
-  );
-
-  if (!res.ok) {
-    console.error("MEMBER STATE LOAD FAILED:", group);
+  try {
+    const res = await fetch(
+      `data/members/${group}_member_state.json?t=${Date.now()}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) {
+      console.error("MEMBER STATE LOAD FAILED:", group);
+      return {};
+    }
+    const data = await res.json();
+    memberStateCache[group] = data;
+    return data;
+  } catch (e) {
+    console.error("MEMBER STATE LOAD ERROR:", group, e);
     return {};
   }
-
-  const data = await res.json();
-  memberStateCache[group] = data;
-
-  return data;
 }
 
 /* =========================
@@ -210,7 +216,7 @@ function getMemberLabel(member, selectedGroup, sortMode) {
   const isSingleGroup = selectedGroup !== "all";
 
   if (sortMode === "days") {
-    return isTeam8Member ? "チーム8" : member.generation;
+    return isTeam8Member ? "チーム8" : (member.generation || "");
   }
 
   const useTeamLabel =
@@ -238,7 +244,7 @@ function getMemberLabel(member, selectedGroup, sortMode) {
       sortMode === "nearestBirthday" ||
       sortMode === "age"
     ) {
-      return groupNameMap[member.groupId];
+      return groupNameMap[member.groupId] || "";
     }
   }
 
@@ -285,31 +291,31 @@ async function updateMembers() {
     members = members.filter(m => m.status === "member");
   }
 
-  if (sort === "default") members.sort(globalDefaultSort);
-
-  else if (sort === "kana") {
+  if (sort === "default") {
+    members.sort(globalDefaultSort);
+  } else if (sort === "kana") {
     members.sort((a, b) =>
       (a.kana || "").localeCompare(b.kana || "", "ja")
     );
-  }
-
-  else if (sort === "birthday") {
-    members.sort((a, b) =>
-      (a.birthday || "").slice(5).localeCompare((b.birthday || "").slice(5))
-    );
-  }
-
-  else if (sort === "nearestBirthday") {
-    members.sort((a, b) =>
-      getNextBirthday(a.birthday) - getNextBirthday(b.birthday)
-    );
-  }
-
-  else if (sort === "age") {
-    members.sort((a, b) => new Date(a.birthday) - new Date(b.birthday));
-  }
-
-  else if (sort === "days") {
+  } else if (sort === "birthday") {
+    members.sort((a, b) => {
+      const bA = (a.birthday || "").slice(5);
+      const bB = (b.birthday || "").slice(5);
+      return bA.localeCompare(bB);
+    });
+  } else if (sort === "nearestBirthday") {
+    members.sort((a, b) => {
+      const nA = a.birthday ? getNextBirthday(a.birthday) : new Date(8640000000000000);
+      const nB = b.birthday ? getNextBirthday(b.birthday) : new Date(8640000000000000);
+      return nA - nB;
+    });
+  } else if (sort === "age") {
+    members.sort((a, b) => {
+      const dA = a.birthday ? new Date(a.birthday) : new Date(0);
+      const dB = b.birthday ? new Date(b.birthday) : new Date(0);
+      return dA - dB;
+    });
+  } else if (sort === "days") {
     members.sort((a, b) => {
       const d = calcDays(b.joinDate) - calcDays(a.joinDate);
       if (d !== 0) return d;
@@ -396,13 +402,11 @@ function globalDefaultSort(a, b) {
 
 function getActiveMembersByDate(date, memberState, grouped) {
   const result = [];
-
   const targetDate = new Date(date).getTime();
 
   grouped.forEach(group => {
     const active = group.members.filter(name => {
       const periods = memberState[name];
-
       if (!Array.isArray(periods)) return false;
 
       return periods.some(p => {
@@ -411,13 +415,9 @@ function getActiveMembersByDate(date, memberState, grouped) {
         }
 
         const start = new Date(p.start).getTime();
+        const end = p.end ? new Date(p.end).getTime() : Infinity;
 
-        const end = p.end
-          ? new Date(p.end).getTime()
-          : Infinity;
-
-        return start <= targetDate &&
-               targetDate < end;
+        return start <= targetDate && targetDate < end;
       });
     });
 
@@ -463,18 +463,19 @@ function renderMembers(members, selectedGroup, sortMode) {
   container.innerHTML = "";
 
   members.forEach(m => {
-    const img = getImagePath(m);
     const label = getMemberLabel(m, selectedGroup, sortMode);
-
     let sub = "";
 
     if (sortMode === "birthday" || sortMode === "age") {
-      sub = `${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)`;
+      sub = m.birthday ? `${formatDate(m.birthday)} (${calcAge(m.birthday)}歳)` : "-";
     } else if (sortMode === "nearestBirthday") {
-      const diff = getNextBirthday(m.birthday) - new Date();
-      const days = Math.ceil(diff / 86400000);
-
-      sub = `${formatMonthDay(m.birthday)} (あと${days}日)`;
+      if (m.birthday) {
+        const diff = getNextBirthday(m.birthday) - new Date();
+        const days = Math.ceil(diff / 86400000);
+        sub = `${formatMonthDay(m.birthday)} (あと${days}日)`;
+      } else {
+        sub = "-";
+      }
     } else if (sortMode === "days") {
       sub = getMembershipText(m);
     } else {
@@ -486,10 +487,9 @@ function renderMembers(members, selectedGroup, sortMode) {
 
     card.innerHTML = `
       <div class="member-name-row">
-        <span class="member-name">${m.name}</span>
-        <span class="member-badge ${getBadgeClass(m)}">${label}</span>
+        <span class="member-name">${escapeHtml(m.name)}</span>
+        <span class="member-badge ${getBadgeClass(m)}">${escapeHtml(label)}</span>
       </div>
-
       <div class="member-kana">${sub}</div>
     `;
 
@@ -501,7 +501,6 @@ function getMembershipText(m) {
   if (!m?.joinDate) return "-";
 
   const start = new Date(m.joinDate);
-
   const end =
     m.status === "graduated" && m.graduationDate
       ? new Date(m.graduationDate)
@@ -510,21 +509,16 @@ function getMembershipText(m) {
   start.setHours(0, 0, 0, 0);
   end.setHours(0, 0, 0, 0);
 
-  const days =
-    Math.floor((end - start) / 86400000) + 1;
-
+  const days = Math.floor((end - start) / 86400000) + 1;
   const startText = m.joinDate.replace(/-/g, "/");
 
   if (m.status === "graduated" && m.graduationDate) {
-    const endText =
-      m.graduationDate.replace(/-/g, "/");
-
+    const endText = m.graduationDate.replace(/-/g, "/");
     return `${days}日<br>(${startText} 〜 ${endText})`;
   }
 
   return `${days}日<br>(${startText} 〜)`;
 }
-
 
 /* =========================
    DAYS PAGE
@@ -563,12 +557,10 @@ async function initTimelinePage() {
 
   await updateTimelinePage(group);
 
-  // SPA切り替え
   document.getElementById("group-select")?.addEventListener("change", (e) => {
     updateTimelinePage(e.target.value);
   });
 }
-
 
 /* =========================
    SPA core function
@@ -577,7 +569,6 @@ async function initTimelinePage() {
 async function updateTimelinePage(group) {
   const groupKey = groupNameMap[group] || "AKB48";
 
-  // ★ URLも同期（戻る問題防止）
   const url = new URL(location.href);
   url.searchParams.set("group", group);
   history.replaceState({}, "", url);
@@ -586,10 +577,6 @@ async function updateTimelinePage(group) {
   timeline = calculateTimelineCounts(timeline);
 
   const memberState = await loadMemberState(group);
-
-  // =========================
-  // grouping（完全安定版）
-  // =========================
 
   const groupedMap = new Map();
   let memberIndex = 0;
@@ -600,7 +587,7 @@ async function updateTimelinePage(group) {
     periods.forEach(p => {
       if (!p?.generation) return;
 
-      const gen = (p.generation || "").trim(); // ★重要：正規化
+      const gen = (p.generation || "").trim();
 
       if (!groupedMap.has(gen)) {
         groupedMap.set(gen, {
@@ -619,29 +606,20 @@ async function updateTimelinePage(group) {
     memberIndex++;
   });
 
-  // =========================
-  // 世代順リスト
-  // =========================
-
-  const orderList =
-    GENERATION_ORDER_MAP?.[groupKey] ?? []; // ★ fallback削除済み安全版
+  const orderList = GENERATION_ORDER_MAP?.[groupKey] ?? [];
 
   const grouped = Array.from(groupedMap.entries())
     .sort((a, b) => {
       const orderA = orderList.indexOf(a[0]);
       const orderB = orderList.indexOf(b[0]);
 
-      return (orderA === -1 ? 9999 : orderA)
-           - (orderB === -1 ? 9999 : orderB);
+      return (orderA === -1 ? 9999 : orderA) - (orderB === -1 ? 9999 : orderB);
     })
     .map(([gen, data]) => ({
       generation: gen,
-
       members: Array.from(data.members.keys())
         .sort((a, b) => {
-          const order =
-            GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
-
+          const order = GENERATION_MEMBER_ORDER?.[groupKey]?.[gen] || [];
           const ai = order.indexOf(a);
           const bi = order.indexOf(b);
 
@@ -653,15 +631,10 @@ async function updateTimelinePage(group) {
         })
     }));
 
-  // =========================
-  // render
-  // =========================
-
   renderTimelineSummary(timeline, group);
   renderYearTabs(timeline, group, grouped);
   renderTimelineCards(timeline, memberState, grouped);
 
-  // ★ UI同期（超重要）
   const select = document.getElementById("group-select");
   if (select) select.value = group;
 }
@@ -681,7 +654,6 @@ function renderTimelineSummary(timeline, group) {
 
   const latestCard = timeline[timeline.length - 1];
   const latestEvent = latestCard.events[latestCard.events.length - 1];
-
   const now = new Date();
 
   const currentDate =
@@ -692,20 +664,17 @@ function renderTimelineSummary(timeline, group) {
   el.innerHTML = `
     <div class="timeline-summary-box">
       <div class="timeline-summary-title">
-        ${groupNameMap[group]} 人数推移
+        ${escapeHtml(groupNameMap[group])} 人数推移
       </div>
-
       <div class="timeline-summary-count">
         ${latestEvent.currentValue}人
       </div>
-
       <div class="timeline-summary-date">
         ${currentDate}現在
       </div>
     </div>
   `;
 }
-
 
 /* =========================
    YEAR TABS
@@ -720,7 +689,6 @@ function renderYearTabs(timeline, group, grouped) {
   )];
 
   years.sort((a, b) => a - b);
-
   container.innerHTML = "";
 
   const allBtn = document.createElement("button");
@@ -729,11 +697,7 @@ function renderYearTabs(timeline, group, grouped) {
 
   allBtn.onclick = () => {
     setActiveTab(allBtn);
-    renderTimelineCards(
-      timeline,
-      memberStateCache[group],
-      grouped
-    );
+    renderTimelineCards(timeline, memberStateCache[group], grouped);
   };
 
   container.appendChild(allBtn);
@@ -745,31 +709,18 @@ function renderYearTabs(timeline, group, grouped) {
 
     btn.onclick = () => {
       setActiveTab(btn);
-
-      const filtered = timeline.filter(t =>
-        t.date.startsWith(year)
-      );
-
-      renderTimelineCards(
-        filtered,
-        memberStateCache[group],
-        grouped
-      );
+      const filtered = timeline.filter(t => t.date.startsWith(year));
+      renderTimelineCards(filtered, memberStateCache[group], grouped);
     };
 
     container.appendChild(btn);
   });
 }
 
-/* =========================
-   TAB ACTIVE制御
-========================= */
-
 function setActiveTab(activeBtn) {
   document.querySelectorAll(".year-tab").forEach(btn => {
     btn.classList.remove("active");
   });
-
   activeBtn.classList.add("active");
 }
 
@@ -790,42 +741,30 @@ function renderTimelineCards(timeline, memberState, grouped) {
     let eventsHtml = "";
 
     cardData.events.forEach(event => {
-      const deltaText =
-        event.delta > 0
-          ? `+${event.delta}`
-          : `${event.delta}`;
+      const deltaText = event.delta > 0 ? `+${event.delta}` : `${event.delta}`;
 
       eventsHtml += `
         <div class="timeline-event">
-          <div class="timeline-event-text">${event.text}</div>
-
+          <div class="timeline-event-text">${escapeHtml(event.text)}</div>
           <div class="timeline-event-right">
             <span class="timeline-event-value">
               ${event.currentValue}人
             </span>
-
-            ${
-              event.delta
-                ? `<span class="timeline-event-delta">${deltaText}</span>`
-                : ""
-            }
+            ${event.delta ? `<span class="timeline-event-delta">${deltaText}</span>` : ""}
           </div>
         </div>
       `;
     });
 
-    const activeGenerations =
-      getActiveMembersByDate(cardData.date, memberState, grouped);
-
+    const activeGenerations = getActiveMembersByDate(cardData.date, memberState, grouped);
     let membersHtml = "";
 
     activeGenerations.forEach(group => {
       membersHtml += `
         <div class="timeline-generation">
-          <div class="timeline-generation-title">${group.generation}</div>
-
+          <div class="timeline-generation-title">${escapeHtml(group.generation)}</div>
           <div class="timeline-generation-members">
-            ${group.members.join("・")}
+            ${group.members.map(escapeHtml).join("・")}
           </div>
         </div>
       `;
@@ -850,12 +789,11 @@ function scheduleMidnightUpdate() {
   const next = new Date();
 
   next.setHours(24, 0, 0, 0);
-
   const ms = next - now;
 
   setTimeout(() => {
-    updateMembers();
-    updateDays();
+    if (document.getElementById("member-list")) updateMembers();
+    if (document.getElementById("days-list")) updateDays();
     scheduleMidnightUpdate();
   }, ms);
 }
@@ -879,11 +817,9 @@ async function updateDays() {
 
   members.sort((a, b) => {
     const d = calcDays(b.joinDate) - calcDays(a.joinDate);
-
     if (d !== 0) return d;
 
     const g = GROUP_ORDER.indexOf(a.groupId) - GROUP_ORDER.indexOf(b.groupId);
-
     if (g !== 0) return g;
 
     return (a.kana || "").localeCompare(b.kana || "", "ja");
@@ -898,45 +834,35 @@ async function updateDays() {
 
 function renderDaysMembers(members) {
   const container = document.getElementById("days-list");
-
   if (!container) return;
 
   container.innerHTML = "";
 
   members.forEach(m => {
-    const img = getImagePath(m);
-
     const card = document.createElement("div");
     card.className = "member-card";
 
     card.innerHTML = `
-  <div class="member-name-row">
-    <span class="member-name">${m.name}</span>
-  </div>
-
-  <div class="member-kana">
-    ${getDaysLabel(m)} / 在籍 ${calcDays(m.joinDate)}日
-  </div>
-`;
+      <div class="member-name-row">
+        <span class="member-name">${escapeHtml(m.name)}</span>
+      </div>
+      <div class="member-kana">
+        ${escapeHtml(getDaysLabel(m))} / 在籍 ${calcDays(m.joinDate)}日
+      </div>
+    `;
 
     container.appendChild(card);
   });
 }
-
-/* =========================
-   DAYS LABEL
-========================= */
 
 function getDaysLabel(m) {
   if (!m) return "-";
   if (isTeam8(m)) return "チーム8";
 
   const gen = (m.generation || "").trim();
-
   if (!gen) return "-";
 
   if (m.role === "kenkyuusei") return `${gen}研究生`;
-
   return gen;
 }
 
@@ -963,7 +889,6 @@ function calcAge(birthday) {
   const birth = new Date(birthday);
 
   let age = today.getFullYear() - birth.getFullYear();
-
   const m = today.getMonth() - birth.getMonth();
 
   if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
@@ -975,16 +900,16 @@ function calcAge(birthday) {
 
 function formatDate(date) {
   if (!date) return "-";
-
   const d = new Date(date);
+  if (isNaN(d.getTime())) return String(date);
 
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
 function formatMonthDay(date) {
   if (!date) return "-";
-
   const d = new Date(date);
+  if (isNaN(d.getTime())) return "-";
 
   return `${d.getMonth() + 1}月${d.getDate()}日`;
 }
@@ -995,7 +920,6 @@ function formatGenerationClean(m) {
   if (m.generation === "チーム8") return "チーム8";
 
   const gen = String(m.generation).replace("期", "");
-
   if (m.role === "kenkyuusei") return `${gen}期研究生`;
 
   return `${gen}期生`;
@@ -1010,17 +934,6 @@ let currentStageData = null;
 let adminUnlocked = false;
 let adminDraft = null;
 
-/* =========================
-   HELPERS & DEFENSIVE CHECKS
-========================= */
-
-// 未定義関数によるクラッシュを防止
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  return dateStr;
-}
-
-// STAGE_LISTが未定義の場合のエラーを防止
 function getStageList(group) {
   if (typeof STAGE_LIST === "undefined" || !STAGE_LIST) return [];
   return STAGE_LIST[group] || [];
@@ -1066,10 +979,6 @@ async function initTheaterStagePage() {
   setupAdmin();
 }
 
-/* =========================
-   STAGE SELECT
-========================= */
-
 function populateStageSelect(group) {
   const stageSelect = document.getElementById("stage-select");
   if (!stageSelect) return;
@@ -1084,10 +993,6 @@ function populateStageSelect(group) {
     stageSelect.appendChild(option);
   });
 }
-
-/* =========================
-   STAGE DATA
-========================= */
 
 async function updateTheaterStagePage(file) {
   if (!file) return;
@@ -1106,10 +1011,6 @@ async function updateTheaterStagePage(file) {
     renderAdminPanel();
   }
 }
-
-/* =========================
-   LOAD JSON
-========================= */
 
 async function loadStageData(file) {
   try {
@@ -1130,10 +1031,6 @@ async function loadStageData(file) {
     });
   }
 }
-
-/* =========================
-   NORMALIZE
-========================= */
 
 function normalizeStageData(data) {
   if (!data || typeof data !== "object") {
@@ -1171,10 +1068,6 @@ function normalizeStageData(data) {
   };
 }
 
-/* =========================
-   LOCAL STORAGE
-========================= */
-
 function getStageStorageKey(file) {
   return `theater-stage-${file}`;
 }
@@ -1191,10 +1084,6 @@ function loadLocalStageData(file, originalData) {
     return originalData;
   }
 }
-
-/* =========================
-   HISTORY TABLE
-========================= */
 
 function renderStageTable(stageData) {
   const container = document.getElementById("stage-table-container");
@@ -1238,10 +1127,6 @@ function renderStageTable(stageData) {
   container.innerHTML = html;
 }
 
-/* =========================
-   SEARCH
-========================= */
-
 function setupStageSearch(stageData) {
   const input = document.getElementById("stage-search-input");
   if (!input) return;
@@ -1269,10 +1154,6 @@ function setupStageSearch(stageData) {
     renderStageAnalysis(stageData, name);
   });
 }
-
-/* =========================
-   SEARCH ANALYSIS
-========================= */
 
 function renderStageAnalysis(stageData, name) {
   const result = document.getElementById("stage-analysis");
@@ -1311,10 +1192,6 @@ function renderStageAnalysis(stageData, name) {
   `;
 }
 
-/* =========================
-   INPUT MEMBER PARSER
-========================= */
-
 function parseMembers(text) {
   if (!text) return [];
   return [
@@ -1326,48 +1203,6 @@ function parseMembers(text) {
     )
   ];
 }
-
-/* =========================
-   POSITION STATISTICS
-========================= */
-
-function buildPositionStatistics(stageData) {
-  const stats = {};
-  const fixed = stageData.fixedMembers || [];
-
-  fixed.forEach(position => {
-    stats[position] = {};
-  });
-
-  const debut = stageData.debut?.members || [];
-  debut.forEach((member, index) => {
-    const position = fixed[index];
-    if (!position || !member) return;
-
-    if (!stats[position][member]) {
-      stats[position][member] = 0;
-    }
-    stats[position][member] += 100;
-  });
-
-  (stageData.positions || []).forEach(day => {
-    (day.members || []).forEach((member, index) => {
-      const position = fixed[index];
-      if (!position || !member) return;
-
-      if (!stats[position][member]) {
-        stats[position][member] = 0;
-      }
-      stats[position][member] += 1;
-    });
-  });
-
-  return stats;
-}
-
-/* =========================
-   MEMBER → POSITION
-========================= */
 
 function buildMemberPositionStats(stageData) {
   const result = {};
@@ -1392,10 +1227,6 @@ function buildMemberPositionStats(stageData) {
 
   return result;
 }
-
-/* =========================
-   POSITION PREDICTION (ブラウザ固まり防止版)
-========================= */
 
 function calculatePositionPrediction(stageData, inputText) {
   const inputMembers = parseMembers(inputText);
@@ -1432,7 +1263,7 @@ function calculatePositionPrediction(stageData, inputText) {
 
   let best = null;
   let searchCount = 0;
-  const MAX_SEARCH_LIMIT = 50000; // ブラウザクラッシュを防ぐ上限
+  const MAX_SEARCH_LIMIT = 50000;
 
   function dfs(index, used, assignment, score) {
     if (searchCount > MAX_SEARCH_LIMIT) return;
@@ -1461,8 +1292,6 @@ function calculatePositionPrediction(stageData, inputText) {
 
       delete assignment[candidate.position];
       used.delete(candidate.position);
-
-      // 完全一致等の最適解が見つかった場合は打ち切りも可能
     }
   }
 
@@ -1492,10 +1321,6 @@ function calculatePositionPrediction(stageData, inputText) {
     score: best.score
   };
 }
-
-/* =========================
-   PREDICTION RENDER
-========================= */
 
 function renderPrediction(prediction) {
   const result = document.getElementById("result");
@@ -1556,10 +1381,6 @@ function renderPrediction(prediction) {
   result.innerHTML = html;
 }
 
-/* =========================
-   PREDICTION INITIAL
-========================= */
-
 function renderPredictionInitial() {
   const result = document.getElementById("result");
   const summary = document.getElementById("prediction-summary");
@@ -1576,10 +1397,6 @@ function renderPredictionInitial() {
     summary.innerHTML = "";
   }
 }
-
-/* =========================
-   ADMIN
-========================= */
 
 function setupAdmin() {
   const button = document.getElementById("admin-edit-btn");
@@ -1614,10 +1431,6 @@ function setupAdmin() {
   document.getElementById("add-performance-btn")?.addEventListener("click", addPerformance);
 }
 
-/* =========================
-   ADMIN PANEL
-========================= */
-
 function renderAdminPanel() {
   if (!adminDraft) return;
 
@@ -1629,10 +1442,6 @@ function renderAdminPanel() {
   renderDebutPositionEditor();
   renderAdminHistory();
 }
-
-/* =========================
-   DEBUT POSITION EDITOR
-========================= */
 
 function renderDebutPositionEditor() {
   const container = document.getElementById("debut-position-editor");
@@ -1674,10 +1483,6 @@ function renderDebutPositionEditor() {
   });
 }
 
-/* =========================
-   ADMIN HISTORY
-========================= */
-
 function renderAdminHistory() {
   const container = document.getElementById("admin-history-list");
   if (!container || !adminDraft) return;
@@ -1711,10 +1516,6 @@ function renderAdminHistory() {
     });
   });
 }
-
-/* =========================
-   ADD PERFORMANCE
-========================= */
 
 function addPerformance() {
   if (!adminDraft) return;
@@ -1759,10 +1560,6 @@ function addPerformance() {
   renderAdminHistory();
   showAdminMessage("公演データを追加しました。");
 }
-
-/* =========================
-   SAVE ADMIN DATA
-========================= */
 
 function saveAdminData() {
   if (!adminDraft) return;
@@ -1809,10 +1606,6 @@ function saveAdminData() {
   showAdminMessage("保存しました。この端末のブラウザに保存されています。");
 }
 
-/* =========================
-   EXPORT JSON
-========================= */
-
 function exportStageJson() {
   if (!currentStageData) return;
 
@@ -1831,10 +1624,6 @@ function exportStageJson() {
   showAdminMessage("JSONを書き出しました。");
 }
 
-/* =========================
-   ADMIN MESSAGE
-========================= */
-
 function showAdminMessage(message) {
   const el = document.getElementById("admin-message");
   if (!el) return;
@@ -1844,10 +1633,6 @@ function showAdminMessage(message) {
     el.textContent = "";
   }, 4000);
 }
-
-/* =========================
-   PREDICTION BUTTON
-========================= */
 
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("assign-btn");
@@ -1866,7 +1651,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================
-   ESCAPE
+   ESCAPE & UTILS
 ========================= */
 
 function escapeHtml(value) {
@@ -1882,11 +1667,10 @@ function escapeAttr(value) {
   return escapeHtml(value);
 }
 
-
 /* =========================
    BIRTHDAYS
 ========================= */
 
 function initBirthdaysPage() {
-  // 必要なら実装
+  // 必要に応じて実装
 }
