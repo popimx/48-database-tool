@@ -1002,963 +1002,389 @@ function formatGenerationClean(m) {
 }
 
 /* =========================
+   THEATER STAGE
+   POSITION PREDICTION
+========================= */
+
+let currentStageData = null;
+
+let adminUnlocked = false;
+
+let adminDraft = null;
+
+
+/* =========================
    THEATER STAGE INIT
 ========================= */
 
 async function initTheaterStagePage() {
-  const groupSelect = document.getElementById("group-select");
-  const stageSelect = document.getElementById("stage-select");
+
+  const groupSelect =
+    document.getElementById("group-select");
+
+  const stageSelect =
+    document.getElementById("stage-select");
 
   if (!groupSelect || !stageSelect) return;
 
-  const initGroup = groupSelect.value;
 
-  populateStageSelect(initGroup);
+  populateStageSelect(groupSelect.value);
 
-  const firstStage = STAGE_LIST[initGroup]?.[0];
+
+  const firstStage =
+    STAGE_LIST[groupSelect.value]?.[0];
+
 
   if (firstStage) {
-    requestAnimationFrame(() => {
-      stageSelect.value = firstStage.file;
-      updateTheaterStagePage(firstStage.file);
-    });
+
+    stageSelect.value = firstStage.file;
+
+    await updateTheaterStagePage(firstStage.file);
+
   }
 
-  groupSelect.addEventListener("change", (e) => {
+
+  groupSelect.addEventListener("change", async (e) => {
+
     const group = e.target.value;
 
     populateStageSelect(group);
 
-    const first = STAGE_LIST[group]?.[0];
+    const first =
+      STAGE_LIST[group]?.[0];
 
     if (!first) return;
 
-    requestAnimationFrame(() => {
-      stageSelect.value = first.file;
-      updateTheaterStagePage(first.file);
-    });
+    stageSelect.value = first.file;
+
+    await updateTheaterStagePage(first.file);
+
   });
 
-  stageSelect.addEventListener("change", (e) => {
-    updateTheaterStagePage(e.target.value);
+
+  stageSelect.addEventListener("change", async (e) => {
+
+    await updateTheaterStagePage(e.target.value);
+
   });
+
+
+  setupAdmin();
+
 }
+
 
 /* =========================
    STAGE SELECT
 ========================= */
 
 function populateStageSelect(group) {
-  const stageSelect = document.getElementById("stage-select");
+
+  const stageSelect =
+    document.getElementById("stage-select");
 
   if (!stageSelect) return;
 
+
   stageSelect.innerHTML = "";
 
-  (STAGE_LIST[group] || []).forEach((stage) => {
-    const option = document.createElement("option");
+  (STAGE_LIST[group] || []).forEach(stage => {
+
+    const option =
+      document.createElement("option");
 
     option.value = stage.file;
+
     option.textContent = stage.name;
 
     stageSelect.appendChild(option);
+
   });
+
 }
 
+
 /* =========================
-   THEATER STAGE MAIN UPDATE
+   STAGE DATA
 ========================= */
 
 async function updateTheaterStagePage(file) {
 
-  const elTable = document.getElementById("stage-table-container");
+  if (!file) return;
 
-  if (!elTable) return;
+  const data =
+    await loadStageData(file);
 
-  const stageData = await loadStageData(file);
+  currentStageData =
+    loadLocalStageData(file, data);
 
-  renderStageTable(stageData);
+  renderStageTable(currentStageData);
 
-  setupStageSearch(stageData);
+  setupStageSearch(currentStageData);
+
+  renderPredictionInitial();
+
+  if (adminUnlocked) {
+
+    adminDraft =
+      structuredClone(currentStageData);
+
+    renderAdminPanel();
+
+  }
 
 }
 
+
 /* =========================
-   THEATER STAGE DATA LOADER
+   LOAD JSON
 ========================= */
 
 async function loadStageData(file) {
-  const res = await fetch(`data/stage/${file}.json`);
 
-  if (!res.ok) {
-    console.error(`stage load failed: ${file}`);
+  try {
 
-    return {
-      stage: "未設定",
+    const res =
+      await fetch(`data/stage/${file}.json?t=${Date.now()}`);
+
+    if (!res.ok) {
+
+      throw new Error(
+        `stage load failed: ${file}`
+      );
+
+    }
+
+    const data =
+      await res.json();
+
+    return normalizeStageData(data);
+
+  } catch (error) {
+
+    console.error(error);
+
+    return normalizeStageData({
+
+      group: "",
+      stage: "",
+      debut: {
+        date: "",
+        members: []
+      },
       fixedMembers: [],
       positions: []
-    };
-  }
-
-  return await res.json();
-}
-
-/* =========================
-   FIXED POSITION TABLE
-========================= */
-
-function renderStageTable(stageData) {
-  const container = document.getElementById("stage-table-container");
-
-  if (!container) return;
-
-  const fixedMembers = stageData.fixedMembers || [];
-
-  let html = `
-    <table class="stage-table">
-      <thead>
-        <tr>
-          <th>日付</th>
-          ${fixedMembers.map(member => `
-            <th>${member}</th>
-          `).join("")}
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  stageData.positions.forEach(day => {
-    html += `
-      <tr>
-        <td>${formatDate(day.date)}</td>
-
-        ${day.members.map(member => `
-          <td>
-            <span class="member">
-              ${member}
-            </span>
-          </td>
-        `).join("")}
-      </tr>
-    `;
-  });
-
-  html += `
-      </tbody>
-    </table>
-  `;
-
-  container.innerHTML = html;
-}
-
-/* =========================
-   THEATER STAGE / POSITION PREDICTION (ENHANCED - FIXED DFS)
-========================= */
-
-/* =========================
-   THEATER STAGE POSITION PREDICTION
-   五十音順出演者 → ポジション自動予測
-========================= */
-
-function calculatePositionPrediction(stageData, inputText) {
-
-  const fixedMembers = stageData.fixedMembers || [];
-  const positions = stageData.positions || [];
-
-  /*
-   * ---------------------------------
-   * ① 五十音順で入力された出演者
-   * ---------------------------------
-   *
-   * 五十音順そのものはポジション予測には使用しない。
-   */
-  const inputMembers = inputText
-    .split(/[・、,\n\r\s]+/)
-    .map(name => name.trim())
-    .filter(Boolean);
-
-  /*
-   * 重複削除
-   */
-  const uniqueMembers = [...new Set(inputMembers)];
-
-
-  /*
-   * ---------------------------------
-   * ② 過去データからポジション履歴を作る
-   *
-   * positionHistory[position][member]
-   *
-   * 例：
-   *
-   * positionHistory["坂下真心"]["池田典愛"] = 3
-   *
-   * → 池田典愛は坂下真心ポジに3回入った
-   * ---------------------------------
-   */
-
-  const positionHistory = {};
-
-  fixedMembers.forEach(fixed => {
-    positionHistory[fixed] = {};
-  });
-
-
-  positions.forEach(day => {
-
-    if (!Array.isArray(day.members)) return;
-
-    day.members.forEach((member, index) => {
-
-      const fixed = fixedMembers[index];
-
-      if (!fixed || !member) return;
-
-      if (!positionHistory[fixed]) {
-        positionHistory[fixed] = {};
-      }
-
-      positionHistory[fixed][member] =
-        (positionHistory[fixed][member] || 0) + 1;
-    });
-
-  });
-
-
-  /*
-   * ---------------------------------
-   * ③ メンバー → 入ったことのあるポジション
-   * ---------------------------------
-   */
-
-  const memberPositionHistory = {};
-
-  Object.entries(positionHistory).forEach(
-    ([fixed, members]) => {
-
-      Object.entries(members).forEach(
-        ([member, count]) => {
-
-          if (!memberPositionHistory[member]) {
-            memberPositionHistory[member] = {};
-          }
-
-          memberPositionHistory[member][fixed] = count;
-
-        }
-      );
-
-    }
-  );
-
-
-  /*
-   * ---------------------------------
-   * ④ 初日ポジション
-   *
-   * fixedMembersそのものが初日ポジション
-   * ---------------------------------
-   */
-
-  const debutPosition = {};
-
-  fixedMembers.forEach((member, index) => {
-    debutPosition[member] = fixedMembers[index];
-  });
-
-
-  /*
-   * ---------------------------------
-   * ⑤ ポジション継承関係を推定
-   *
-   * 例：
-   *
-   * 坂下真心 → 池田典愛
-   * 坂下真心 → 西田帆花
-   *
-   * のような履歴を取得
-   * ---------------------------------
-   */
-
-  const positionSuccessors = {};
-
-  fixedMembers.forEach(fixed => {
-
-    positionSuccessors[fixed] = {};
-
-    const history = positionHistory[fixed] || {};
-
-    Object.entries(history).forEach(
-      ([member, count]) => {
-
-        if (member === fixed) return;
-
-        positionSuccessors[fixed][member] = count;
-
-      }
-    );
-
-  });
-
-
-  /*
-   * ---------------------------------
-   * ⑥ 各メンバーが各ポジションに入る
-   * 基本スコアを計算
-   * ---------------------------------
-   */
-
-  const candidateMap = {};
-
-  uniqueMembers.forEach(member => {
-
-    candidateMap[member] = [];
-
-    fixedMembers.forEach(position => {
-
-      let score = 0;
-      const reasons = [];
-
-      /*
-       * A.
-       * 初日ポジション
-       *
-       * 初日メンバーだった場合は強く加点
-       */
-      if (debutPosition[member] === position) {
-
-        score += 100;
-
-        reasons.push("初日ポジション");
-
-      }
-
-
-      /*
-       * B.
-       * 直接そのポジションに入った実績
-       */
-      const directCount =
-        memberPositionHistory[member]?.[position] || 0;
-
-      if (directCount > 0) {
-
-        score += directCount * 30;
-
-        reasons.push(
-          `過去${directCount}回`
-        );
-
-      }
-
-
-      /*
-       * C.
-       * ポジションの代役実績
-       *
-       * そのポジションに何人か入っている場合、
-       * そのポジション自体の「可動性」を加味
-       */
-      const positionHistoryCount =
-        Object.keys(positionHistory[position] || {}).length;
-
-      if (positionHistoryCount > 1) {
-
-        score += Math.min(
-          positionHistoryCount * 2,
-          10
-        );
-
-      }
-
-
-      /*
-       * D.
-       * そのポジションにほとんど固定されている場合
-       *
-       * 過去の直接実績をさらに少し評価
-       */
-      if (directCount >= 2) {
-        score += 10;
-      }
-
-
-      /*
-       * E.
-       * 初日メンバー以外でも
-       * 過去にどこかのポジションに入ったことがある
-       */
-      const memberHistory =
-        memberPositionHistory[member] || {};
-
-      const totalHistory =
-        Object.values(memberHistory)
-          .reduce((sum, count) => sum + count, 0);
-
-      if (totalHistory > 0 && directCount === 0) {
-
-        /*
-         * 「経験者だが、このポジションには未経験」
-         *
-         * 完全な未経験者より少し優先
-         */
-        score += Math.min(
-          totalHistory * 2,
-          10
-        );
-
-        reasons.push("過去出演経験あり");
-
-      }
-
-
-      /*
-       * 候補として登録
-       */
-      candidateMap[member].push({
-        position,
-        score,
-        reasons,
-        directCount
-      });
 
     });
 
-
-    /*
-     * スコア順
-     */
-    candidateMap[member].sort(
-      (a, b) => b.score - a.score
-    );
-
-  });
-
-
-  /*
-   * ---------------------------------
-   * ⑦ ポジション側からも候補を見る
-   *
-   * positionCandidates[position]
-   * ---------------------------------
-   */
-
-  const positionCandidates = {};
-
-  fixedMembers.forEach(position => {
-
-    positionCandidates[position] =
-      uniqueMembers
-        .map(member => {
-
-          const candidate =
-            candidateMap[member]
-              .find(c => c.position === position);
-
-          return {
-            member,
-            ...(candidate || {
-              position,
-              score: 0,
-              reasons: [],
-              directCount: 0
-            })
-          };
-
-        })
-        .sort((a, b) => b.score - a.score);
-
-  });
-
-
-  /*
-   * ---------------------------------
-   * ⑧ まず「このポジションにしか
-   *     強い候補がいない人」を優先
-   * ---------------------------------
-   */
-
-  const memberPriority = [...uniqueMembers].sort(
-    (a, b) => {
-
-      const aBest =
-        candidateMap[a]?.[0]?.score || 0;
-
-      const bBest =
-        candidateMap[b]?.[0]?.score || 0;
-
-      return bBest - aBest;
-
-    }
-  );
-
-
-  /*
-   * ---------------------------------
-   * ⑨ 最適な16人の割り当てを探索
-   * ---------------------------------
-   */
-
-  let bestResult = null;
-  let bestScore = -Infinity;
-
-
-  function search(index, usedPositions, current, totalScore) {
-
-    if (index >= memberPriority.length) {
-
-      if (totalScore > bestScore) {
-
-        bestScore = totalScore;
-
-        bestResult = {
-          ...current
-        };
-
-      }
-
-      return;
-    }
-
-
-    const member = memberPriority[index];
-
-    const candidates =
-      candidateMap[member] || [];
-
-
-    /*
-     * 候補を順番に試す
-     */
-    for (const candidate of candidates) {
-
-      const position = candidate.position;
-
-      if (usedPositions.has(position)) {
-        continue;
-      }
-
-
-      /*
-       * 少しずつ減点
-       *
-       * 未経験ポジションを無理に使うことを抑える
-       */
-      let adjustedScore = candidate.score;
-
-
-      if (
-        candidate.directCount === 0 &&
-        !candidate.reasons.includes("初日ポジション")
-      ) {
-        adjustedScore -= 5;
-      }
-
-
-      usedPositions.add(position);
-
-      current[member] = {
-        ...candidate,
-        finalScore: adjustedScore
-      };
-
-
-      search(
-        index + 1,
-        usedPositions,
-        current,
-        totalScore + adjustedScore
-      );
-
-
-      delete current[member];
-
-      usedPositions.delete(position);
-
-    }
-
   }
 
-
-  search(
-    0,
-    new Set(),
-    {},
-    0
-  );
+}
 
 
-  /*
-   * ---------------------------------
-   * ⑩ 結果をポジション順に変換
-   * ---------------------------------
-   */
+/* =========================
+   NORMALIZE
+========================= */
 
-  const assigned = {};
+function normalizeStageData(data) {
 
-  if (bestResult) {
+  const fixedMembers =
+    Array.isArray(data.fixedMembers)
+      ? [...data.fixedMembers]
+      : [];
 
-    Object.entries(bestResult).forEach(
-      ([member, data]) => {
 
-        assigned[data.position] = {
-          member,
-          score: data.finalScore,
-          reasons: data.reasons,
-          directCount: data.directCount
-        };
-
-      }
-    );
-
-  }
+  let debut = data.debut || null;
 
 
   /*
-   * ---------------------------------
-   * ⑪ ポジション別予測表
-   * ---------------------------------
-   */
+   旧形式のJSONにも対応
+  */
 
-  const table = fixedMembers.map(position => {
+  if (!debut && fixedMembers.length) {
 
-    const assignedData = assigned[position];
+    const first =
+      data.positions?.[0];
 
-    const candidates =
-      positionCandidates[position] || [];
+    debut = {
 
+      date: first?.date || "",
 
-    return {
-
-      fixed: position,
-
-      predicted:
-        assignedData?.member || "―",
-
-      score:
-        assignedData?.score || 0,
-
-      reasons:
-        assignedData?.reasons || [],
-
-      candidates: candidates
-        .slice(0, 5)
-        .map(c => ({
-          name: c.member,
-          score: c.score,
-          count: c.directCount,
-          reasons: c.reasons
-        })),
-
-      stats: {
-        count: candidates.length
-      }
+      members:
+        first?.members
+          ? [...first.members]
+          : [...fixedMembers]
 
     };
 
-  });
+  }
+
+
+  if (!debut) {
+
+    debut = {
+
+      date: "",
+
+      members: []
+
+    };
+
+  }
 
 
   /*
-   * ---------------------------------
-   * ⑫ 未経験メンバー
-   * ---------------------------------
-   */
+   fixedMembersが無い場合は
+   初日メンバーから作成
+  */
 
-  const unknownMembers =
-    uniqueMembers.filter(
-      member =>
-        !memberPositionHistory[member]
-    );
+  if (!fixedMembers.length &&
+      debut.members.length) {
 
+    data.fixedMembers =
+      [...debut.members];
 
-  /*
-   * ---------------------------------
-   * ⑬ 未経験ポジション候補
-   * ---------------------------------
-   */
+  }
 
-  const inexperiencedAssignments =
-    table.filter(
-      p =>
-        p.score <= 0 ||
-        !p.reasons.length
-    );
-
-
-  /*
-   * ---------------------------------
-   * ⑭ ポジション継承候補
-   *
-   * 将来的にOpenAIへ渡すための情報
-   * ---------------------------------
-   */
-
-  const successionData = fixedMembers.map(
-    position => {
-
-      const history =
-        positionSuccessors[position] || {};
-
-      return {
-
-        position,
-
-        history:
-          Object.entries(history)
-            .sort((a, b) => b[1] - a[1])
-            .map(([member, count]) => ({
-              member,
-              count
-            }))
-
-      };
-
-    }
-  );
-
-
-  /*
-   * ---------------------------------
-   * ⑮ 信頼度
-   * ---------------------------------
-   */
-
-  const confidence = table.map(p => {
-
-    if (p.score >= 100) return "非常に高い";
-    if (p.score >= 60) return "高い";
-    if (p.score >= 30) return "中";
-    if (p.score > 0) return "低い";
-
-    return "不明";
-
-  });
-
-
-  /*
-   * ---------------------------------
-   * ⑯ 最終結果
-   * ---------------------------------
-   */
 
   return {
 
-    /*
-     * UI用
-     */
-    table,
+    group: data.group || "",
 
-    /*
-     * ポジション → メンバー
-     */
-    patterns: Object.fromEntries(
-      table.map(p => [
-        p.fixed,
-        p.predicted
-      ])
-    ),
+    stage: data.stage || "",
 
-    /*
-     * 入力された出演者
-     */
-    inputMembers: uniqueMembers,
+    debut: {
 
-    /*
-     * 未経験者
-     */
-    analysis: {
+      date: debut.date || "",
 
-      unknownMembers,
+      members: [...(debut.members || [])]
 
-      confidence,
+    },
 
-      inexperiencedAssignments,
+    fixedMembers:
+      [...(data.fixedMembers || [])],
 
-      positionHistory,
-
-      memberPositionHistory,
-
-      successionData,
-
-      bestScore
-
-    }
+    positions:
+      [...(data.positions || [])]
 
   };
 
 }
 
-// =========================
-// THEATER STAGE POSITION grouping（完全安定版）
-// =========================
 
-function renderPredictionTable(prediction) {
+/* =========================
+   LOCAL STORAGE
+========================= */
 
-  const el = document.getElementById("result");
+function getStageStorageKey(file) {
 
-  if (!el) return;
+  return `theater-stage-${file}`;
+
+}
 
 
-  const table = prediction.table || [];
+function loadLocalStageData(file, originalData) {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        getStageStorageKey(file)
+      );
+
+    if (!saved) {
+
+      return originalData;
+
+    }
+
+    const parsed =
+      JSON.parse(saved);
+
+    return normalizeStageData(parsed);
+
+  } catch (error) {
+
+    console.error(error);
+
+    return originalData;
+
+  }
+
+}
+
+
+/* =========================
+   HISTORY TABLE
+========================= */
+
+function renderStageTable(stageData) {
+
+  const container =
+    document.getElementById(
+      "stage-table-container"
+    );
+
+  if (!container) return;
+
+
+  const fixedMembers =
+    stageData.fixedMembers || [];
 
 
   let html = `
 
-    <div class="prediction-result">
+    <table class="stage-table">
 
-      <h2>ポジション予測</h2>
+      <thead>
 
-      <div class="prediction-note">
-        過去の初日ポジション・出演実績をもとに自動予測しています。
-      </div>
+        <tr>
 
-      <div class="prediction-scroll">
+          <th>日付</th>
 
-        <table class="stage-table prediction">
+          ${fixedMembers.map(member => `
+            <th>${escapeHtml(member)}</th>
+          `).join("")}
 
-          <thead>
-            <tr>
-              <th>ポジション</th>
-              <th>予測</th>
-              <th>信頼度</th>
-              <th>根拠</th>
-            </tr>
-          </thead>
+        </tr>
 
-          <tbody>
-  `;
+      </thead>
 
-
-  table.forEach((item, index) => {
-
-    const confidence =
-      item.score >= 100
-        ? "非常に高い"
-        : item.score >= 60
-        ? "高い"
-        : item.score >= 30
-        ? "中"
-        : item.score > 0
-        ? "低い"
-        : "不明";
-
-
-    const reasons =
-      item.reasons?.length
-        ? item.reasons.join("・")
-        : "過去データなし";
-
-
-    html += `
-
-      <tr>
-
-        <td>
-          <strong>${index + 1}</strong><br>
-          ${item.fixed}
-        </td>
-
-        <td>
-
-          <span class="member prediction-member">
-
-            ${item.predicted || "―"}
-
-          </span>
-
-        </td>
-
-        <td>
-          ${confidence}
-        </td>
-
-        <td>
-          ${reasons}
-        </td>
-
-      </tr>
-
-    `;
-
-  });
-
-
-  html += `
-
-          </tbody>
-
-        </table>
-
-      </div>
+      <tbody>
 
   `;
 
 
-  /*
-   * 未経験メンバー
-   */
-
-  if (prediction.analysis?.unknownMembers?.length) {
-
-    html += `
-
-      <div class="prediction-warning">
-
-        <strong>過去データにない出演者</strong>
-
-        <div>
-          ${prediction.analysis.unknownMembers.join("・")}
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-
-  /*
-   * ポジション継承情報
-   */
-
-  html += `
-
-      <details class="prediction-details">
-
-        <summary>
-          ポジション継承・過去データを見る
-        </summary>
-
-  `;
-
-
-  (prediction.analysis?.successionData || [])
-    .forEach(data => {
-
-      if (!data.history?.length) return;
-
+  stageData.positions
+    .slice()
+    .sort((a, b) =>
+      a.date.localeCompare(b.date)
+    )
+    .forEach(day => {
 
       html += `
 
-        <div class="succession-item">
+        <tr>
 
-          <strong>
-            ${data.position}ポジ
-          </strong>
+          <td>
+            ${formatDate(day.date)}
+          </td>
 
-          <div>
+          ${day.members.map(member => `
 
-            ${data.history
-              .slice(0, 5)
-              .map(h =>
-                `${h.member} (${h.count}回)`
-              )
-              .join(" → ")}
+            <td>
 
-          </div>
+              <span class="member">
 
-        </div>
+                ${escapeHtml(member)}
+
+              </span>
+
+            </td>
+
+          `).join("")}
+
+        </tr>
 
       `;
 
@@ -1967,182 +1393,1599 @@ function renderPredictionTable(prediction) {
 
   html += `
 
-      </details>
+      </tbody>
+
+    </table>
+
+  `;
+
+
+  container.innerHTML = html;
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function setupStageSearch(stageData) {
+
+  const input =
+    document.getElementById(
+      "stage-search-input"
+    );
+
+  if (!input) return;
+
+
+  const newInput =
+    input.cloneNode(true);
+
+
+  input.parentNode.replaceChild(
+    newInput,
+    input
+  );
+
+
+  newInput.addEventListener(
+    "input",
+    e => {
+
+      const name =
+        e.target.value.trim();
+
+
+      document
+        .querySelectorAll(".stage-table .member")
+        .forEach(el => {
+
+          const td =
+            el.closest("td");
+
+          if (!name) {
+
+            td?.classList.remove(
+              "highlight"
+            );
+
+            return;
+
+          }
+
+
+          if (
+            el.textContent.includes(name)
+          ) {
+
+            td?.classList.add(
+              "highlight"
+            );
+
+          } else {
+
+            td?.classList.remove(
+              "highlight"
+            );
+
+          }
+
+        });
+
+
+      renderStageAnalysis(
+        stageData,
+        name
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   SEARCH ANALYSIS
+========================= */
+
+function renderStageAnalysis(
+  stageData,
+  name
+) {
+
+  const result =
+    document.getElementById(
+      "stage-analysis"
+    );
+
+  if (!result) return;
+
+
+  if (!name) {
+
+    result.innerHTML = "";
+
+    return;
+
+  }
+
+
+  const positionCount = {};
+
+
+  stageData.positions
+    .forEach(day => {
+
+      day.members
+        .forEach((member, index) => {
+
+          if (member !== name) return;
+
+
+          const fixed =
+            stageData.fixedMembers[index];
+
+
+          if (!fixed) return;
+
+
+          positionCount[fixed] =
+            (positionCount[fixed] || 0) + 1;
+
+        });
+
+    });
+
+
+  const entries =
+    Object.entries(positionCount)
+      .sort((a, b) => b[1] - a[1]);
+
+
+  if (!entries.length) {
+
+    result.textContent =
+      "出演データがありません。";
+
+    return;
+
+  }
+
+
+  result.innerHTML = `
+
+    <strong>
+      ${escapeHtml(name)}のポジション履歴
+    </strong>
+
+    <br><br>
+
+    ${entries.map(([position, count]) => `
+
+      ${escapeHtml(position)}ポジ：
+      ${count}回
+
+    `).join("<br>")}
+
+  `;
+
+}
+
+
+/* =========================
+   INPUT MEMBER PARSER
+========================= */
+
+function parseMembers(text) {
+
+  return [
+    ...new Set(
+
+      text
+        .split(/[、,・\n\r\t ]+/)
+        .map(name => name.trim())
+        .filter(Boolean)
+
+    )
+  ];
+
+}
+
+
+/* =========================
+   POSITION STATISTICS
+========================= */
+
+function buildPositionStatistics(stageData) {
+
+  const stats = {};
+
+  const fixed =
+    stageData.fixedMembers || [];
+
+
+  fixed.forEach(position => {
+
+    stats[position] = {};
+
+  });
+
+
+  /*
+   初日データを最重要データとして登録
+  */
+
+  const debut =
+    stageData.debut?.members || [];
+
+
+  debut.forEach((member, index) => {
+
+    const position =
+      fixed[index];
+
+    if (!position || !member) return;
+
+
+    if (!stats[position][member]) {
+
+      stats[position][member] = 0;
+
+    }
+
+    stats[position][member] += 100;
+
+  });
+
+
+  /*
+   過去公演
+  */
+
+  stageData.positions
+    .forEach(day => {
+
+      day.members.forEach(
+        (member, index) => {
+
+          const position =
+            fixed[index];
+
+          if (!position || !member) return;
+
+
+          if (!stats[position][member]) {
+
+            stats[position][member] = 0;
+
+          }
+
+          stats[position][member] += 1;
+
+        }
+      );
+
+    });
+
+
+  return stats;
+
+}
+
+
+/* =========================
+   MEMBER → POSITION
+========================= */
+
+function buildMemberPositionStats(
+  stageData
+) {
+
+  const result = {};
+
+  const fixed =
+    stageData.fixedMembers || [];
+
+
+  function add(member, position, score) {
+
+    if (!member || !position) return;
+
+
+    if (!result[member]) {
+
+      result[member] = {};
+
+    }
+
+
+    result[member][position] =
+      (result[member][position] || 0)
+      + score;
+
+  }
+
+
+  /*
+   初日
+  */
+
+  const debut =
+    stageData.debut?.members || [];
+
+
+  debut.forEach((member, index) => {
+
+    add(
+      member,
+      fixed[index],
+      100
+    );
+
+  });
+
+
+  /*
+   過去公演
+  */
+
+  stageData.positions
+    .forEach(day => {
+
+      day.members.forEach(
+        (member, index) => {
+
+          add(
+            member,
+            fixed[index],
+            1
+          );
+
+        }
+      );
+
+    });
+
+
+  return result;
+
+}
+
+
+/* =========================
+   POSITION PREDICTION
+========================= */
+
+function calculatePositionPrediction(
+  stageData,
+  inputText
+) {
+
+  const inputMembers =
+    parseMembers(inputText);
+
+
+  const fixed =
+    stageData.fixedMembers || [];
+
+
+  if (
+    inputMembers.length !== fixed.length
+  ) {
+
+    return {
+
+      error:
+        `出演メンバーは${fixed.length}人必要です。現在${inputMembers.length}人です。`
+
+    };
+
+  }
+
+
+  const memberStats =
+    buildMemberPositionStats(
+      stageData
+    );
+
+
+  /*
+   各メンバーについて
+   入ったことのあるポジションを候補化
+  */
+
+  const candidates =
+    inputMembers.map(member => {
+
+      const stats =
+        memberStats[member] || {};
+
+
+      const list =
+        fixed.map(position => ({
+
+          position,
+
+          score:
+            Number(stats[position] || 0)
+
+        }));
+
+
+      list.sort(
+        (a, b) => b.score - a.score
+      );
+
+
+      return {
+
+        member,
+
+        candidates: list
+
+      };
+
+    });
+
+
+  /*
+   DFS
+   16人を重複なしで割り当て
+  */
+
+  const results = [];
+
+
+  /*
+   候補数が少ないメンバーから処理
+  */
+
+  const sorted =
+    [...candidates].sort(
+      (a, b) => {
+
+        const aCount =
+          a.candidates.filter(
+            x => x.score > 0
+          ).length;
+
+        const bCount =
+          b.candidates.filter(
+            x => x.score > 0
+          ).length;
+
+        return aCount - bCount;
+
+      }
+    );
+
+
+  function dfs(
+    index,
+    used,
+    assignment,
+    score
+  ) {
+
+    if (index === sorted.length) {
+
+      results.push({
+
+        assignment: {
+          ...assignment
+        },
+
+        score
+
+      });
+
+      return;
+
+    }
+
+
+    const item =
+      sorted[index];
+
+
+    const possible =
+      item.candidates
+        .filter(
+          candidate =>
+            !used.has(candidate.position)
+        );
+
+
+    /*
+     過去データがある候補を優先
+    */
+
+    const positive =
+      possible.filter(
+        c => c.score > 0
+      );
+
+
+    const choices =
+      positive.length
+        ? positive
+        : possible;
+
+
+    for (
+      const candidate of choices
+    ) {
+
+      used.add(
+        candidate.position
+      );
+
+
+      assignment[
+        candidate.position
+      ] = item.member;
+
+
+      dfs(
+        index + 1,
+        used,
+        assignment,
+        score + candidate.score
+      );
+
+
+      delete assignment[
+        candidate.position
+      ];
+
+
+      used.delete(
+        candidate.position
+      );
+
+    }
+
+  }
+
+
+  dfs(
+    0,
+    new Set(),
+    {},
+    0
+  );
+
+
+  /*
+   結果があれば最高得点
+  */
+
+  results.sort(
+    (a, b) => b.score - a.score
+  );
+
+
+  const best =
+    results[0];
+
+
+  /*
+   初めて出演するメンバー等で
+   候補が足りない場合の処理
+  */
+
+  if (!best) {
+
+    return {
+
+      error:
+        "ポジションを割り当てられる組み合わせがありませんでした。"
+
+    };
+
+  }
+
+
+  /*
+   表示用
+  */
+
+  const rows =
+    fixed.map(position => {
+
+      const member =
+        best.assignment[position];
+
+
+      const stats =
+        memberStats[member] || {};
+
+
+      const ranking =
+        Object.entries(stats)
+          .sort(
+            (a, b) => b[1] - a[1]
+          );
+
+
+      return {
+
+        position,
+
+        member,
+
+        candidates:
+          ranking.map(
+            ([position, score]) => ({
+              position,
+              score
+            })
+          )
+
+      };
+
+    });
+
+
+  return {
+
+    inputMembers,
+
+    rows,
+
+    score: best.score
+
+  };
+
+}
+
+
+/* =========================
+   PREDICTION RENDER
+========================= */
+
+function renderPrediction(
+  prediction
+) {
+
+  const result =
+    document.getElementById(
+      "result"
+    );
+
+  const summary =
+    document.getElementById(
+      "prediction-summary"
+    );
+
+
+  if (!result) return;
+
+
+  if (prediction.error) {
+
+    result.innerHTML = `
+
+      <div class="prediction-error">
+
+        ${escapeHtml(
+          prediction.error
+        )}
+
+      </div>
+
+    `;
+
+    if (summary) {
+      summary.innerHTML = "";
+    }
+
+    return;
+
+  }
+
+
+  if (summary) {
+
+    summary.innerHTML = `
+
+      <div class="prediction-summary-box">
+
+        <strong>
+          予想結果
+        </strong>
+
+        <span>
+          過去データに基づいて
+          自動割り当てしました
+        </span>
+
+      </div>
+
+    `;
+
+  }
+
+
+  let html = `
+
+    <div class="prediction-scroll">
+
+      <table class="stage-table prediction">
+
+        <thead>
+
+          <tr>
+
+            <th>ポジション</th>
+
+            <th>予想メンバー</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+  `;
+
+
+  prediction.rows
+    .forEach(row => {
+
+      html += `
+
+        <tr>
+
+          <td>
+            ${escapeHtml(row.position)}
+          </td>
+
+          <td>
+
+            <span class="member prediction-member">
+
+              ${escapeHtml(row.member)}
+
+            </span>
+
+          </td>
+
+        </tr>
+
+      `;
+
+    });
+
+
+  html += `
+
+        </tbody>
+
+      </table>
 
     </div>
 
   `;
 
 
-  el.innerHTML = html;
+  result.innerHTML = html;
 
 }
 
 
-// 予測ボタンイベント
-
 /* =========================
-   POSITION PREDICTION BUTTON
+   PREDICTION INITIAL
 ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+function renderPredictionInitial() {
 
-  const btn =
-    document.getElementById("assign-btn");
+  const result =
+    document.getElementById(
+      "result"
+    );
 
-
-  btn?.addEventListener("click", async () => {
-
-    const input =
-      document.getElementById("member-input");
-
-
-    if (!input) return;
-
-
-    const text =
-      input.value.trim();
-
-
-    if (!text) {
-
-      alert(
-        "出演メンバーを入力してください。"
-      );
-
-      return;
-
-    }
-
-
-    const file =
-      document.getElementById("stage-select")?.value;
-
-
-    if (!file) {
-
-      alert(
-        "公演を選択してください。"
-      );
-
-      return;
-
-    }
-
-
-    /*
-     * 公演データ読み込み
-     */
-    const stageData =
-      await loadStageData(file);
-
-
-    /*
-     * 五十音順出演者
-     * ↓
-     * 自動ポジション予測
-     */
-    const prediction =
-      calculatePositionPrediction(
-        stageData,
-        text
-      );
-
-
-    /*
-     * 表示
-     */
-    renderPredictionTable(
-      prediction
+  const summary =
+    document.getElementById(
+      "prediction-summary"
     );
 
 
-    /*
-     * デバッグ用
-     *
-     * ブラウザのconsoleから
-     *
-     * prediction
-     *
-     * を確認できる
-     */
-    console.log(
-      "POSITION PREDICTION:",
-      prediction
-    );
+  if (result) {
 
-  });
+    result.innerHTML = `
 
-});
+      <div class="prediction-placeholder">
+
+        出演メンバーを入力すると、
+        過去のポジションデータから予想します。
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (summary) {
+
+    summary.innerHTML = "";
+
+  }
+
+}
+
 
 /* =========================
-   THEATER STAGE SEARCH + ANALYSIS
+   ADMIN
 ========================= */
 
-function setupStageSearch(stageData) {
-  const input = document.getElementById("stage-search-input");
+function setupAdmin() {
 
-  if (!input) return;
+  const button =
+    document.getElementById(
+      "admin-edit-btn"
+    );
 
-  const newInput = input.cloneNode(true);
 
-  input.parentNode.replaceChild(newInput, input);
+  if (!button) return;
 
-  newInput.addEventListener("input", (e) => {
-    const name = e.target.value.trim();
 
-    document.querySelectorAll(".member").forEach((el) => {
+  button.addEventListener(
+    "click",
+    () => {
 
-  const td = el.closest("td");
+      if (!adminUnlocked) {
 
-  if (!name) {
-    td?.classList.remove("highlight");
-    return;
-  }
+        /*
+         仮の管理者認証
 
-  if (el.textContent.includes(name)) {
-    td?.classList.add("highlight");
-  } else {
-    td?.classList.remove("highlight");
-  }
+         本当の管理者専用化をする場合は
+         GitHub Pages側ではなく
+         サーバー認証へ移行してください。
+        */
 
-});
+        const password =
+          prompt(
+            "管理者パスワードを入力してください"
+          );
 
-    const result = document.getElementById("stage-analysis");
 
-    if (!result) return;
+        if (
+          password !==
+          "CHANGE_THIS_PASSWORD"
+        ) {
 
-    if (!name) {
-      result.textContent = "";
-      return;
-    }
+          alert(
+            "パスワードが違います。"
+          );
 
-    const positionCount = {};
+          return;
 
-    stageData.positions.forEach((day) => {
-      day.members.forEach((member, index) => {
-        if (member === name) {
-          const fixedMember = stageData.fixedMembers[index];
-
-          positionCount[fixedMember] =
-            (positionCount[fixedMember] || 0) + 1;
         }
-      });
+
+
+        adminUnlocked = true;
+
+        button.textContent =
+          "🔓 管理者モード ON";
+
+      }
+
+
+      const panel =
+        document.getElementById(
+          "admin-panel"
+        );
+
+
+      if (!panel) return;
+
+
+      panel.hidden =
+        !panel.hidden;
+
+
+      if (!panel.hidden) {
+
+        adminDraft =
+          structuredClone(
+            currentStageData
+          );
+
+        renderAdminPanel();
+
+      }
+
+    }
+  );
+
+
+  document
+    .getElementById(
+      "save-admin-btn"
+    )
+    ?.addEventListener(
+      "click",
+      saveAdminData
+    );
+
+
+  document
+    .getElementById(
+      "export-json-btn"
+    )
+    ?.addEventListener(
+      "click",
+      exportStageJson
+    );
+
+
+  document
+    .getElementById(
+      "add-performance-btn"
+    )
+    ?.addEventListener(
+      "click",
+      addPerformance
+    );
+
+}
+
+
+/* =========================
+   ADMIN PANEL
+========================= */
+
+function renderAdminPanel() {
+
+  if (!adminDraft) return;
+
+
+  const debutInput =
+    document.getElementById(
+      "debut-members-input"
+    );
+
+
+  if (debutInput) {
+
+    debutInput.value =
+      adminDraft.debut?.members
+        ?.join("、") || "";
+
+  }
+
+
+  renderDebutPositionEditor();
+
+  renderAdminHistory();
+
+}
+
+
+/* =========================
+   DEBUT POSITION EDITOR
+========================= */
+
+function renderDebutPositionEditor() {
+
+  const container =
+    document.getElementById(
+      "debut-position-editor"
+    );
+
+
+  if (!container || !adminDraft)
+    return;
+
+
+  const fixed =
+    adminDraft.fixedMembers || [];
+
+
+  const debut =
+    adminDraft.debut?.members || [];
+
+
+  let html = "";
+
+
+  fixed.forEach(
+    (position, index) => {
+
+      const selected =
+        debut[index] || "";
+
+
+      html += `
+
+        <div class="position-editor-row">
+
+          <span class="position-number">
+
+            ${index + 1}
+
+          </span>
+
+          <span class="position-name">
+
+            ${escapeHtml(position)}
+
+          </span>
+
+          <select
+            class="debut-member-select"
+            data-index="${index}"
+          >
+
+            ${debut
+              .map(member => `
+
+                <option
+                  value="${escapeAttr(member)}"
+                  ${member === selected ? "selected" : ""}
+                >
+
+                  ${escapeHtml(member)}
+
+                </option>
+
+              `)
+              .join("")}
+
+          </select>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  container.innerHTML = html;
+
+
+  container
+    .querySelectorAll(
+      ".debut-member-select"
+    )
+    .forEach(select => {
+
+      select.addEventListener(
+        "change",
+        e => {
+
+          const index =
+            Number(
+              e.target.dataset.index
+            );
+
+
+          adminDraft.debut.members[
+            index
+          ] = e.target.value;
+
+        }
+      );
+
     });
 
-    const entries = Object.entries(positionCount);
+}
 
-    if (!entries.length) {
-      result.textContent = "出演データがありません。";
+
+/* =========================
+   ADMIN HISTORY
+========================= */
+
+function renderAdminHistory() {
+
+  const container =
+    document.getElementById(
+      "admin-history-list"
+    );
+
+
+  if (!container || !adminDraft)
+    return;
+
+
+  const positions =
+    adminDraft.positions || [];
+
+
+  if (!positions.length) {
+
+    container.innerHTML =
+      "<p>登録された公演はありません。</p>";
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    positions
+      .slice()
+      .sort(
+        (a, b) =>
+          b.date.localeCompare(a.date)
+      )
+      .map((day, index) => `
+
+        <div
+          class="admin-history-item"
+        >
+
+          <strong>
+            ${formatDate(day.date)}
+          </strong>
+
+          <span>
+            ${day.members.length}人
+          </span>
+
+          <button
+            class="delete-performance"
+            data-date="${escapeAttr(day.date)}"
+          >
+            削除
+          </button>
+
+        </div>
+
+      `)
+      .join("");
+
+
+  container
+    .querySelectorAll(
+      ".delete-performance"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const date =
+            button.dataset.date;
+
+
+          if (
+            !confirm(
+              `${date}の公演データを削除しますか？`
+            )
+          ) {
+
+            return;
+
+          }
+
+
+          adminDraft.positions =
+            adminDraft.positions
+              .filter(
+                day =>
+                  day.date !== date
+              );
+
+
+          renderAdminHistory();
+
+        }
+      );
+
+    });
+
+}
+
+
+/* =========================
+   ADD PERFORMANCE
+========================= */
+
+function addPerformance() {
+
+  if (!adminDraft) return;
+
+
+  const date =
+    document.getElementById(
+      "performance-date"
+    )?.value;
+
+
+  const text =
+    document.getElementById(
+      "performance-members-input"
+    )?.value || "";
+
+
+  const members =
+    parseMembers(text);
+
+
+  const required =
+    adminDraft.fixedMembers.length;
+
+
+  if (!date) {
+
+    alert(
+      "公演日を入力してください。"
+    );
+
+    return;
+
+  }
+
+
+  if (members.length !== required) {
+
+    alert(
+      `${required}人入力してください。\n現在${members.length}人です。`
+    );
+
+    return;
+
+  }
+
+
+  /*
+   同じ日付があれば上書き
+  */
+
+  const existing =
+    adminDraft.positions
+      .find(
+        day => day.date === date
+      );
+
+
+  if (existing) {
+
+    if (
+      !confirm(
+        "同じ日付の公演が存在します。上書きしますか？"
+      )
+    ) {
+
       return;
+
     }
 
-    result.innerHTML = entries
-      .map(([fixedMember, count]) =>
-        `${fixedMember}ポジ : ${count}回`
-      )
-      .join("<br>");
-  });
+
+    existing.members =
+      members;
+
+  } else {
+
+    adminDraft.positions.push({
+
+      date,
+
+      members
+
+    });
+
+  }
+
+
+  adminDraft.positions
+    .sort(
+      (a, b) =>
+        a.date.localeCompare(b.date)
+    );
+
+
+  document.getElementById(
+    "performance-date"
+  ).value = "";
+
+
+  document.getElementById(
+    "performance-members-input"
+  ).value = "";
+
+
+  renderAdminHistory();
+
+
+  showAdminMessage(
+    "公演データを追加しました。"
+  );
+
+}
+
+
+/* =========================
+   SAVE ADMIN DATA
+========================= */
+
+function saveAdminData() {
+
+  if (!adminDraft) return;
+
+
+  const debutText =
+    document.getElementById(
+      "debut-members-input"
+    )?.value || "";
+
+
+  const debutMembers =
+    parseMembers(debutText);
+
+
+  const required =
+    adminDraft.fixedMembers.length;
+
+
+  if (debutMembers.length !== required) {
+
+    alert(
+      `初日メンバーは${required}人必要です。\n現在${debutMembers.length}人です。`
+    );
+
+    return;
+
+  }
+
+
+  adminDraft.debut.members =
+    debutMembers;
+
+
+  /*
+   初日のポジションを
+   positionsにも反映
+  */
+
+  const debutDate =
+    adminDraft.debut.date;
+
+
+  if (debutDate) {
+
+    const existing =
+      adminDraft.positions
+        .find(
+          day =>
+            day.date === debutDate
+        );
+
+
+    if (existing) {
+
+      existing.members =
+        [...debutMembers];
+
+    } else {
+
+      adminDraft.positions.unshift({
+
+        date: debutDate,
+
+        members:
+          [...debutMembers]
+
+      });
+
+    }
+
+  }
+
+
+  currentStageData =
+    normalizeStageData(
+      adminDraft
+    );
+
+
+  const file =
+    document.getElementById(
+      "stage-select"
+    )?.value;
+
+
+  if (!file) return;
+
+
+  localStorage.setItem(
+
+    getStageStorageKey(file),
+
+    JSON.stringify(
+      currentStageData,
+      null,
+      2
+    )
+
+  );
+
+
+  renderStageTable(
+    currentStageData
+  );
+
+
+  setupStageSearch(
+    currentStageData
+  );
+
+
+  showAdminMessage(
+    "保存しました。この端末のブラウザに保存されています。"
+  );
+
+}
+
+
+/* =========================
+   EXPORT JSON
+========================= */
+
+function exportStageJson() {
+
+  if (!currentStageData) return;
+
+
+  const file =
+    document.getElementById(
+      "stage-select"
+    )?.value ||
+    "stage-data";
+
+
+  const blob =
+    new Blob(
+      [
+        JSON.stringify(
+          currentStageData,
+          null,
+          2
+        )
+      ],
+      {
+        type:
+          "application/json"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a =
+    document.createElement("a");
+
+
+  a.href = url;
+
+  a.download =
+    `${file}.json`;
+
+
+  a.click();
+
+
+  URL.revokeObjectURL(url);
+
+
+  showAdminMessage(
+    "JSONを書き出しました。"
+  );
+
+}
+
+
+/* =========================
+   ADMIN MESSAGE
+========================= */
+
+function showAdminMessage(message) {
+
+  const el =
+    document.getElementById(
+      "admin-message"
+    );
+
+
+  if (!el) return;
+
+
+  el.textContent =
+    message;
+
+
+  setTimeout(() => {
+
+    el.textContent = "";
+
+  }, 4000);
+
+}
+
+
+/* =========================
+   PREDICTION BUTTON
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const btn =
+      document.getElementById(
+        "assign-btn"
+      );
+
+
+    btn?.addEventListener(
+      "click",
+      () => {
+
+        if (!currentStageData) {
+
+          alert(
+            "演目を選択してください。"
+          );
+
+          return;
+
+        }
+
+
+        const text =
+          document.getElementById(
+            "member-input"
+          )?.value || "";
+
+
+        const prediction =
+          calculatePositionPrediction(
+            currentStageData,
+            text
+          );
+
+
+        renderPrediction(
+          prediction
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================
+   ESCAPE
+========================= */
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+function escapeAttr(value) {
+
+  return escapeHtml(value);
+
 }
 
 /* =========================
